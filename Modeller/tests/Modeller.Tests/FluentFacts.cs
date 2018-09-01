@@ -35,13 +35,13 @@ namespace Modeller.Tests
         [Fact]
         public void CanCreateModule()
         {
-            var expected = new Models.Module { Company = "Jbssa" };
+            var expected = new Models.Module { Company = Defaults.CompanyName };
             expected.Project.SetName("freight rates");
 
             var actual = Fluent.Module.Create("freight rates").Build;
 
             actual.Should().BeOfType<Models.Module>().And.NotBeNull().And.BeEquivalentTo(expected);
-            actual.Namespace.Should().Be("Jbssa.FreightRate");
+            actual.Namespace.Should().Be($"{Defaults.CompanyName}.FreightRate");
         }
 
         [Fact]

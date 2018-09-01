@@ -75,43 +75,5 @@ namespace Modeller.Models
         public Name RightField { get; set; } = new Name("");
 
         public RelationShipTypes RightType { get; set; }
-
-        public void GetMatch(Name find, out RelationShipTypes type, out Name field)
-        {
-            if (RightModel.Equals(find))
-            {
-                type = RightType;
-                field = RightField;
-            }
-            else if (LeftModel.Equals(find))
-            {
-                type = LeftType;
-                field = LeftField;
-            }
-            else
-            {
-                throw new ApplicationException("Relationship not found");
-            }
-        }
-
-        public void GetOther(Name find, out RelationShipTypes type, out Name model, out Name field)
-        {
-            if (LeftModel.Equals(find))
-            {
-                type = RightType;
-                model = RightModel;
-                field = RightField;
-            }
-            else if (RightModel.Equals(find))
-            {
-                type = LeftType;
-                model = LeftModel;
-                field = LeftField;
-            }
-            else
-            {
-                throw new ApplicationException("Relationship not found");
-            }
-        }
     }
 }

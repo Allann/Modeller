@@ -6,7 +6,7 @@ namespace Modeller.Tests
 {
     public static class ModuleFacts
     {
-        private const string _testModule = @"{""company"":""Jbssa"",""project"":"""",""models"":[]}";
+        private static string _testModule = $"{{\"company\":\"{Defaults.CompanyName}\",\"project\":\"\",\"models\":[]}}";
 
         [Fact]
         public static void CanSerialiseToJson()
