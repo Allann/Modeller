@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Allan Nielsen</Authors>
+    <Company>Hybrid Solutions</Company>
+    <Copyright>Copyright © 2018</Copyright>
+    <RepositoryUrl>https://jbsaustralia.visualstudio.com/Sandbox/_versionControl?path=%24%2FSandbox%2FDev%2FModeller</RepositoryUrl>
+    <RepositoryType>VSTS</RepositoryType>
+    <PackageTags>CodeGen, C#</PackageTags>
+    <NeutralLanguage>en-AU</NeutralLanguage>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>modeller.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
+    <RootNamespace>Modeller</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="2.4.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Runtime" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="netstandard2.0.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

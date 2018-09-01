@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Allan Nielsen</Authors>
+    <Company>Hybrid Solutions</Company>
+    <Copyright>Copyright © 2018</Copyright>
+    <RepositoryUrl>https://jbsaustralia.visualstudio.com/Sandbox/_versionControl?path=$/Sandbox/Dev/Modeller</RepositoryUrl>
+    <RepositoryType>VSTS</RepositoryType>
+    <PackageTags>CodeGen, C#, Fluent</PackageTags>
+    <NeutralLanguage>English (Australia)</NeutralLanguage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modeller.Core\Modeller.Core.csproj" />
+  </ItemGroup>
+
+</Project>

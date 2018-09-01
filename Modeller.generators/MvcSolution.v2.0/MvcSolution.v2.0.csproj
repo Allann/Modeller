@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>MvcSolution</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Generators\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Modeller.Core" Version="2.1.18239.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Api.v2.0\Api.v2.0.csproj" />
+    <ProjectReference Include="..\Business.v2.0\Business.v2.0.csproj" />
+    <ProjectReference Include="..\Data.v2.0\Data.v2.0.csproj" />
+    <ProjectReference Include="..\Domain.v2.0\Domain.v2.0.csproj" />
+    <ProjectReference Include="..\Dto.v2.0\Dto.v2.0.csproj" />
+    <ProjectReference Include="..\Interfaces.v2.0\Interface.v2.0.csproj" />
+    <ProjectReference Include="..\MvcWebsite.v2.0\MvcWebsite.v2.0.csproj" />
+    <ProjectReference Include="..\Security.v2.0\Security.v2.0.csproj" />
+    <ProjectReference Include="..\UnitTests.v2.0\UnitTests.v2.0.csproj" />
+  </ItemGroup>
+
+</Project>
