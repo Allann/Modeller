@@ -24,14 +24,23 @@ namespace Modeller.Fluent
             return this;
         }
 
+        public ModuleBuilder DefaultSchema(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+            Build.DefaultSchema = name;
+            return this;
+        }
+
         public ModuleBuilder FeatureName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 Build.Feature = null;
             else
             {
-                var x = new Models.Name(name);
-                Build.Feature = x;
+                Build.Feature = new Models.Name(name);
             }
             return this;
         }

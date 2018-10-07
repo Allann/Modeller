@@ -88,7 +88,7 @@ namespace TestConsole
             // todo : edit this line to change the generator to use
             var module = CreateModule();
             var model = module.Models.First(m => m.Name.Singular.Value == "Application");
-            return new DbContext.Generator(Settings, module);
+            return new ApiController.Generator(Settings, module, model);
         }
 
         // todo: change the settings only if necessary

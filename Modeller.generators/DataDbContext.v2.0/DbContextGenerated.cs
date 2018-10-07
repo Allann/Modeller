@@ -43,7 +43,7 @@ namespace DbContext
             sb.Append($"{i1}");
             if (!Settings.SupportRegen)
                 sb.Append("public ");
-            sb.Append("partial class {_module.Project.Singular.Value}DbContext");
+            sb.Append($"partial class {_module.Project.Singular.Value}DbContext");
             if (!Settings.SupportRegen)
                 sb.Append(": DbContextBase");
             sb.AppendLine();
@@ -68,12 +68,11 @@ namespace DbContext
             sb.AppendLine($"{i2}// CodeGen: DbSet (do not remove)");
             sb.AppendLine($"{i2}protected override void OnModelCreating(ModelBuilder modelBuilder)");
             sb.AppendLine($"{i2}{{");
-            sb.AppendLine();
             sb.AppendLine($"{i3}base.OnModelCreating(modelBuilder);");
             if (Settings.SupportRegen)
             {
                 sb.AppendLine();
-                sb.AppendLine($"{i2}ModelCreating(modelBuilder);");
+                sb.AppendLine($"{i3}ModelCreating(modelBuilder);");
             }
 
             foreach (var model in _module.Models)
@@ -121,7 +120,10 @@ namespace DbContext
             sb.AppendLine($"{i1}}}");
             sb.AppendLine("}");
 
-            return new File { Name = _module.Project.Singular.Value + "DbContext.cs", Content = sb.ToString(), CanOverwrite = Settings.SupportRegen };
+            var name = _module.Project.Singular.Value + "DbContext";
+            if (Settings.SupportRegen)
+                name += ".generated";
+            return new File { Name = name + ".cs", Content = sb.ToString(), CanOverwrite = Settings.SupportRegen };
         }
     }
 }

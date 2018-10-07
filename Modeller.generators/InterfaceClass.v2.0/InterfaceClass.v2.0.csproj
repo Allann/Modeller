@@ -10,11 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Modeller.Core" Version="2.1.18239.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Header.v2.0\Header.v2.0.csproj" />
+    <PackageReference Include="Modeller.Core" Version="2.1.18241.1" />
   </ItemGroup>
 
 </Project>

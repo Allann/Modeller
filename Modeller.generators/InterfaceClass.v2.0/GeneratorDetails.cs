@@ -15,6 +15,6 @@ namespace InterfaceClass
 
         public Type EntryPoint => typeof(Generator);
 
-        public IEnumerable<Type> SubGenerators => new Collection<Type>() { typeof(Header.Generator) };
+        public IEnumerable<Type> SubGenerators => new Collection<Type>() { };
     }
 }

@@ -27,7 +27,6 @@ namespace InterfaceClass
             var i2 = h.Indent(2);
 
             var sb = new StringBuilder();
-            sb.AppendLine(((ISnippet)new Header.Generator(Settings, new GeneratorDetails()).Create()).Content);
             sb.AppendLine($"using {_module.Namespace}.Dto;");
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Collections.Generic;");

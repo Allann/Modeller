@@ -4,62 +4,45 @@ namespace Modeller
 {
     public static class RelationshipExtensions
     {
-        public static RelationShipTypes GetMyRelationshipType(this Relationship relationship, Name name)
+        public static Relate GetDetails(this Relationship relationship, Model find)
         {
-            relationship.GetMatch(name, out var type, out var field);
-            return type;
-        }
-        public static RelationShipTypes GetOtherRelationshipType(this Relationship relationship, Name name)
-        {
-            relationship.GetOther(name, out var type, out var model, out var field);
-            return type;
-        }
+            RelationShipTypes matchType;
+            RelationShipTypes otherType;
+            Name matchName;
+            Name otherName;
+            Name matchField;
+            Name otherField;
 
-        public static void GetMatch(this Relationship relationship, Name find, out RelationShipTypes type, out Name field)
-        {
-            if (relationship.RightModel.Equals(find))
+            if (relationship.RightModel.Equals(find.Name))
             {
-                type = relationship.RightType;
-                field = relationship.RightField;
+                matchName = relationship.RightModel;
+                matchType = relationship.RightType;
+                matchField = relationship.RightField;
+                otherName = relationship.LeftModel;
+                otherType = relationship.LeftType;
+                otherField = relationship.LeftField;
             }
-            else if (relationship.LeftModel.Equals(find))
+            else if (relationship.LeftModel.Equals(find.Name))
             {
-                type = relationship.LeftType;
-                field = relationship.LeftField;
+                otherName = relationship.RightModel;
+                otherType = relationship.RightType;
+                otherField = relationship.RightField;
+                matchName = relationship.LeftModel;
+                matchType = relationship.LeftType;
+                matchField = relationship.LeftField;
             }
             else
             {
                 throw new System.ApplicationException($"Relationship not found {find}");
             }
-        }
 
-        public static void GetOther(this Relationship relationship, Name find, out RelationShipTypes type, out Name model, out Name field)
-        {
-            if (relationship.LeftModel.Equals(find))
+            if (relationship.LeftType == RelationShipTypes.Many && relationship.RightType == RelationShipTypes.Many)
             {
-                type = relationship.RightType;
-                model = relationship.RightModel;
-                field = relationship.RightField;
+                return find.Relationships.Contains(relationship)
+                    ? new Relate(matchName, matchType, matchField, otherName, otherType, otherField, matchName)
+                    : new Relate(matchName, matchType, matchField, otherName, otherType, otherField, otherName);
             }
-            else if (relationship.RightModel.Equals(find))
-            {
-                type = relationship.LeftType;
-                model = relationship.LeftModel;
-                field = relationship.LeftField;
-            }
-            else
-            {
-                throw new System.ApplicationException("Relationship not found");
-            }
-        }
-
-
-        public static Relate GetDetails(this Relationship relationship, Name match)
-        {
-            relationship.GetMatch(match, out var matchType, out var matchField);
-            relationship.GetOther(match, out var otherType, out var otherModel, out var otherField);
-
-            return new Relate(match, matchType, matchField, otherModel, otherType, otherField);
+            return new Relate(matchName, matchType, matchField, otherName, otherType, otherField);
         }
     }
 }

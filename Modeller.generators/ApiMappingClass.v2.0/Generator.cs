@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Text;
-using Modeller.Core;
 using Modeller.Interfaces;
 using Modeller.Models;
 using Modeller.Outputs;
@@ -23,30 +21,12 @@ namespace ApiMapping
 
         public IOutput Create()
         {
-            var i1 = h.Indent(1);
-            var i2 = h.Indent(2);
-            var i3 = h.Indent(3);
+            var files = new FileGroup { Path = "Mappings" };
 
-            var sb = new StringBuilder();
-            sb.AppendLine("using AutoMapper;");
-            sb.AppendLine($"using {_module.Namespace}.Dto;");
-            sb.AppendLine();
-            sb.AppendLine($"namespace {_module.Namespace}.Api.Mappings");
-            sb.AppendLine("{");
-            sb.AppendLine($"{i1}public class {_model.Name.Singular.Value}Mapping : Profile");
-            sb.AppendLine($"{i1}{{");
+            files.AddFile((IFile)new Profile(Settings, _module, _model).Create());
+            files.AddFile((IFile)new Mapper(Settings, _module, _model).Create());
 
-            sb.AppendLine($"{i2}public {_model.Name.Singular.Value}Mapping()");
-            sb.AppendLine($"{i2}{{");
-            sb.AppendLine($"{i3}CreateMap<Domain.{_model.Name.Singular.Value}, {_model.Name.Singular.Value}Response>();");
-            sb.AppendLine($"{i3}CreateMap<{_model.Name.Singular.Value}CreateRequest, Domain.{_model.Name.Singular.Value}>();");
-            sb.AppendLine($"{i3}CreateMap<{_model.Name.Singular.Value}UpdateRequest, Domain.{_model.Name.Singular.Value}>().ReverseMap();");
-            sb.AppendLine($"{i2}}}");
-
-            sb.AppendLine($"{i1}}}");
-            sb.AppendLine("}");
-
-            return new File { Name = $"{_model.Name.Singular.Value}Mapping.cs", Content = sb.ToString(), CanOverwrite = Settings.SupportRegen };
+            return files;
         }
     }
 }

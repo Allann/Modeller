@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Modeller.Generator
 {
     internal class ContextValidator : ValidatorBase
-    {        
+    {
         public ContextValidator(Context context)
             : base(context)
         {
@@ -40,7 +39,7 @@ namespace Modeller.Generator
 
             if (string.IsNullOrWhiteSpace(Context.OutputPath))
             {
-                Context.SetOutputPath(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Visual Studio 2017", "Projects"));
+                Context.SetOutputPath(Defaults.OutputFolder);
             }
             else if (!System.IO.Path.IsPathRooted(Context.OutputPath))
             {

@@ -21,6 +21,7 @@ namespace Api
         public IOutput Create()
         {
             var sb = new StringBuilder();
+            sb.AppendLine(((ISnippet)new Header.Generator(Settings, new GeneratorDetails()).Create()).Content);
             sb.AppendLine("using FluentValidation.AspNetCore;");
             sb.AppendLine("using IdentityServer4.Models;");
             sb.AppendLine("using Microsoft.AspNetCore.Authentication.JwtBearer;");

@@ -32,30 +32,32 @@ namespace ApiOption
             var i3 = h.Indent(3);
 
             var sb = new StringBuilder();
+            sb.AppendLine($"using {_module.Namespace}.Interfaces;");
             sb.AppendLine("using Jbssa.Core.Interfaces;");
             sb.AppendLine("using Jbssa.Core.Mvc;");
             sb.AppendLine();
             sb.AppendLine($"namespace {_module.Namespace}.Api.Options");
             sb.AppendLine("{");
-            sb.AppendLine($"{i1}public class {_model.Name.Singular.Value}Options : EntityOptionsAsync<Domain.{_model.Name.Singular.Value}>, IHasListProvider<Domain.{_model.Name.Singular.Value}>");
+            sb.AppendLine($"{i1}public class {_model.Name.Singular.Value}Options : EntityOptionsAsync<Domain.{_model.Name.Singular.Value}>, IHasListProvider<Domain.{_model.Name.Singular.Value}>, IHasMapper");
             sb.AppendLine($"{i1}{{");
 
             sb.AppendLine($"{i2}private readonly IListProvider<Domain.{_model.Name.Singular.Value}> _listProvider;");
-            sb.AppendLine($"{i2}public {_model.Name.Singular.Value}Options(IReadableAsync<Domain.{_model.Name.Singular.Value}> readService, IEditableAsync<Domain.{_model.Name.Singular.Value}> editService, IListProvider<Domain.{_model.Name.Singular.Value}> listProvider)");
+            sb.AppendLine($"{i2}private readonly IControllerMapper _mapper;");
+            sb.AppendLine();
+            sb.AppendLine($"{i2}public {_model.Name.Singular.Value}Options(IReadableAsync<Domain.{_model.Name.Singular.Value}> readService, IEditableAsync<Domain.{_model.Name.Singular.Value}> editService, IListProvider<Domain.{_model.Name.Singular.Value}> listProvider, IControllerMapper mapper)");
             sb.AppendLine($"{i3}: base(readService, editService)");
             sb.AppendLine($"{i2}{{");
             sb.AppendLine($"{i3}_listProvider = listProvider;");
+            sb.AppendLine($"{i3}_mapper = mapper ?? throw new System.ArgumentNullException(nameof(mapper));");
             sb.AppendLine($"{i2}}}");
             sb.AppendLine();
-            sb.AppendLine($"{i2}IListProvider<Domain.{_model.Name.Singular.Value}> IHasListProvider<Domain.{_model.Name.Singular.Value}>.GetListProvider()");
-            sb.AppendLine($"{i2}{{");
-            sb.AppendLine($"{i3}return _listProvider;");
-            sb.AppendLine($"{i2}}}");
-
+            sb.AppendLine($"{i2}IListProvider<Domain.{_model.Name.Singular.Value}> IHasListProvider<Domain.{_model.Name.Singular.Value}>.GetListProvider() => _listProvider;");
+            sb.AppendLine();
+            sb.AppendLine($"{i2}IControllerMapper IHasMapper.GetMapper() => _mapper;");
             sb.AppendLine($"{i1}}}");
             sb.AppendLine("}");
 
-            return new File { Name = $"{_model.Name.Singular.Value}Options.cs", Content = sb.ToString(), CanOverwrite = Settings.SupportRegen };
+            return new File { Name = $"{_model.Name.Singular.Value}Options.cs", Content = sb.ToString(), CanOverwrite = false };
         }
     }
 }

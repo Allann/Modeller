@@ -39,6 +39,16 @@ namespace Modeller.Fluent
             return this;
         }
 
+        public ModelBuilder Schema(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+            Instance.Schema = name;
+            return this;
+        }
+
         public KeyBuilder WithKey()
         {
             var key = Key.Create(this, Instance);
@@ -57,6 +67,13 @@ namespace Modeller.Fluent
             var relation = Relationship.Create(Build, this);
             Instance.Relationships.Add(relation.Instance);
             return relation;
+        }
+
+        public IndexBuilder AddIndex(string name)
+        {
+            var index = Index.Create(this, name);
+            Instance.Indexes.Add(index.Instance);
+            return index;
         }
     }
 }

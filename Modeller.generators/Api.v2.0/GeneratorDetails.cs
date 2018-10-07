@@ -15,6 +15,6 @@ namespace Api
 
         public Type EntryPoint => typeof(Generator);
 
-        public IEnumerable<Type> SubGenerators => new Collection<Type>() { typeof(ApiController.Generator), typeof(ApiMapping.Generator), typeof(ApiOption.Generator) };
+        public IEnumerable<Type> SubGenerators => new Collection<Type>() { typeof(ApiController.Generator), typeof(ApiMapping.Generator), typeof(ApiOption.Generator), typeof(Header.Generator) };
     }
 }

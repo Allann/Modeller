@@ -27,7 +27,7 @@ namespace Business
             };
             project.AddFileGroup(services);
             foreach (var item in _module.Models)
-                project.AddFileGroup((IFileGroup)new BusinessClass.Generator(Settings, _module, item).Create());
+                project.AddFileGroup((IFileGroup)new BusinessService.Generator(Settings, _module, item).Create());
 
             var extensions = new FileGroup
             {

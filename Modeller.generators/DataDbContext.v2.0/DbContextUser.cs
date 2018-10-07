@@ -30,14 +30,13 @@ namespace DbContext
             var i4 = h.Indent(4);
 
             var sb = new StringBuilder();
-            sb.AppendLine(((ISnippet)new Header.Generator(Settings, new GeneratorDetails()).Create()).Content);
             sb.AppendLine("using Jbssa.Core.Data;");
             sb.AppendLine("using Microsoft.AspNetCore.Http;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine();
             sb.AppendLine($"namespace {_module.Namespace}.Data");
             sb.AppendLine("{");
-            sb.AppendLine($"{i1}public class {_module.Project.Singular.Value}DbContext : DbContextBase");
+            sb.AppendLine($"{i1}public partial class {_module.Project.Singular.Value}DbContext : DbContextBase");
             sb.AppendLine($"{i1}{{");
 
             sb.AppendLine($"{i2}public {_module.Project.Singular.Value}DbContext(DbContextOptions<{_module.Project.Singular.Value}DbContext> options, IHttpContextAccessor httpContextAccessor)");

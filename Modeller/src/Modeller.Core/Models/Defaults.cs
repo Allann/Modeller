@@ -2,6 +2,6 @@
 {
     public static class Defaults
     {
-        public const string CompanyName = "MyCompany";
+        public const string CompanyName = "Jbssa";
     }
 }

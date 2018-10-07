@@ -2,7 +2,7 @@
 
 namespace Modeller.Interfaces
 {
-    internal interface IPackageFileLoader
+    public interface IPackageFileLoader
     {
         IEnumerable<Package> Load(string filePath);
 

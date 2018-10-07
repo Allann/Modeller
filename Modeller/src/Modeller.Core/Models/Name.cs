@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Modeller.Models
 {
@@ -39,6 +40,21 @@ namespace Modeller.Models
 
         [JsonIgnore]
         public Names Plural { get; private set; }
+
+        public override string ToString() => Singular.ToString();
+
+        public override int GetHashCode() => -568181920 + EqualityComparer<string>.Default.GetHashCode(Singular.Value);
+
+        public static bool operator ==(Name name1, Name name2) => EqualityComparer<Name>.Default.Equals(name1, name2);
+
+        public static bool operator !=(Name name1, Name name2) => !(name1 == name2);
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj)
+                ? true : obj is Name other
+                ? other.Singular.Value == Singular.Value : false;
+        }
     }
 
     public class Names
@@ -57,5 +73,7 @@ namespace Modeller.Models
         public string StaticVariable { get; }
         public string Display { get; }
         public string Value { get; }
+
+        public override string ToString() => Value;
     }
 }

@@ -6,13 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Modeller.Core" Version="2.1.18239.1" />
-    <PackageReference Include="Modeller.Fluent" Version="2.1.18239.1" />
+    <PackageReference Include="Modeller.Core" Version="2.1.18241.1" />
+    <PackageReference Include="Modeller.Fluent" Version="2.1.18241.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Api.v2.0\Api.v2.0.csproj" />
     <ProjectReference Include="..\Business.v2.0\Business.v2.0.csproj" />
+    <ProjectReference Include="..\BusinessService.v2.0\BusinessService.v2.0.csproj" />
     <ProjectReference Include="..\DataDbContext.v2.0\DataDbContext.v2.0.csproj" />
     <ProjectReference Include="..\DataEntityConfig.v2.0\DataEntityConfig.v2.0.csproj" />
     <ProjectReference Include="..\Domain.v2.0\Domain.v2.0.csproj" />

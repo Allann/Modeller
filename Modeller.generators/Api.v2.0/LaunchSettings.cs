@@ -34,7 +34,7 @@ namespace Api
             sb.AppendLine("    \"IIS Express\": {");
             sb.AppendLine("      \"commandName\": \"IISExpress\",");
             sb.AppendLine("      \"launchBrowser\": true,");
-            sb.AppendLine("      \"launchUrl\": \"https://localhost:44361/api-docs\",");
+            sb.AppendLine("      \"launchUrl\": \"api-docs\",");
             sb.AppendLine("      \"environmentVariables\": {");
             sb.AppendLine("        \"ASPNETCORE_ENVIRONMENT\": \"Development\"");
             sb.AppendLine("      }");

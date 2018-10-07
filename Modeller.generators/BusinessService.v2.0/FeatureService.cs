@@ -6,7 +6,7 @@ using Modeller.Interfaces;
 using Modeller.Models;
 using Modeller.Outputs;
 
-namespace BusinessClass
+namespace BusinessService
 {
     internal class FeatureService : IGenerator
     {
@@ -51,7 +51,7 @@ namespace BusinessClass
             sb.AppendLine($"{i1}}}");
             sb.AppendLine("}");
 
-            return new File { Name = $"{_model.Name.Singular.Value}Features.cs", Content = sb.ToString(), CanOverwrite = Settings.SupportRegen };
+            return new File { Name = $"{_model.Name.Singular.Value}Features.cs", Content = sb.ToString(), CanOverwrite = false };
         }
     }
 }

@@ -91,7 +91,7 @@ namespace BusinessExtension
             sb.AppendLine($"{i1}}}");
             sb.AppendLine("}");
 
-            return new File { Name = $"{_model.Name.Singular.Value}Extensions.cs", Content = sb.ToString() };
+            return new File { Name = $"{_model.Name.Singular.Value}Extensions.cs", Content = sb.ToString(), CanOverwrite = false };
         }
     }
 }

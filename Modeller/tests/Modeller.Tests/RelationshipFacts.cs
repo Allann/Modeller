@@ -10,6 +10,24 @@ namespace Modeller.Tests
     public static class DataTypeFacts
     {
         [Fact]
+        public static void RelateEquality()
+        {
+            var r1 = new Relate(new Name("mod1"), RelationShipTypes.One, new Name("Id"), new Name("mod2"), RelationShipTypes.Many, new Name("mod1Id"));
+            var r2 = new Relate(new Name("mod2"), RelationShipTypes.Many, new Name("mod1Id"), new Name("mod1"), RelationShipTypes.One, new Name("Id"));
+
+            r1.Should().Equals(r2);
+        }
+
+        [Fact]
+        public static void RelateHashCodeEquality()
+        {
+            var r1 = new Relate(new Name("mod1"), RelationShipTypes.One, new Name("Id"), new Name("mod2"), RelationShipTypes.Many, new Name("mod1Id"));
+            var r2 = new Relate(new Name("mod2"), RelationShipTypes.Many, new Name("mod1Id"), new Name("mod1"), RelationShipTypes.One, new Name("Id"));
+
+            r1.GetHashCode().Should().Equals(r2.GetHashCode());
+        }
+
+        [Fact]
         public static void NullableGuid()
         {
             var f = new Field("Field") { DataType = DataTypes.UniqueIdentifier };
@@ -44,50 +62,6 @@ namespace Modeller.Tests
 
             h.DataType(f).Should().Be("Person");
             h.DataType(f, guidNullable: true).Should().Be("Person");
-        }
-    }
-
-    public static class RelationshipFacts
-    {
-        [Fact]
-        public static void GetOtherReturnsChild()
-        {
-            var x = new Relationship();
-            x.SetRelationship("Parent", "Id", "Child", "ParentId");
-
-            var parent = new Name("Parent");
-
-            x.GetOther(parent, out var type, out var model, out var field);
-
-            type.Should().Be(RelationShipTypes.Many);
-            model.Singular.Value.Should().Be("Child");
-            field.Singular.Value.Should().Be("ParentId");
-        }
-
-        [Fact]
-        public static void GetMatchReturnsParent()
-        {
-            var x = new Relationship();
-            x.SetRelationship("Parent", "Id", "Child", "ParentId");
-
-            var parent = new Name("Parent");
-
-            x.GetMatch(parent, out var type, out var field);
-
-            type.Should().Be(RelationShipTypes.One);
-            field.Singular.Value.Should().Be("Id");
-        }
-
-        [Fact]
-        public static void GetOtherThrowsWithInvalidRelationship()
-        {
-            var x = new Relationship();
-            x.SetRelationship("Parent", "Id", "Child", "ParentId");
-            var grandParent = new Name("GrandParent");
-
-            var ex = Record.Exception(() => x.GetMatch(grandParent, out var type, out var field));
-
-            ex.Should().BeOfType<ApplicationException>();
         }
     }
 }

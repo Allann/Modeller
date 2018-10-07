@@ -5,13 +5,15 @@ namespace Modeller
 {
     public static class Defaults
     {
-        public static string CompanyName => "MyCompany";
+        public static string CompanyName => "Jbssa";
 
-        public static string LocalFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Defaults.CompanyName, "Generators");
+        public static string OutputFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Visual Studio 2017", "Projects");
 
-        public static string ServerFolder => @"\Generators";
+        public static string LocalFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Jbssa", "Generators");
 
-        public static string Target => "netstandard2.0";
+        public static string ServerFolder => @"\\auqldrv00fil1bi\work\IT\Development\JBSFramework\Generators";
+
+        public static string Target => Targets.Default;
 
         public static Version Version => new Version();
     }

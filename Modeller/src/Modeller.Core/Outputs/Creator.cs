@@ -1,6 +1,6 @@
-﻿using System;
-using Modeller.Generator;
+﻿using Modeller.Generator;
 using Modeller.Interfaces;
+using System;
 
 namespace Modeller.Outputs
 {
@@ -25,7 +25,7 @@ namespace Modeller.Outputs
 
             var outputPath = Context.OutputPath;
             if (string.IsNullOrWhiteSpace(outputPath))
-                outputPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Visual Studio 2017", "Projects");
+                outputPath = Defaults.OutputFolder;
 
             _output?.Invoke("Generation finished, writing output.");
             _output?.Invoke($"Output: {outputPath}");

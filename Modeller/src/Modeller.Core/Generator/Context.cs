@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Modeller.Interfaces;
+using Modeller.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using Modeller.Interfaces;
-using Modeller.Models;
 
 namespace Modeller.Generator
 {
@@ -82,7 +81,10 @@ namespace Modeller.Generator
         {
             Settings = settings;
             if (Settings != null && !Settings.Context.Packages.Any())
-                LoadPackages();
+            {
+                var ps = new PackageService();
+                Settings.Context.Packages = ps.Items.ToList();
+            }
         }
 
         internal void SetOutputPath(string path) => OutputPath = path;
@@ -110,13 +112,5 @@ namespace Modeller.Generator
         public string ModelName { get; }
 
         public string SettingsFile { get; }
-
-        private void LoadPackages()
-        {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), Target + ".json");
-            var loader = new PackageFileLoader();
-            if (loader.TryLoad(path, out var packages))
-                Settings.Context.Packages = packages.ToList();
-        }
     }
 }

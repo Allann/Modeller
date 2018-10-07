@@ -68,6 +68,11 @@ namespace Modeller.Tests
             expected.Name.SetName("model");
             expected.Key.Fields.Add(new Models.Field("key") { DataType = Models.DataTypes.UniqueIdentifier, Nullable = false });
             expected.Fields.Add(new Models.Field("Code") { DataType = Models.DataTypes.String, MaxLength = 20, BusinessKey = true, Nullable = false });
+
+            var index = new Models.Index("UX_Code") { IsUnique = true };
+            index.Fields.Add(new Models.IndexField("Code") { Sort = System.ComponentModel.ListSortDirection.Descending });
+            expected.Indexes.Add(index);
+
             var r = new Models.Relationship();
             r.SetRelationship("left.Id", "right.Id");
             expected.Relationships.Add(r);
@@ -95,9 +100,15 @@ namespace Modeller.Tests
             model.Name.SetName("model");
             model.Key.Fields.Add(new Models.Field("key") { DataType = Models.DataTypes.UniqueIdentifier, Nullable = false });
             model.Fields.Add(new Models.Field("Code") { DataType = Models.DataTypes.String, MaxLength = 20, BusinessKey = true, Nullable = false });
+
+            var index = new Models.Index("UX_Code") { IsUnique = true };
+            index.Fields.Add(new Models.IndexField("Code") { Sort = System.ComponentModel.ListSortDirection.Descending });
+            model.Indexes.Add(index);
+
             var r = new Models.Relationship();
             r.SetRelationship("left.Id", "right.Id");
             model.Relationships.Add(r);
+
             expected.Models.Add(model);
 
             var temp = expected.ToJson();

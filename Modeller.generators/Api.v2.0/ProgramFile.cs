@@ -21,6 +21,7 @@ namespace Api
         public IOutput Create()
         {
             var sb = new StringBuilder();
+            sb.AppendLine(((ISnippet)new Header.Generator(Settings, new GeneratorDetails()).Create()).Content);
             sb.AppendLine("using System;");
             sb.AppendLine("using System.IO;");
             sb.AppendLine("using Microsoft.AspNetCore;");

@@ -5,7 +5,7 @@ using Modeller.Interfaces;
 using Modeller.Models;
 using Modeller.Outputs;
 
-namespace BusinessClass
+namespace BusinessService
 {
     public class Generator : IGenerator
     {
@@ -32,8 +32,11 @@ namespace BusinessClass
             };
 
             files.AddFile((IFile)new ReadService(Settings, _module, _model).Create());
+            files.AddFile((IFile)new ReadServiceGenerated(Settings, _module, _model).Create());
             files.AddFile((IFile)new EditService(Settings, _module, _model).Create());
+            files.AddFile((IFile)new EditServiceGenerated(Settings, _module, _model).Create());
             files.AddFile((IFile)new ListProvider(Settings, _module, _model).Create());
+            files.AddFile((IFile)new ListProviderGenerated(Settings, _module, _model).Create());
             files.AddFile((IFile)new FeatureService(Settings, _module, _model).Create());
 
             return files;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Modeller.Interfaces;
 
-namespace BusinessClass
+namespace BusinessService
 {
     public class GeneratorDetails : IMetadata
     {
@@ -15,6 +15,6 @@ namespace BusinessClass
 
         public Type EntryPoint => typeof(Generator);
 
-        public IEnumerable<Type> SubGenerators => new Collection<Type>() { };
+        public IEnumerable<Type> SubGenerators => new Collection<Type>() { typeof(Header.Generator) };
     }
 }

@@ -6,7 +6,7 @@ using Modeller.Interfaces;
 using Modeller.Models;
 using Modeller.Outputs;
 
-namespace BusinessClass
+namespace BusinessService
 {
     internal class ListProvider : IGenerator
     {
@@ -24,7 +24,7 @@ namespace BusinessClass
 
         public IOutput Create()
         {
-            if (!Settings.SupportRegen || !_model.IsEntity())
+            if (!_model.IsEntity())
                 return null;
 
             var i1 = h.Indent(1);
@@ -38,16 +38,16 @@ namespace BusinessClass
             sb.AppendLine();
             sb.AppendLine($"namespace {_module.Namespace}.Business.Services");
             sb.AppendLine("{");
-            sb.AppendLine($"{i1}public class {_model.Name.Singular.Value}ListProvider : ListProviderBase<Domain.{_model.Name.Singular.Value}>");
+            sb.AppendLine($"{i1}public partial class {_model.Name.Singular.Value}ListProvider : ListProviderBase<Domain.{_model.Name.Singular.Value}>");
             sb.AppendLine($"{i1}{{");
-
             sb.AppendLine($"{i2}public {_model.Name.Singular.Value}ListProvider({_module.Project.Singular.Value}DbContext context)");
             sb.AppendLine($"{i3}: base(() => context.{_model.Name.Plural.Value})");
             sb.AppendLine($"{i2}{{ }}");
             var bk = _model.HasBusinessKey();
             if (_model.HasActive() || bk != null)
             {
-                sb.Append($"{i2}public override IQueryable<Domain.{_model.Name.Singular.Value}> Query => base.Query");
+                sb.AppendLine();
+                sb.Append($"{i2}partial void GetQuery(ref IQueryable<Domain.{_model.Name.Singular.Value}> query) => query = query");
                 if (_model.HasActive())
                     sb.Append(".Where(t => t.IsActive)");
                 if (bk != null)
@@ -57,7 +57,7 @@ namespace BusinessClass
             sb.AppendLine($"{i1}}}");
             sb.AppendLine("}");
 
-            return new File { Name = $"{_model.Name.Singular.Value}ListProvider.cs", Content = sb.ToString() };
+            return new File { Name = $"{_model.Name.Singular.Value}ListProvider.cs", Content = sb.ToString(), CanOverwrite = false };
         }
     }
 }

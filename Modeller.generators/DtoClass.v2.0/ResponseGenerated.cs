@@ -119,11 +119,10 @@ namespace DtoClass
             sb.AppendLine($"{i1}}}");
             sb.AppendLine("}");
 
-            var file = new File { Content = sb.ToString() };
+            var file = new File { Content = sb.ToString(), CanOverwrite=Settings.SupportRegen };
             var filename = $"{_model.Name.Singular.Value}Response";
             if (Settings.SupportRegen)
             {
-                file.CanOverwrite = true;
                 filename += ".generated";
             }
             filename += ".cs";

@@ -17,7 +17,7 @@ namespace Business
 
         public IEnumerable<Type> SubGenerators => new Collection<Type>()
         {
-            typeof(BusinessClass.Generator),
+            typeof(BusinessService.Generator),
             typeof(BusinessExtension.Generator)
         };
     }

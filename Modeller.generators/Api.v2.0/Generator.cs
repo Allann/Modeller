@@ -29,20 +29,10 @@ namespace Api
             files.AddFile((IFile)new AppSettingsDevelopment(Settings, _module).Create());
             files.AddFile((IFile)new ProgramFile(Settings, _module).Create());
             files.AddFile((IFile)new StartupFile(Settings, _module).Create());
-
+            files.AddFile((IFile)new ControllerMapper(Settings, _module).Create());
             files.AddFile((IFile)new AuthorizeCheckOperationFilter(Settings, _module).Create());
             files.AddFile((IFile)new ServiceCollection(Settings, _module).Create());
 
-            var controllers = new FileGroup
-            {
-                Path = "Controllers"
-            };
-            project.AddFileGroup(controllers);
-            var mappers = new FileGroup
-            {
-                Path = "Mappings"
-            };
-            project.AddFileGroup(mappers);
             var options = new FileGroup
             {
                 Path = "Options"
@@ -51,8 +41,8 @@ namespace Api
 
             foreach (var item in _module.Models)
             {
-                controllers.AddFile((IFile)new ApiController.Generator(Settings, _module, item).Create());
-                mappers.AddFile((IFile)new ApiMapping.Generator(Settings, _module, item).Create());
+                project.AddFileGroup((IFileGroup)new ApiController.Generator(Settings, _module, item).Create());
+                project.AddFileGroup((IFileGroup)new ApiMapping.Generator(Settings, _module, item).Create());
                 options.AddFile((IFile)new ApiOption.Generator(Settings, _module, item).Create());
             }
 

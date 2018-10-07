@@ -5,7 +5,7 @@ namespace Modeller.Models
 {
     public struct Relate : IEquatable<Relate>
     {
-        public Relate(Name match, RelationShipTypes matchType, Name matchField, Name other, RelationShipTypes otherType, Name otherField)
+        public Relate(Name match, RelationShipTypes matchType, Name matchField, Name other, RelationShipTypes otherType, Name otherField, Name definedIn = null)
         {
             Match = match;
             MatchType = matchType;
@@ -13,7 +13,10 @@ namespace Modeller.Models
             Other = other;
             OtherType = otherType;
             OtherField = otherField;
+            DefinedIn = definedIn;
         }
+
+        public Name DefinedIn { get; set; }
 
         public Name Match { get; }
         public RelationShipTypes MatchType { get; }

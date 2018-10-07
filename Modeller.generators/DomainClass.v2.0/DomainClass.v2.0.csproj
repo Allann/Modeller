@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Modeller.Core" Version="2.1.18239.1" />
+    <PackageReference Include="Modeller.Core" Version="2.1.18241.1" />
   </ItemGroup>
 
   <ItemGroup>

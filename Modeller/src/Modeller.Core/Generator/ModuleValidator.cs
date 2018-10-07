@@ -30,7 +30,9 @@ namespace Modeller.Generator
                     AddIssue($"Unable to load the module from file {Context.ModuleFile}");
                 }
                 else
+                {
                     Context.SetModule(module);
+                }
             }
             catch (Exception ex)
             {

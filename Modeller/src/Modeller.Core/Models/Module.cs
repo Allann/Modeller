@@ -13,7 +13,7 @@ namespace Modeller.Models
         public string Company
         {
             get => _company;
-            set { _company = value.Dehumanize().Pascalize(); }
+            set => _company = value.Dehumanize().Pascalize();
         }
 
         [JsonProperty]
@@ -22,17 +22,14 @@ namespace Modeller.Models
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Name Feature { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string DefaultSchema { get; set; }
+
         [JsonProperty]
         public List<Model> Models { get; } = new List<Model>();
 
-        public string Namespace
-        {
-            get
-            {
-                return string.IsNullOrEmpty(Project.Singular.StaticVariable) ? Company : 
-                    Feature!=null? $"{Company}.{Project.Singular.StaticVariable}.{Feature.Singular.StaticVariable}":
+        public string Namespace => string.IsNullOrEmpty(Project.Singular.StaticVariable) ? Company :
+                    Feature != null ? $"{Company}.{Project.Singular.StaticVariable}.{Feature.Singular.StaticVariable}" :
                     $"{Company}.{Project.Singular.StaticVariable}";
-            }
-        }
     }
 }

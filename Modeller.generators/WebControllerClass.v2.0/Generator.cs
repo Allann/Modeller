@@ -18,6 +18,8 @@ namespace WebController
             _model = model ?? throw new ArgumentNullException(nameof(model));
         }
 
+        public ISettings Settings { get; }
+
         public IOutput Create()
         {
             if (!_model.IsEntity())
@@ -39,7 +41,5 @@ namespace WebController
             }
             return files;
         }
-
-        public ISettings Settings { get; }
     }
 }
