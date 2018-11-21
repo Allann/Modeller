@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using Modeller.Models;
+using Hy.Modeller.Models;
 using Xunit;
 
 namespace Modeller.Tests

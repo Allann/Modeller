@@ -1,4 +1,4 @@
-﻿namespace Modeller.Tests.TestJsonFiles
+﻿namespace Hy.Modeller.Tests.TestJsonFiles
 {
     public class Person
     {

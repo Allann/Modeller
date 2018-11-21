@@ -1,4 +1,4 @@
-﻿namespace Modeller.Interfaces
+﻿namespace Hy.Modeller.Interfaces
 {
     /// <summary>
     /// The contract used to create a generator

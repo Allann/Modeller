@@ -1,4 +1,4 @@
-﻿namespace Modeller
+﻿namespace Hy.Modeller
 {
     public class Package
     {

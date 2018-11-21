@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Modeller
+namespace Hy.Modeller
 {
     public static class Defaults
     {

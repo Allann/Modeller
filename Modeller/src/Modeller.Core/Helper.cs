@@ -1,6 +1,6 @@
-﻿using Modeller.Models;
+﻿using Hy.Modeller.Models;
 
-namespace Modeller.Core
+namespace Hy.Modeller.Core
 {
     public static class h
     {

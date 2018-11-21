@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace Modeller.Generator
+namespace Hy.Modeller.Generator
 {
     internal class GeneratorValidator : ValidatorBase
     {
@@ -57,7 +57,7 @@ namespace Modeller.Generator
             var name = Context.GeneratorName.ToLowerInvariant();
 
             var generators = FileHelper.GetAvailableGenerators(folder);
-            var matches = generators.Where(g => g.Metadata.Name.ToLowerInvariant() == name || g.AbbreviatedFileName.ToLowerInvariant() == name );
+            var matches = generators.Where(g => g.Metadata.Name.ToLowerInvariant() == name || g.AbbreviatedFileName.ToLowerInvariant() == name);
             if (!matches.Any())
             {
                 AddIssue($"No matching generator exists for the name: '{Context.GeneratorName}'.");

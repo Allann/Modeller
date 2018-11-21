@@ -1,7 +1,7 @@
 ﻿using System;
-using Modeller.Interfaces;
+using Hy.Modeller.Interfaces;
 
-namespace Modeller.Outputs
+namespace Hy.Modeller.Outputs
 {
     internal class FileCopier
     {

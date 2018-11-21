@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Modeller.Interfaces
+namespace Hy.Modeller.Interfaces
 {
     /// <summary>
     /// Defines the files to be used as a project

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Modeller.Models
+namespace Hy.Modeller.Models
 {
     public struct Relate : IEquatable<Relate>
     {

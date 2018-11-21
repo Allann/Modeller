@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using Modeller.Generator;
+using Hy.Modeller.Generator;
 using Xunit;
 
-namespace Modeller.Tests
+namespace Hy.Modeller.Tests
 {
     public static class ContextFacts
     {

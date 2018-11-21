@@ -1,4 +1,4 @@
-﻿namespace Modeller.Models
+﻿namespace Hy.Modeller.Models
 {
     public enum RelationShipTypes
     {

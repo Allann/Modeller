@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Modeller.Fluent
+namespace Hy.Modeller.Fluent
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class KeyBuilder : FluentBase

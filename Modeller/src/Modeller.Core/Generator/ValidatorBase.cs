@@ -1,6 +1,6 @@
-﻿using Modeller.Interfaces;
+﻿using Hy.Modeller.Interfaces;
 
-namespace Modeller.Generator
+namespace Hy.Modeller.Generator
 {
     internal abstract class ValidatorBase : IValidator
     {
@@ -11,10 +11,7 @@ namespace Modeller.Generator
 
         public Context Context { get; }
 
-        protected void AddIssue(string issue)
-        {
-            Context.AddIssue(issue);
-        }
+        protected void AddIssue(string issue) => Context.AddIssue(issue);
 
         public abstract void Validate();
     }

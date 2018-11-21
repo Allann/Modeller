@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Modeller.Generator
+namespace Hy.Modeller.Generator
 {
     public class Updater
     {

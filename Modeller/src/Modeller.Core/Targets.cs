@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Modeller
+namespace Hy.Modeller
 {
     public static class Targets
     {

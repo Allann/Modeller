@@ -1,4 +1,4 @@
-﻿namespace Modeller.Interfaces
+﻿namespace Hy.Modeller.Interfaces
 {
     /// <summary>
     /// An output type that represents a file to copy.  No changes will be made to this output type.

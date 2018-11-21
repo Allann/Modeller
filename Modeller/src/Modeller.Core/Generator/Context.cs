@@ -1,11 +1,11 @@
-﻿using Modeller.Interfaces;
-using Modeller.Models;
+﻿using Hy.Modeller.Interfaces;
+using Hy.Modeller.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Modeller.Generator
+namespace Hy.Modeller.Generator
 {
     public class Context
     {

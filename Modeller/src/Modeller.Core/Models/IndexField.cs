@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel;
 
-namespace Modeller.Models
+namespace Hy.Modeller.Models
 {
     public class IndexField
     {

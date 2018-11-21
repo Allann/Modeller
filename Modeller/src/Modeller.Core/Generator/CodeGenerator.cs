@@ -1,8 +1,8 @@
-﻿using Modeller.Models;
+﻿using Hy.Modeller.Models;
 using System;
 using System.Collections.Generic;
 
-namespace Modeller.Generator
+namespace Hy.Modeller.Generator
 {
     public class CodeGenerator
     {

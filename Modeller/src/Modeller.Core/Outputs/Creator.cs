@@ -1,8 +1,8 @@
-﻿using Modeller.Generator;
-using Modeller.Interfaces;
+﻿using Hy.Modeller.Generator;
+using Hy.Modeller.Interfaces;
 using System;
 
-namespace Modeller.Outputs
+namespace Hy.Modeller.Outputs
 {
     public class Creator
     {

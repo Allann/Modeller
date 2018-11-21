@@ -1,6 +1,6 @@
-﻿using Modeller.Models;
+﻿using Hy.Modeller.Models;
 
-namespace Modeller
+namespace Hy.Modeller
 {
     public static class RelationshipExtensions
     {

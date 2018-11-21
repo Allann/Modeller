@@ -1,8 +1,8 @@
-﻿using Modeller.Models;
+﻿using Hy.Modeller.Models;
 using Newtonsoft.Json;
 using System;
 
-namespace Modeller.JsonConverters
+namespace Hy.Modeller.JsonConverters
 {
     public class NameConverter : JsonConverter<Name>
     {
@@ -12,9 +12,6 @@ namespace Modeller.JsonConverters
             return new Name(s);
         }
 
-        public override void WriteJson(JsonWriter writer, Name value, JsonSerializer serializer)
-        {
-            writer.WriteValue(value.Singular.Value + string.Empty);
-        }
+        public override void WriteJson(JsonWriter writer, Name value, JsonSerializer serializer) => writer.WriteValue(value.Singular.Value + string.Empty);
     }
 }

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Modeller.Models
+namespace Hy.Modeller.Models
 {
     public class Key
     {

@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
-using Modeller.Models;
+using Hy.Modeller.Models;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Xunit;
 
-namespace Modeller.Tests
+namespace Hy.Modeller.Tests
 {
     public class FluentFacts
     {

@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
-using Modeller.Extensions;
+using Hy.Modeller.Extensions;
 using System.Linq;
 using Xunit;
 
-namespace Modeller.Tests
+namespace Hy.Modeller.Tests
 {
     public static class ModuleFacts
     {

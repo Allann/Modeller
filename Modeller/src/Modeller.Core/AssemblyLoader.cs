@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace Modeller
+namespace Hy.Modeller
 {
     internal class AssemblyLoader : AssemblyLoadContext
     {

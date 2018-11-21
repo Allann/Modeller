@@ -1,8 +1,8 @@
-﻿using Modeller.Models;
+﻿using Hy.Modeller.Models;
 using System;
 using System.ComponentModel;
 
-namespace Modeller.Fluent
+namespace Hy.Modeller.Fluent
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class FieldBuilder 

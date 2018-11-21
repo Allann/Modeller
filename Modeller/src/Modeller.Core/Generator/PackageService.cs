@@ -1,8 +1,8 @@
-﻿using Modeller.Interfaces;
+﻿using Hy.Modeller.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Modeller.Generator
+namespace Hy.Modeller.Generator
 {
     public class PackageService
     {

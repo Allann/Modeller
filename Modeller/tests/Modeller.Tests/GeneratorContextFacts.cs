@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
-using Modeller.Generator;
+using Hy.Modeller.Generator;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace Modeller.Tests
+namespace Hy.Modeller.Tests
 {
     public static class TestDefaults
     {

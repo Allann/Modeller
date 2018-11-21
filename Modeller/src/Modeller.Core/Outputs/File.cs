@@ -1,6 +1,6 @@
-﻿using Modeller.Interfaces;
+﻿using Hy.Modeller.Interfaces;
 
-namespace Modeller.Outputs
+namespace Hy.Modeller.Outputs
 {
     public class File : IFile
     {

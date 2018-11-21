@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Modeller.Interfaces
+namespace Hy.Modeller.Interfaces
 {
     public interface IPackageFileLoader
     {

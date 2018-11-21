@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace Modeller.Models
+namespace Hy.Modeller.Models
 {
     public class Name : IEquatable<Name>
     {

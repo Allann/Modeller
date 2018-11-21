@@ -1,8 +1,8 @@
-﻿using Modeller.Interfaces;
+﻿using Hy.Modeller.Interfaces;
 using System;
 using System.IO;
 
-namespace Modeller
+namespace Hy.Modeller
 {
     public class GeneratorItem
     {

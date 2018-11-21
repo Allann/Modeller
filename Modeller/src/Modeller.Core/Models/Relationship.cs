@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Modeller.Models
+﻿namespace Hy.Modeller.Models
 {
     public class Relationship
     {

@@ -1,8 +1,8 @@
-﻿using Modeller.Extensions;
-using Modeller.Interfaces;
+﻿using Hy.Modeller.Extensions;
+using Hy.Modeller.Interfaces;
 using System.IO;
 
-namespace Modeller.Generator
+namespace Hy.Modeller.Generator
 {
     internal class JsonSettingsLoader : ISettingsLoader
     {

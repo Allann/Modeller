@@ -1,4 +1,4 @@
-﻿namespace Modeller.Interfaces
+﻿namespace Hy.Modeller.Interfaces
 {
     /// <summary>
     /// An interface that represents an output style

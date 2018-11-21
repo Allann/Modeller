@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Modeller.Models
+namespace Hy.Modeller.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Module

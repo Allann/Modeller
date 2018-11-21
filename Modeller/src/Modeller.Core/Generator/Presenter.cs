@@ -1,9 +1,8 @@
-﻿using Modeller.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Modeller.Generator
+namespace Hy.Modeller.Generator
 {
     public class Presenter
     {

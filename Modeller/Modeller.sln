@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{17B8BA08
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modeller.Tests", "tests\Modeller.Tests\Modeller.Tests.csproj", "{3617DD88-FD7D-4B06-9FB5-20015CE88324}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGenerator", "tests\TestGenerator\TestGenerator.csproj", "{ED20278E-D10C-4EEB-85E5-96A4B9B26E83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestGenerator", "tests\TestGenerator\TestGenerator.csproj", "{ED20278E-D10C-4EEB-85E5-96A4B9B26E83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

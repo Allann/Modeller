@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel;
 
-namespace Modeller.Models
+namespace Hy.Modeller.Models
 {
     public class Field
     {
@@ -42,6 +42,6 @@ namespace Modeller.Models
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
-        public bool BusinessKey { get; set; } 
+        public bool BusinessKey { get; set; }
     }
 }

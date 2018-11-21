@@ -1,7 +1,7 @@
-﻿using Modeller.Interfaces;
+﻿using Hy.Modeller.Interfaces;
 using System;
 
-namespace Modeller.Outputs
+namespace Hy.Modeller.Outputs
 {
     internal class CreateSnippet
     {

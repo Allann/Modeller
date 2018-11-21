@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Modeller.Tests
+namespace Hy.Modeller.Tests
 {
     public class DomainGeneratorFacts
     {

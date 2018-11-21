@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Modeller.Generator
+namespace Hy.Modeller.Generator
 {
     internal class ContextValidator : ValidatorBase
     {

@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Generic;
 
-namespace Modeller.Interfaces
+namespace Hy.Modeller.Interfaces
 {
     /// <summary>
     /// An output type that represents a group of generated files

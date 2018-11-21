@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Modeller.Fluent
+namespace Hy.Modeller.Fluent
 {
     public static class Model
     {

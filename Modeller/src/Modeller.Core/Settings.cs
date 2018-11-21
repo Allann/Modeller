@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Modeller.Interfaces;
+using Hy.Modeller.Interfaces;
 
-namespace Modeller
+namespace Hy.Modeller
 {
     public class Settings : ISettings
     {

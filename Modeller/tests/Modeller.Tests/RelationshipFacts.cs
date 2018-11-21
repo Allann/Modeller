@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
-using Modeller.Core;
-using Modeller.Models;
-using Modeller.Tests.TestJsonFiles;
+using Hy.Modeller.Core;
+using Hy.Modeller.Models;
+using Hy.Modeller.Tests.TestJsonFiles;
 using System;
 using Xunit;
 
-namespace Modeller.Tests
+namespace Hy.Modeller.Tests
 {
     public static class DataTypeFacts
     {

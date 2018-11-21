@@ -1,6 +1,6 @@
-﻿using Modeller.Models;
+﻿using Hy.Modeller.Models;
 
-namespace Modeller.Interfaces
+namespace Hy.Modeller.Interfaces
 {
     internal interface IModuleLoader
     {

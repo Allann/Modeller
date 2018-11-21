@@ -1,4 +1,4 @@
-﻿namespace Modeller.Interfaces
+﻿namespace Hy.Modeller.Interfaces
 {
     public interface ISettings
     {

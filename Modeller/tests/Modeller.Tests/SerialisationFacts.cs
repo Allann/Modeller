@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using Modeller.Extensions;
+using Hy.Modeller.Extensions;
 using Xunit;
 
-namespace Modeller.Tests
+namespace Hy.Modeller.Tests
 {
     public static class SerialisationFacts
     {

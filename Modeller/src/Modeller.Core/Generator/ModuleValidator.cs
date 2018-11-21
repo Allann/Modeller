@@ -1,7 +1,7 @@
-﻿using Modeller.Interfaces;
+﻿using Hy.Modeller.Interfaces;
 using System;
 
-namespace Modeller.Generator
+namespace Hy.Modeller.Generator
 {
     internal class ModuleValidator : ValidatorBase
     {
