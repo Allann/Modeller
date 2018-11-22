@@ -1,12 +1,10 @@
 ﻿using Hy.Modeller.Models;
 
-namespace Hy.Modeller.Core
+namespace Hy.Modeller
 {
-    public static class h
+    public static class FieldExtensions
     {
-        public static string Indent(int level) => new string(' ', level * 4);
-
-        public static string DataType(Field field, bool showNullable = true, bool guidNullable = false)
+        public static string GetDataType(this Field field, bool showNullable = true, bool guidNullable = false)
         {
             string type;
             switch (field.DataType)

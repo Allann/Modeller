@@ -7,7 +7,7 @@ namespace Hy.Modeller.Models
     [JsonObject(MemberSerialization.OptIn)]
     public class Module
     {
-        private string _company = Defaults.CompanyName;
+        private string _company;
 
         [JsonProperty]
         public string Company

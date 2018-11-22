@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System;
 
-namespace Hy.Modeller.JsonConverters
+namespace Hy.Modeller.Extensions
 {
     public class NameConverter : JsonConverter<Name>
     {

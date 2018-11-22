@@ -5,7 +5,6 @@ namespace Hy.Modeller.Models
 {
     public class IndexField
     {
-
         public IndexField(string name)
         {
             if (string.IsNullOrWhiteSpace(name))

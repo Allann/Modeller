@@ -1,8 +1,6 @@
 ﻿using FluentAssertions;
-using Hy.Modeller.Core;
 using Hy.Modeller.Models;
 using Hy.Modeller.Tests.TestJsonFiles;
-using System;
 using Xunit;
 
 namespace Hy.Modeller.Tests
@@ -32,9 +30,9 @@ namespace Hy.Modeller.Tests
         {
             var f = new Field("Field") { DataType = DataTypes.UniqueIdentifier };
 
-            h.DataType(f).Should().Be("Guid?");
-            h.DataType(f, showNullable: false).Should().Be("Guid");
-            h.DataType(f, guidNullable: true).Should().Be("Guid?");
+            f.GetDataType().Should().Be("Guid?");
+            f.GetDataType(showNullable: false).Should().Be("Guid");
+            f.GetDataType(guidNullable: true).Should().Be("Guid?");
         }
 
         [Fact]
@@ -42,8 +40,8 @@ namespace Hy.Modeller.Tests
         {
             var f = new Field("Field") { DataType = DataTypes.UniqueIdentifier, Nullable = false };
 
-            h.DataType(f).Should().Be("Guid");
-            h.DataType(f, guidNullable: true).Should().Be("Guid?");
+            f.GetDataType().Should().Be("Guid");
+            f.GetDataType(guidNullable: true).Should().Be("Guid?");
         }
 
         [Fact]
@@ -51,8 +49,8 @@ namespace Hy.Modeller.Tests
         {
             var f = new Field("Field") { DataType = DataTypes.String, Nullable = true };
 
-            h.DataType(f).Should().Be("string");
-            h.DataType(f, guidNullable: true).Should().Be("string");
+            f.GetDataType().Should().Be("string");
+            f.GetDataType(guidNullable: true).Should().Be("string");
         }
 
         [Fact]
@@ -60,8 +58,8 @@ namespace Hy.Modeller.Tests
         {
             var f = new Field("Field") { DataType = DataTypes.Object, DataTypeTypeName = typeof(Person).Name, Nullable = true };
 
-            h.DataType(f).Should().Be("Person");
-            h.DataType(f, guidNullable: true).Should().Be("Person");
+            f.GetDataType().Should().Be("Person");
+            f.GetDataType(guidNullable: true).Should().Be("Person");
         }
     }
 }

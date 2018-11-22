@@ -5,7 +5,10 @@ namespace Hy.Modeller.Models
 {
     public class Field
     {
-        private Field() { }
+        private Field()
+        {
+        }
+
         public Field(string name)
         {
             if (string.IsNullOrWhiteSpace(name))

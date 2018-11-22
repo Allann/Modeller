@@ -43,8 +43,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Modeller.Core\Modeller.Core.csproj" />
-    <ProjectReference Include="..\..\src\Modeller.Fluent\Modeller.Fluent.csproj" />
+    <ProjectReference Include="..\..\src\Modeller.Core\Hy.Modeller.Core.csproj" />
+    <ProjectReference Include="..\..\src\Modeller.Fluent\Hy.Modeller.Fluent.csproj" />
     <ProjectReference Include="..\TestGenerator\TestGenerator.csproj" />
   </ItemGroup>
 

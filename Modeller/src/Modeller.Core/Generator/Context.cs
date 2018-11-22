@@ -81,15 +81,7 @@ namespace Hy.Modeller.Generator
 
         internal void SetModel(Model model) => Model = model;
 
-        internal void SetSettings(ISettings settings)
-        {
-            Settings = settings;
-            if (Settings != null && !Settings.Context.Packages.Any())
-            {
-                var ps = new PackageService();
-                Settings.Context.Packages = ps.Items.ToList();
-            }
-        }
+        internal void SetSettings(ISettings settings) => Settings = settings;//if (Settings != null && !Settings.Context.Packages.Any())//{//    var ps = new PackageService();//    Settings.Context.Packages = ps.Items.ToList();//}
 
         internal void SetOutputPath(string path) => OutputPath = path;
 
@@ -102,8 +94,11 @@ namespace Hy.Modeller.Generator
         }
 
         public Module Module { get; private set; }
+
         public GeneratorItem Generator { get; private set; }
+
         public ISettings Settings { get; private set; }
+
         public Model Model { get; private set; }
 
         public bool IsValid => !_issues.Any();

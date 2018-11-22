@@ -14,7 +14,7 @@
     <AssemblyOriginatorKeyFile>modeller.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
-    <RootNamespace>Modeller</RootNamespace>
+    <RootNamespace>Hy.Modeller.Core</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +32,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Runtime" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modeller.Base\Hy.Modeller.Base.csproj" />
   </ItemGroup>
 
 </Project>

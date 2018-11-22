@@ -1,5 +1,4 @@
-﻿using Hy.Modeller.JsonConverters;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
@@ -17,6 +16,7 @@ namespace Hy.Modeller.Extensions
                 ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
             };
         }
+
         public static string ToJson<T>(this T obj, bool includeNull = true)
         {
             var settings = GetSettings(includeNull);

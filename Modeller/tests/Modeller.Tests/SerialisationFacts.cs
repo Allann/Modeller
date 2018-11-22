@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Hy.Modeller.Extensions;
+using Hy.Modeller.Models;
 using Xunit;
 
 namespace Hy.Modeller.Tests
@@ -9,7 +10,7 @@ namespace Hy.Modeller.Tests
         [Fact]
         public static void CanSerialiseDatabaseModel()
         {
-            var expected = new Models.Database
+            var expected = new Database
             {
                 Name = "databaseName",
                 Schema = "schema",
@@ -17,8 +18,7 @@ namespace Hy.Modeller.Tests
             };
 
             var temp = expected.ToJson();
-
-            var actual = temp.FromJson<Models.Database>();
+            var actual = temp.FromJson<Database>();
 
             actual.Should().BeEquivalentTo(expected);
         }

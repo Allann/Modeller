@@ -6,14 +6,14 @@
     <Authors>Allan Nielsen</Authors>
     <Company>Hybrid Solutions</Company>
     <Copyright>Copyright © 2018</Copyright>
-    <RepositoryUrl>https://jbsaustralia.visualstudio.com/Sandbox/_versionControl?path=$/Sandbox/Dev/Modeller</RepositoryUrl>
-    <RepositoryType>VSTS</RepositoryType>
+    <RepositoryUrl></RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageTags>CodeGen, C#, Fluent</PackageTags>
     <NeutralLanguage>English (Australia)</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Modeller.Core\Modeller.Core.csproj" />
+    <ProjectReference Include="..\Modeller.Core\Hy.Modeller.Core.csproj" />
   </ItemGroup>
 
 </Project>

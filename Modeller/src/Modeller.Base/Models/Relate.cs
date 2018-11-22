@@ -19,10 +19,15 @@ namespace Hy.Modeller.Models
         public Name DefinedIn { get; set; }
 
         public Name Match { get; }
+
         public RelationShipTypes MatchType { get; }
+
         public Name MatchField { get; }
+
         public Name Other { get; }
+
         public RelationShipTypes OtherType { get; }
+
         public Name OtherField { get; }
 
         public override bool Equals(object obj) => obj is Relate && Equals((Relate)obj);
