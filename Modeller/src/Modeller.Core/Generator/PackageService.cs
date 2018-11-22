@@ -1,4 +1,5 @@
 ﻿using Hy.Modeller.Interfaces;
+using Modeller;
 using System.Collections.Generic;
 using System.IO;
 
@@ -48,6 +49,11 @@ namespace Hy.Modeller.Generator
             {
                 if (!_items.ContainsKey(Target))
                     Refresh();
+                if (!_items.ContainsKey(Target))
+                {
+                    var path = Path.Combine(Folder, Target + ".json");
+                    throw new MissingTargetException(Target, $"Missing target file {path}");
+                }
                 return _items[Target];
             }
         }

@@ -10,8 +10,9 @@ namespace Hy.Modeller.Generator
     public class Context
     {
         private IList<string> _issues = new List<string>();
+        private readonly Action<string> _output;
 
-        public Context(string moduleFile, string folder, string generator, string target, string version, string settingsFile, string modelName, string outputPath)
+        public Context(string moduleFile, string folder, string generator, string target, string version, string settingsFile, string modelName, string outputPath, Action<string> output = null)
         {
             SetFolder(folder);
             SetTarget(target);
@@ -21,7 +22,7 @@ namespace Hy.Modeller.Generator
             ModuleFile = moduleFile;
             SettingsFile = settingsFile;
             ModelName = modelName;
-
+            _output = output;
             Validate();
         }
 
@@ -64,10 +65,13 @@ namespace Hy.Modeller.Generator
                 validator.Validate();
             }
 
-            // output the errors
-            foreach (var issue in _issues)
+            if (_output != null)
             {
-                Console.WriteLine(issue);
+                // output the errors
+                foreach (var issue in _issues)
+                {
+                    _output.Invoke(issue);
+                }
             }
         }
 
