@@ -7,12 +7,12 @@ namespace Hy.Modeller.Tests
 {
     public static class ModuleFacts
     {
-        private static string _testModule = $"{{\"company\":\"{Defaults.CompanyName}\",\"project\":\"\",\"models\":[]}}";
+        private static string _testModule = $"{{\"company\":\"Jbssa\",\"project\":\"\",\"models\":[]}}";
 
         [Fact]
         public static void CanSerialiseToJson()
         {
-            var x = new Models.Module();
+            var x = new Models.Module { Company = "Jbssa" };
 
             var json = x.ToJson();
 

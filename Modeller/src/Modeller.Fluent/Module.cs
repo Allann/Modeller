@@ -11,7 +11,7 @@ namespace Hy.Modeller.Fluent
                 throw new ArgumentNullException(project);
             }
 
-            var module = new Models.Module { Company = Defaults.CompanyName };
+            var module = new Models.Module();
             module.Project.SetName(project);
             return new ModuleBuilder(module);
         }

@@ -30,7 +30,6 @@ namespace Hy.Modeller.Tests
             var updater = new Updater(null, null, null);
 
             updater.LocalFolder.Should().Be(Defaults.LocalFolder);
-            updater.ServerFolder.Should().Be(Defaults.ServerFolder);
             updater.Target.Should().Be(Defaults.Target);
             updater.Overwrite.Should().BeFalse();
             updater.Verbose.Should().BeFalse();

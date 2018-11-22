@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Hy.Modeller.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Hy.Modeller.Interfaces;
 
 namespace Hy.Modeller
 {
@@ -100,10 +100,10 @@ namespace Hy.Modeller
             {
                 localFolder = Defaults.LocalFolder;
             }
-            if (string.IsNullOrWhiteSpace(serverFolder))
-            {
-                serverFolder = Defaults.ServerFolder;
-            }
+            //if (string.IsNullOrWhiteSpace(serverFolder))
+            //{
+            //    serverFolder = Defaults.ServerFolder;
+            //}
 
             var server = new DirectoryInfo(serverFolder);
             var local = new DirectoryInfo(localFolder);

@@ -16,10 +16,10 @@ namespace Hy.Modeller.Generator
             }
             LocalFolder = local;
 
-            if (string.IsNullOrWhiteSpace(server))
-            {
-                server = Defaults.ServerFolder;
-            }
+            //if (string.IsNullOrWhiteSpace(server))
+            //{
+            //    server = Defaults.ServerFolder;
+            //}
             ServerFolder = server;
 
             if (string.IsNullOrWhiteSpace(target))
