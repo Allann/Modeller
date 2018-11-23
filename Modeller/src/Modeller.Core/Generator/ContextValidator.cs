@@ -24,7 +24,7 @@ namespace Hy.Modeller.Generator
                 AddIssue("Context Settings not defined.");
             }
 
-            if (!string.IsNullOrWhiteSpace(Context.ModelName))
+            if (!string.IsNullOrWhiteSpace(Context.ModelName) && Context.Module != null)
             {
                 var model = Context.Module.Models.FirstOrDefault(m => m.Name.Singular.Value.ToLowerInvariant() == Context.ModelName.ToLowerInvariant());
                 if (model == null)

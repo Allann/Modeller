@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Humanizer.Core" Version="2.5.1" />
+    <PackageReference Include="Humanizer.Core" Version="2.5.16" />
     <PackageReference Include="McMaster.NETCore.Plugins.Sdk" Version="0.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>

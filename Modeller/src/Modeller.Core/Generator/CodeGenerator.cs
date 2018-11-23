@@ -19,6 +19,9 @@ namespace Hy.Modeller.Generator
 
         public Interfaces.IOutput Create()
         {
+            if (_context.Module == null || _context.Settings == null || _context.Generator == null)
+                return null;
+
             if (_verbose)
             {
                 _output($"Module: {_context.Module.Namespace}");

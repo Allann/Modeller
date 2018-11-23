@@ -26,32 +26,32 @@ namespace Hy.Modeller.Tests
             File.Copy("TestGenerator.dll", Path.Combine(target.FullName, "TestGenerator.dll"));
         }
 
-        [Fact]
-        public void PresenterOutput()
-        {
-            var outputValue = new StringBuilder();
-            void output(string s, bool b)
-            { if (b) { outputValue.AppendLine(s); } else { outputValue.Append(s); } }
+        //[Fact]
+        //public void PresenterOutput()
+        //{
+        //    var outputValue = new StringBuilder();
+        //    void output(string s, bool b)
+        //    { if (b) { outputValue.AppendLine(s); } else { outputValue.Append(s); } }
 
-            CleanupFromPreviousTests();
+        //    CleanupFromPreviousTests();
 
-            var local = new DirectoryInfo(_testLocalFolder);
-            var target = new DirectoryInfo(Path.Combine(local.FullName, _testGenerators));
+        //    var local = new DirectoryInfo(_testLocalFolder);
+        //    var target = new DirectoryInfo(Path.Combine(local.FullName, _testGenerators));
 
-            // verify test conditions
-            target.Exists.Should().BeTrue();
-            target.GetFiles().Length.Should().Be(1);
+        //    // verify test conditions
+        //    target.Exists.Should().BeTrue();
+        //    target.GetFiles().Length.Should().Be(1);
 
-            var presenter = new Presenter(_testLocalFolder, _testGenerators, output);
+        //    var presenter = new Presenter(_testLocalFolder, _testGenerators, output);
 
-            // act
-            presenter.Display();
+        //    // act
+        //    presenter.Display();
 
-            // assert
-            var folder = Path.Combine(_testLocalFolder, _testGenerators);
-            var actual = outputValue.ToString();
-            actual.Should().Be("Available generators" + Environment.NewLine + $"  location: {folder}" + Environment.NewLine + "TestGenerator | Test Generator | 1.0" + Environment.NewLine);
-        }
+        //    // assert
+        //    var folder = Path.Combine(_testLocalFolder, _testGenerators);
+        //    var actual = outputValue.ToString();
+        //    actual.Should().Be("Available generators" + Environment.NewLine + $"  location: {folder}" + Environment.NewLine + "TestGenerator | Test Generator | 1.0" + Environment.NewLine);
+        //}
 
         [Fact]
         public void PresenterOutputVerbose()

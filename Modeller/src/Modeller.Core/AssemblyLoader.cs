@@ -1,40 +1,43 @@
-﻿using System.IO;
+﻿using Hy.Modeller.Interfaces;
+using McMaster.NETCore.Plugins;
+using System.IO;
 using System.Reflection;
-using System.Runtime.Loader;
 
 namespace Hy.Modeller
 {
-    internal class AssemblyLoader : AssemblyLoadContext
+    internal class GeneratorLoader
     {
         private readonly string _folderPath;
 
-        internal AssemblyLoader(string folderPath)
+        public GeneratorLoader(string folderPath)
         {
             _folderPath = folderPath;
         }
 
+        private FileInfo LoadFileInfo(string assemblyName) => new FileInfo(Path.Combine(_folderPath, $"{assemblyName}.dll"));
+
         internal Assembly Load(string filePath)
         {
-            var fileInfo = new FileInfo(filePath);
-            var assemblyName = new AssemblyName(fileInfo.Name.Replace(fileInfo.Extension, string.Empty));
-            return Load(assemblyName);
+            var loader = PluginLoader.CreateFromAssemblyFile(filePath, sharedTypes: new[] { typeof(ISettings) });
+            return loader.LoadDefaultAssembly();
         }
 
-        protected override Assembly Load(AssemblyName assemblyName)
+        internal Assembly Load(AssemblyName assemblyName)
         {
             var fileInfo = LoadFileInfo(assemblyName.Name);
             return File.Exists(fileInfo.FullName)
-                ? TryGetAssemblyFromAssemblyName(assemblyName, out var assembly) ? assembly : LoadFromAssemblyPath(fileInfo.FullName)
+                ? TryGetAssemblyFromAssemblyName(assemblyName, out var assembly) ? assembly : Load(fileInfo.FullName)
                 : Assembly.Load(assemblyName);
         }
 
-        private FileInfo LoadFileInfo(string assemblyName) => new FileInfo(Path.Combine(_folderPath, $"{assemblyName}.dll"));
-
-        private static bool TryGetAssemblyFromAssemblyName(AssemblyName assemblyName, out Assembly assembly)
+        private bool TryGetAssemblyFromAssemblyName(AssemblyName assemblyName, out Assembly assembly)
         {
             try
             {
-                assembly = Default.LoadFromAssemblyName(assemblyName);
+                var fileInfo = LoadFileInfo(assemblyName.Name);
+
+                var loader = PluginLoader.CreateFromAssemblyFile(fileInfo.FullName, sharedTypes: new[] { typeof(ISettings), typeof(IMetadata), typeof(IGenerator), typeof(IOutput) });
+                assembly = loader.LoadDefaultAssembly();
                 return true;
             }
             catch

@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
 using Hy.Modeller.Generator;
+using Hy.Modeller.Outputs;
+using System.Text;
 using Xunit;
 
 namespace Hy.Modeller.Tests
@@ -36,5 +38,28 @@ namespace Hy.Modeller.Tests
             context.Validate();
             context.IsValid.Should().BeFalse();
         }
+
+        //[Fact]
+        //public static void TestGeneratorLoader()
+        //{
+        //    var sourceModel = "D:\\Repos\\Modeller\\Modeller\\tests\\Modeller.Tests\\TestJsonFiles\\FreightRates.json";
+        //    var localFolder = "D:\\Repos\\Modeller.Generators\\Generators";
+        //    var generator = "Domain";
+        //    var target = Defaults.Target;
+        //    var version = Defaults.Version.ToString();
+        //    string settingFile = null;
+        //    var modelName = "Region";
+        //    var output = System.IO.Path.GetTempPath();
+
+        //    var sb = new StringBuilder();
+
+        //    var context = new Context(sourceModel, localFolder, generator, target, version, settingFile, modelName, output, output: s => sb.AppendLine(s));
+        //    var codeGenerator = new CodeGenerator(context, s => sb.AppendLine(s), true);
+        //    var presenter = new Creator(context, s => sb.AppendLine(s), true);
+        //    presenter.Create(codeGenerator.Create());
+
+        //    var consoleOutput = sb.ToString();
+        //    consoleOutput.Should().Contain("Generation complete");
+        //}
     }
 }

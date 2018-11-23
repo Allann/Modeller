@@ -1,4 +1,5 @@
-﻿using Hy.Modeller.Interfaces;
+﻿using Hy.Modeller.GeneratorBase;
+using Hy.Modeller.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -70,26 +71,18 @@ namespace Hy.Modeller
                 AddFiles(list, subFolder);
             }
 
-            var asmLoader = new AssemblyLoader(folder.FullName);
+            var asmLoader = new GeneratorLoader(folder.FullName);
             foreach (var file in folder.GetFiles("*.dll"))
             {
-                var asm = asmLoader.Load(file.FullName);
-                var types = asm.GetExportedTypes().Where(t => t.IsClass);
-
-                var md = types.FirstOrDefault(t => t.GetInterface("IMetadata") != null);
-                if (md == null)
+                var exportedTypes = asmLoader.Load(file.FullName).GetExportedTypes();
+                foreach (var type in exportedTypes.Where(t => (typeof(MetadataBase).IsAssignableFrom(t) || typeof(IMetadata).IsAssignableFrom(t)) && !t.IsAbstract))
                 {
-                    continue;
-                }
-
-                if (Activator.CreateInstance(md) is IMetadata i)
-                {
-                    if (i.EntryPoint == null)
+                    var metadata = (IMetadata)Activator.CreateInstance(type);
+                    if (metadata?.EntryPoint == null)
                     {
                         continue;
                     }
-
-                    list.Add(new GeneratorItem(i, file.FullName, i.EntryPoint));
+                    list.Add(new GeneratorItem(metadata, file.FullName, metadata.EntryPoint));
                 }
             }
         }
