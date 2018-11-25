@@ -81,7 +81,15 @@ namespace Hy.Modeller.Generator
 
         internal void SetModel(Model model) => Model = model;
 
-        internal void SetSettings(ISettings settings) => Settings = settings;//if (Settings != null && !Settings.Context.Packages.Any())//{//    var ps = new PackageService();//    Settings.Context.Packages = ps.Items.ToList();//}
+        internal void SetSettings(ISettings settings)
+        {
+            Settings = settings;
+            if (Settings != null && !Settings.PackagesInitialised())
+            {
+                var ps = new PackageService();
+                Settings.RegisterPackages(ps.Items);
+            }
+        }
 
         internal void SetOutputPath(string path) => OutputPath = path;
 
