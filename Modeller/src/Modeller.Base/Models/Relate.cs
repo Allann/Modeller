@@ -1,10 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Hy.Modeller.Models
 {
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public struct Relate : IEquatable<Relate>
     {
+        private string DebuggerDisplay
+        {
+            get
+            {
+                return $"({MatchType}){Match}.{MatchField}->({OtherType}){Other}.{OtherField}";
+            }
+        }
+
         public Relate(Name match, RelationShipTypes matchType, Name matchField, Name other, RelationShipTypes otherType, Name otherField, Name definedIn = null)
         {
             Match = match;

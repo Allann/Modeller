@@ -39,27 +39,27 @@ namespace Hy.Modeller.Tests
             context.IsValid.Should().BeFalse();
         }
 
-        //[Fact]
-        //public static void TestGeneratorLoader()
-        //{
-        //    var sourceModel = "I:\\Dev\\masterid_model.json";
-        //    var localFolder = "F:\\Repos\\Modeller.Generators\\Generators";
-        //    var generator = "MVCSolution";
-        //    var target = Defaults.Target;
-        //    var version = Defaults.Version.ToString();
-        //    string settingFile = null;
-        //    var modelName = "Region";
-        //    var output = "F:\\dev\\test";
+        [Fact]
+        public static void TestGeneratorLoader()
+        {
+            var sourceModel = "d:\\Dev\\freightrates_model.json";
+            var localFolder = "d:\\Repos\\Modeller.Generators\\Generators";
+            var generator = "MVCSolution";
+            var target = Defaults.Target;
+            var version = Defaults.Version.ToString();
+            string settingFile = null;
+            var modelName = "Region";
+            var output = "d:\\dev\\test";
 
-        //    var sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-        //    var context = new Context(sourceModel, localFolder, generator, target, version, settingFile, modelName, output, output: s => sb.AppendLine(s));
-        //    var codeGenerator = new CodeGenerator(context, s => sb.AppendLine(s), true);
-        //    var presenter = new Creator(context, s => sb.AppendLine(s), true);
-        //    presenter.Create(codeGenerator.Create());
+            var context = new Context(sourceModel, localFolder, generator, target, version, settingFile, modelName, output, output: s => sb.AppendLine(s));
+            var codeGenerator = new CodeGenerator(context, s => sb.AppendLine(s), true);
+            var presenter = new Creator(context, s => sb.AppendLine(s), true);
+            presenter.Create(codeGenerator.Create());
 
-        //    var consoleOutput = sb.ToString();
-        //    consoleOutput.Should().Contain("Generation complete");
-        //}
+            var consoleOutput = sb.ToString();
+            consoleOutput.Should().Contain("Generation complete");
+        }
     }
 }
