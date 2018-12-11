@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27825.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28315.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hy.Modeller.Core", "src\Modeller.Core\Hy.Modeller.Core.csproj", "{037E7B22-94B5-4E94-866C-DE0742628BE2}"
 EndProject
@@ -16,6 +16,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestGenerator", "tests\TestGenerator\TestGenerator.csproj", "{ED20278E-D10C-4EEB-85E5-96A4B9B26E83}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hy.Modeller.Base", "src\Modeller.Base\Hy.Modeller.Base.csproj", "{A5737DD5-9B8B-43ED-A633-AC64AA981E0C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{340F251A-1E62-44EF-B9D5-B9A829B9C2CC}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

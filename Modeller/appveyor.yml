@@ -1,0 +1,38 @@
+Download appveyor.yml
+version: 1.0.0.{build}
+image: Visual Studio 2017
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+before_build:
+- cmd: >-
+    dotnet --version
+
+    dotnet restore ./modeller/src/modeller.base/hy.modeller.base.csproj --verbosity m
+
+    dotnet restore ./modeller/src/modeller.core/hy.modeller.core.csproj --verbosity m
+
+    dotnet restore ./modeller/src/modeller.fluent/hy.modeller.fluent.csproj --verbosity m
+
+    dotnet restore ./modeller/tests/modeller.Tests/modeller.tests.csproj --verbosity m
+
+    dotnet restore ./modeller/tests/TestGenerator/testgenerator.csproj --verbosity m
+build:
+  publish_nuget: true
+  publish_nuget_symbols: true
+  include_nuget_references: true
+  verbosity: normal
+notifications:
+- provider: Email
+  to:
+  - allan.nielsen@jbssa.com.au
+  - imathome@zoho.com
+  subject: Modeller build failed
+  on_build_success: false
+  on_build_failure: true
+  on_build_status_changed: false
