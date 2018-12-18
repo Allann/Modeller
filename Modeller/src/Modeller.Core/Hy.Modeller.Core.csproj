@@ -29,13 +29,13 @@
 
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" Version="2.5.16" />
-    <PackageReference Include="McMaster.NETCore.Plugins" Version="0.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Runtime" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\DotNetCorePlugins\src\Plugins\McMaster.NETCore.Plugins.csproj" />
     <ProjectReference Include="..\Modeller.Base\Hy.Modeller.Base.csproj" />
   </ItemGroup>
 

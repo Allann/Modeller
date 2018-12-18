@@ -75,7 +75,9 @@ namespace Hy.Modeller.Tests
             // assert
             var folder = Path.Combine(_testLocalFolder, _testGenerators);
             var actual = outputValue.ToString();
-            actual.Should().Be("Available generators" + Environment.NewLine + $"  location: {folder}" + Environment.NewLine + "TestGenerator | Test Generator | 1.0 | A Test generator used for testing" + Environment.NewLine);
+            actual.Should().Be("Available generators" + Environment.NewLine + 
+                $"  location: {folder}" + Environment.NewLine + 
+                "TestGenerator | Test Generator | 1.0 | A Test generator used for testing" + Environment.NewLine);
         }
     }
 }

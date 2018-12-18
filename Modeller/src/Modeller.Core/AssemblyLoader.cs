@@ -18,7 +18,7 @@ namespace Hy.Modeller
 
         internal Assembly Load(string filePath)
         {
-            var loader = PluginLoader.CreateFromAssemblyFile(filePath, sharedTypes: new[] { typeof(ISettings) });
+            var loader = PluginLoader.CreateFromAssemblyFile(filePath, sharedTypes: new[] { typeof(ISettings), typeof(IMetadata), typeof(IGenerator), typeof(IOutput) });
             return loader.LoadDefaultAssembly();
         }
 

@@ -2,6 +2,7 @@
 using Hy.Modeller.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -11,6 +12,9 @@ namespace Hy.Modeller
     {
         public static string GetAbbreviatedFilename(string filePath)
         {
+            if (filePath == null)
+                return null;
+
             var filename = Path.GetFileNameWithoutExtension(filePath);
             var idx = filename.IndexOf('.');
             if (idx > -1)
@@ -66,6 +70,7 @@ namespace Hy.Modeller
 
         private static void AddFiles(List<GeneratorItem> list, DirectoryInfo folder)
         {
+            Trace.Indent();
             foreach (var subFolder in folder.GetDirectories())
             {
                 AddFiles(list, subFolder);
@@ -74,17 +79,62 @@ namespace Hy.Modeller
             var asmLoader = new GeneratorLoader(folder.FullName);
             foreach (var file in folder.GetFiles("*.dll"))
             {
-                var exportedTypes = asmLoader.Load(file.FullName).GetExportedTypes();
-                foreach (var type in exportedTypes.Where(t => (typeof(MetadataBase).IsAssignableFrom(t) || typeof(IMetadata).IsAssignableFrom(t)) && !t.IsAbstract))
+                Trace.WriteLine($"Filename: {file.FullName}");
+                var ass = asmLoader.Load(file.FullName);
+                Trace.WriteLine($"Assembly: {ass.FullName}");
+                var dt = ass.DefinedTypes;
+                Trace.WriteLine($"Defined Types: {dt.Count()}");
+                Trace.Indent();
+                foreach (var t in dt)
                 {
-                    var metadata = (IMetadata)Activator.CreateInstance(type);
-                    if (metadata?.EntryPoint == null)
+                    Trace.WriteLine($"Type: {t.FullName}");
+                    Trace.Indent();
+                    foreach (var i in t.ImplementedInterfaces)
                     {
-                        continue;
+                        Trace.WriteLine($"Interface: {i.FullName}");
                     }
-                    list.Add(new GeneratorItem(metadata, file.FullName, metadata.EntryPoint));
+                    Trace.Unindent();
+                }
+                Trace.Unindent();
+                var metaDataTypes = dt.Where(t => t.ImplementedInterfaces.Any(it => it.FullName == "Hy.Modeller.Interfaces.IMetadata"));
+                Trace.WriteLine($"Matched Types: {metaDataTypes.Count()}");
+                Trace.Indent();
+                foreach (var t in metaDataTypes)
+                {
+                    Trace.WriteLine($"Type: {t.FullName}");
+                }
+                Trace.Unindent();
+
+                foreach (var type in metaDataTypes)
+                {
+                    var obj = Activator.CreateInstance(type);
+                    if (obj == null)
+                        continue;
+
+                    var instance = obj as IMetadata;
+                    if (instance != null)
+                    {
+                        var entryPoint = instance.EntryPoint;
+                        if (entryPoint == null)
+                        {
+                            continue;
+                        }
+                        list.Add(new GeneratorItem(instance, file.FullName, entryPoint));
+                    }
+                    else
+                    {
+                        var name = type.GetProperty("Name").GetValue(obj).ToString();
+                        var description = type.GetProperty("Description").GetValue(obj).ToString();
+                        var entryPoint = type.GetProperty("EntryPoint").GetValue(obj) as Type;
+                        var subGenerators = type.GetProperty("SubGenerators").GetValue(obj) as IEnumerable<Type>;
+                        var version = type.GetProperty("Version").GetValue(obj) as Version;
+
+                        var md = new TempGeneratorDetail(name, description, entryPoint, subGenerators, version);
+                        list.Add(new GeneratorItem(md, file.FullName, entryPoint));
+                    }
                 }
             }
+            Trace.Unindent();
         }
 
         public static bool UpdateLocalGenerators(string serverFolder = null, string localFolder = null, bool overwrite = false, Action<string> output = null)
@@ -148,6 +198,23 @@ namespace Hy.Modeller
                     DirectoryCopy(subdir, temppath, copySubDirs, overwrite, output);
                 }
             }
+        }
+
+        private class TempGeneratorDetail : IMetadata
+        {
+            public TempGeneratorDetail(string name, string description, Type entryPoint, IEnumerable<Type> subGenerators, Version version)
+            {
+                Name = name;
+                Description = description;
+                EntryPoint = entryPoint;
+                SubGenerators = subGenerators;
+                Version = version;
+            }
+            public Version Version { get; }
+            public string Name { get; }
+            public string Description { get; }
+            public Type EntryPoint { get; }
+            public IEnumerable<Type> SubGenerators { get; }
         }
     }
 }
