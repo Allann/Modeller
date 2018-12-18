@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace Hy.Modeller.Fluent
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class FieldBuilder 
+    public class FieldBuilder
     {
         public FieldBuilder(ModelBuilder modelBuilder, Models.Field field)
         {
@@ -38,6 +38,12 @@ namespace Hy.Modeller.Fluent
         public FieldBuilder Nullable(bool value)
         {
             Instance.Nullable = value;
+            return this;
+        }
+
+        public FieldBuilder Decimals(int value)
+        {
+            Instance.Decimals = value;
             return this;
         }
 

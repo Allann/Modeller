@@ -42,14 +42,14 @@ namespace Hy.Modeller.Tests
         //[Fact]
         //public static void TestGeneratorLoader()
         //{
-        //    var sourceModel = "I:\\Dev\\masterid_model.json";
-        //    var localFolder = "F:\\Repos\\Modeller.Generators\\Generators";
+        //    var sourceModel = "d:\\Dev\\freightrates_model.json";
+        //    var localFolder = "d:\\Repos\\Modeller.Generators\\Generators";
         //    var generator = "MVCSolution";
         //    var target = Defaults.Target;
         //    var version = Defaults.Version.ToString();
         //    string settingFile = null;
         //    var modelName = "Region";
-        //    var output = "F:\\dev\\test";
+        //    var output = "d:\\dev\\test";
 
         //    var sb = new StringBuilder();
 
