@@ -57,14 +57,31 @@ namespace Hy.Modeller.Cli
                         console.Write(s);
                 }
 
-                var listPresenter = new Presenter(LocalFolder, Target, output);
-                listPresenter.Display(Verbose);
+                try
+                {
+                    var listPresenter = new Presenter(LocalFolder, Target, output);
+                    listPresenter.Display(Verbose);
+                }
+                catch(Exception ex)
+                {
+                    console.WriteLine("ERROR - {0}", ex.Message);
+                    _logger.LogError(LoggingEvents.ListError, ex, "List command failed. " + ex.Message);
+                }
             }
         }
 
         [Command(Description = "Update generators"), HelpOption]
         private class Update
         {
+            private readonly ILogger<Program> _logger;
+            private readonly ISettings _settings;
+
+            public Update(ILogger<Program> logger, ISettings settings)
+            {
+                _logger = logger;
+                _settings = settings;
+            }
+
             [Option(Inherited = true, ShortName = "")]
             public bool Overwrite { get; } = true;
 
@@ -84,8 +101,16 @@ namespace Hy.Modeller.Cli
 
             internal void OnExecute(IConsole console, CommandLineApplication app)
             {
-                var updater = new Updater(server: ServerFolder, local: LocalFolder, target: Target, overwrite: Overwrite, verbose: Verbose, output: s => console.WriteLine(s));
-                updater.Refresh();
+                try
+                {
+                    var updater = new Updater(server: ServerFolder, local: LocalFolder, target: Target, overwrite: Overwrite, verbose: Verbose, output: s => console.WriteLine(s));
+                    updater.Refresh();
+                }
+                catch(Exception ex)
+                {
+                    console.WriteLine("ERROR - {0}", ex.Message);
+                    _logger.LogError(LoggingEvents.UpdateError, ex, "Update command failed. " + ex.Message);
+                }
             }
         }
 
