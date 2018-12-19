@@ -65,7 +65,7 @@ namespace Hy.Modeller.Cli
         [Command(Description = "Update generators"), HelpOption]
         private class Update
         {
-            [Option(Inherited = true, ShortName = "overwrite")]
+            [Option(Inherited = true, ShortName = "")]
             public bool Overwrite { get; } = true;
 
             [Option(Description = "Target framework. Defaults to netstandard2.0", Inherited = true)]

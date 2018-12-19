@@ -3,6 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>ClassLibrary</RootNamespace>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>Allan Nielsen</Authors>
+    <Company>Hybrid Solution</Company>
+    <Description>Generator to create a POCO class</Description>
+    <Copyright>Copyright {year}</Copyright>
+    <PackageTags>C# HY Code Generator</PackageTags>
+    <NeutralLanguage>en-AU</NeutralLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>F:\Repos\Modeller\Modeller\generators\Generator\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
