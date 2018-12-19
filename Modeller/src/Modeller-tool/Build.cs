@@ -1,4 +1,7 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿using Hy.Modeller.Generator;
+using Hy.Modeller.Outputs;
+using McMaster.Extensions.CommandLineUtils;
+using System.Text;
 
 namespace Hy.Modeller.Cli
 {
@@ -12,17 +15,40 @@ namespace Hy.Modeller.Cli
         [FileExists]
         public string SourceModel { get; }
 
+        [Option(Inherited = true, ShortName = "overwrite")]
+        public bool Overwrite { get; } = true;
+
         [Option(Description = "Output folder", ShortName = "o")]
         [DirectoryExists]
-        public string Output { get; }
+        public string Output { get; } = Defaults.OutputFolder;
 
         [Option(Description = "Model name. If included then the output will be limited to the specified model")]
         public string Model { get; }
 
-        private int OnExecute(IConsole console)
+        [Option(Description = "Path to the locally cached generators")]
+        [DirectoryExists]
+        public string LocalFolder { get; } = Defaults.LocalFolder;
+
+        [Option(Description = "Target framework. Defaults to netstandard2.0", Inherited = true)]
+        public string Target { get; } = Defaults.Target;
+
+        [Option(Description = "Specific version to use for the generator", ShortName ="v")]
+        public string Version { get; } = Defaults.Version.ToString();
+
+        [Option(Description = "Settings file to use when generating code. Settings in the file will override arguments on the command line", ShortName = "s", Inherited = true)]
+        [FileExists]
+        public string Settings { get; }
+
+        [Option(ShortName = "verbose", Inherited = true)]
+        public bool Verbose { get; }
+
+        internal int OnExecute(IConsole console)
         {
-            console.Error.WriteLine("You must specify an action. See --help for more details.");
-            return 1;
+            var context = new Context(SourceModel, LocalFolder, Generator, Target, Version, Settings, Model, Output, output: s => console.WriteLine(s));
+            var codeGenerator = new CodeGenerator(context, s => console.WriteLine(s), true);
+            var presenter = new Creator(context, s => console.WriteLine(s), true);
+            presenter.Create(codeGenerator.Create());
+            return 0;
         }
     }
 }
