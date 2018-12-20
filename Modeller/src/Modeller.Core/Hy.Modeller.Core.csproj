@@ -15,6 +15,7 @@
     <DelaySign>false</DelaySign>
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
     <RootNamespace>Hy.Modeller.Core</RootNamespace>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
