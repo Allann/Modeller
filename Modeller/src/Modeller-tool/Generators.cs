@@ -25,13 +25,13 @@ namespace Hy.Modeller.Cli
         [Command(Description = "List generators"), HelpOption]
         private class List
         {
+            private readonly IHostingEnvironment _env;
             private readonly ILogger<Program> _logger;
-            private readonly ISettings _settings;
 
-            public List(ILogger<Program> logger, ISettings settings)
+            public List(IHostingEnvironment env, ILogger<Program> logger)
             {
+                _env = env;
                 _logger = logger;
-                _settings = settings;
             }
 
             [Option(Description = "Show all generators (default shows just for target)")]
@@ -61,8 +61,14 @@ namespace Hy.Modeller.Cli
                 {
                     var listPresenter = new Presenter(LocalFolder, Target, output);
                     listPresenter.Display(Verbose);
+
+                    if (_env.IsDevelopment())
+                    {
+                        Console.WriteLine("Press [ENTER] to finish");
+                        Console.ReadLine();
+                    }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     console.WriteLine("ERROR - {0}", ex.Message);
                     _logger.LogError(LoggingEvents.ListError, ex, "List command failed. " + ex.Message);
@@ -73,13 +79,13 @@ namespace Hy.Modeller.Cli
         [Command(Description = "Update generators"), HelpOption]
         private class Update
         {
+            private readonly IHostingEnvironment _env;
             private readonly ILogger<Program> _logger;
-            private readonly ISettings _settings;
 
-            public Update(ILogger<Program> logger, ISettings settings)
+            public Update(IHostingEnvironment env, ILogger<Program> logger)
             {
+                _env = env;
                 _logger = logger;
-                _settings = settings;
             }
 
             [Option(Inherited = true, ShortName = "")]
@@ -105,8 +111,14 @@ namespace Hy.Modeller.Cli
                 {
                     var updater = new Updater(server: ServerFolder, local: LocalFolder, target: Target, overwrite: Overwrite, verbose: Verbose, output: s => console.WriteLine(s));
                     updater.Refresh();
+
+                    if (_env.IsDevelopment())
+                    {
+                        Console.WriteLine("Press [ENTER] to finish");
+                        Console.ReadLine();
+                    }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     console.WriteLine("ERROR - {0}", ex.Message);
                     _logger.LogError(LoggingEvents.UpdateError, ex, "Update command failed. " + ex.Message);

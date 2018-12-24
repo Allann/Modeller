@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Hy.Modeller.Generator
 {
-    public class Context
+    public class Context : IContext
     {
         private IList<string> _issues = new List<string>();
         private readonly Action<string> _output;
@@ -26,26 +26,33 @@ namespace Hy.Modeller.Generator
             Validate();
         }
 
-        public string Target { get; private set; }
-
-        public void SetTarget(string value) => Target = string.IsNullOrWhiteSpace(value) ? Defaults.Target : value;
-
         public string GeneratorName { get; private set; }
 
-        public Version Version { get; private set; }
-
-        public void SetGeneratorName(string generator, string version)
-        {
-            if (!Version.TryParse(version, out var vers))
-            {
-                Version = Defaults.Version;
-            }
-            GeneratorName = generator;
-        }
+        public GeneratorItem Generator { get; private set; }
 
         public string Folder { get; private set; }
 
-        public void SetFolder(string value) => Folder = string.IsNullOrWhiteSpace(value) ? Defaults.LocalFolder : value;
+        public Module Module { get; private set; }
+
+        public string ModuleFile { get; }
+
+        public string ModelName { get; }
+
+        public string OutputPath { get; private set; }
+
+        public ISettings Settings { get; private set; }
+
+        public string SettingsFile { get; }
+
+        public string Target { get; private set; }
+
+        public Version Version { get; private set; }
+
+        public Model Model { get; private set; }
+
+        public bool IsValid => !_issues.Any();
+
+        public IReadOnlyCollection<string> ValidationMessages => new ReadOnlyCollection<string>(_issues);
 
         public void Validate()
         {
@@ -75,11 +82,24 @@ namespace Hy.Modeller.Generator
             }
         }
 
+        internal void SetFolder(string value) => Folder = string.IsNullOrWhiteSpace(value) ? Defaults.LocalFolder : value;
+
+        internal void SetGeneratorName(string generator, string version)
+        {
+            if (!Version.TryParse(version, out var vers))
+            {
+                Version = Defaults.Version;
+            }
+            GeneratorName = generator;
+        }
+
         internal void SetGenerator(GeneratorItem generator) => Generator = generator;
 
         internal void SetModule(Module module) => Module = module;
 
         internal void SetModel(Model model) => Model = model;
+
+        internal void SetOutputPath(string path) => OutputPath = path;
 
         internal void SetSettings(ISettings settings)
         {
@@ -91,7 +111,7 @@ namespace Hy.Modeller.Generator
             }
         }
 
-        internal void SetOutputPath(string path) => OutputPath = path;
+        internal void SetTarget(string value) => Target = string.IsNullOrWhiteSpace(value) ? Defaults.Target : value;
 
         internal void AddIssue(string issue)
         {
@@ -100,24 +120,5 @@ namespace Hy.Modeller.Generator
             else
                 _issues.Add("Unknown issue added, but details were not included.");
         }
-
-        public Module Module { get; private set; }
-
-        public GeneratorItem Generator { get; private set; }
-
-        public ISettings Settings { get; private set; }
-
-        public Model Model { get; private set; }
-
-        public bool IsValid => !_issues.Any();
-        public IReadOnlyCollection<string> ValidationMessages => new ReadOnlyCollection<string>(_issues);
-
-        public string OutputPath { get; private set; }
-
-        public string ModuleFile { get; }
-
-        public string ModelName { get; }
-
-        public string SettingsFile { get; }
     }
 }

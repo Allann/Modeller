@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>TestGenerator</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Modeller.Core\Hy.Modeller.Core.csproj" />
+    <PackageReference Include="Hy.Modeller.Base" Version="1.0.28" />
   </ItemGroup>
 
 </Project>

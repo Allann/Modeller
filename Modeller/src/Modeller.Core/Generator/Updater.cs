@@ -16,10 +16,10 @@ namespace Hy.Modeller.Generator
             }
             LocalFolder = local;
 
-            //if (string.IsNullOrWhiteSpace(server))
-            //{
-            //    server = Defaults.ServerFolder;
-            //}
+            if (string.IsNullOrWhiteSpace(server))
+            {
+                server = Defaults.ServerFolder;
+            }
             ServerFolder = server;
 
             if (string.IsNullOrWhiteSpace(target))
@@ -46,8 +46,8 @@ namespace Hy.Modeller.Generator
             _output?.Invoke($"Local Folder: {LocalFolder}");
             _output?.Invoke($"Overwrite: {Overwrite}");
 
-            var server = Path.Combine(ServerFolder, Target);
-            var local = Path.Combine(LocalFolder, Target);
+            var server = Path.Combine(ServerFolder + "", Target);
+            var local = Path.Combine(LocalFolder + "", Target);
 
             if (UpdateLocalGenerators())
             {

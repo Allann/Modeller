@@ -23,7 +23,14 @@ namespace Hy.Modeller.Tests
 
             var target = new DirectoryInfo(Path.Combine(_testLocalFolder, _testGenerators));
             target.Create();
-            File.Copy("TestGenerator.dll", Path.Combine(target.FullName, "TestGenerator.dll"));
+
+            var path = new DirectoryInfo("..\\..\\..\\..\\TestGenerator\\bin\\Debug\\netstandard2.0");
+            if (path.Exists)
+            {
+                File.Copy(Path.Combine(path.FullName, "TestGenerator.dll"), Path.Combine(target.FullName, "TestGenerator.dll"));
+                File.Copy(Path.Combine(path.FullName, "TestGenerator.pdb"), Path.Combine(target.FullName, "TestGenerator.pdb"));
+                File.Copy(Path.Combine(path.FullName, "TestGenerator.deps.json"), Path.Combine(target.FullName, "TestGenerator.deps.json"));
+            }
         }
 
         //[Fact]
@@ -65,7 +72,7 @@ namespace Hy.Modeller.Tests
 
             // verify test conditions
             target.Exists.Should().BeTrue();
-            target.GetFiles().Length.Should().Be(1);
+            target.GetFiles().Length.Should().Be(3);
 
             var presenter = new Presenter(_testLocalFolder, _testGenerators, (s, b) => { if (b) { outputValue.AppendLine(s); } else { outputValue.Append(s); } });
 

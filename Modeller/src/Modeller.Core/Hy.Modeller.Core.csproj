@@ -31,6 +31,7 @@
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" Version="2.5.16" />
     <PackageReference Include="McMaster.NETCore.Plugins" Version="0.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Runtime" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
@@ -38,6 +39,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modeller.Base\Hy.Modeller.Base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.logging.abstractions\2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
