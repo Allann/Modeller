@@ -59,8 +59,8 @@ namespace Hy.Modeller.Cli
             try
             {
                 var context = new Context(SourceModel, LocalFolder, Generator, Target, Version, Settings, Model, Output, output: s => console.WriteLine(s));
-                var codeGenerator = new CodeGenerator(context, s => console.WriteLine(s), true);
-                var presenter = new Creator(context, s => console.WriteLine(s), true);
+                var codeGenerator = new CodeGenerator(context, s => console.WriteLine(s), Verbose);
+                var presenter = new Creator(context, s => console.WriteLine(s), Verbose);
                 presenter.Create(codeGenerator.Create());
                 return 0;
             }

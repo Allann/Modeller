@@ -10,6 +10,6 @@ namespace Hy.Modeller
 
         public static Field HasBusinessKey(this Model model) => model.Fields.FirstOrDefault(f => f.BusinessKey == true);
 
-        public static bool IsEntity(this Model model) => model.Key.Fields.Count == 1 && model.Key.Fields[0].Name.Singular.Value == "Id" && model.Key.Fields[0].DataType == DataTypes.UniqueIdentifier;
+        public static bool IsEntity(this Model model) => model?.Key?.Fields !=null && model.Key.Fields.Count == 1 && model.Key.Fields[0].Name.Singular.Value == "Id" && model.Key.Fields[0].DataType == DataTypes.UniqueIdentifier;
     }
 }
