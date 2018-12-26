@@ -4,7 +4,6 @@ using Hy.Modeller.Outputs;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Text;
 
 namespace Hy.Modeller.Cli
 {

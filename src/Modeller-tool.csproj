@@ -8,22 +8,22 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <Authors>Allan Nielsen</Authors>
-    <Company>Hybrid Solutions</Company>
-    <Description>Code generator using model files and compiled template components</Description>
+    <Company>Hybrid Solution</Company>
+    <Description>dotnet global tool providing code generation via components and a model file</Description>
     <Copyright>Copyright 2018</Copyright>
     <RepositoryType>git</RepositoryType>
     <PackageTags>code generator c#</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
     <RootNamespace>Hy.Modeller.Cli</RootNamespace>
     <LangVersion>7.3</LangVersion>
     <PackageId>Hy.Modeller.Tool</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hy.Modeller.Core" Version="1.0.29" />
+    <PackageReference Include="Hy.Modeller.Core" Version="1.0.30" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.0-rc.460" />
     <PackageReference Include="McMaster.Extensions.Hosting.CommandLine" Version="2.3.0-rc.460" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
