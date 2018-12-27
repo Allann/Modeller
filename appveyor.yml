@@ -1,0 +1,33 @@
+version: 1.1.{build}
+image: Visual Studio 2017
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+nuget:
+  disable_publish_on_pr: true
+before_build:
+- cmd: >-
+    dotnet --version
+
+    dotnet restore ./Modeller-tool.sln
+build:
+  project: ./Modeller-tool.sln
+  publish_nuget: true
+  publish_nuget_symbols: true
+  verbosity: normal
+artifacts:
+- path: '**/*.nupkg'
+notifications:
+- provider: Email
+  to:
+  - allan.nielsen@jbssa.com.au
+  - imathome@zoho.com
+  subject: Modeller global tool build
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false

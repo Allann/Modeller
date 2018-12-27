@@ -1,9 +1,16 @@
 # Modeller
-Code generation via a model is made easier with the Modeller tool.  There are 3 distinct parts to this tool.
+Code generation via a model is made easy with the Modeller global tool and a few generator components.
 
-- Modeller (this project) - provides the core functionality, the business logic so to speak.
-- Modeller.Generators - this is a solution of many projects that are code generators for a specific output type.
-- Modeller.UI - a group of projects each providing a client for a user.
-  - Modeller.CLI - Command Line interface
-  - Modeller.Wpf - Various controls to be used in the VSIX package
-  - Modeller.Vsix - Intergration components for Vsiual Studio 2017
+## Benefits:
+- No need to have or learn/use yeoman, node or js to generate code.
+- Code First generation, i.e. no need to create a database first.
+- Versioned templates. 
+
+Packages available on [NuGet.org](https://www.nuget.org/packages?q=hy.modeller) include:
+- [Hy.Modeller.Base](https://www.nuget.org/packages/Hy.Modeller.Base/) - defines the models, structure and rules for the module definition. 
+- [Hy.Modeller.Core](https://www.nuget.org/packages/Hy.Modeller.Core/) - defines the components that make up the code generator.
+- [Hy.Modeller.Fluent](https://www.nuget.org/packages/Hy.Modeller.Fluent/) - a fluent library allowing developers to create a module definition through a fluent language construct (see example below).
+- [Hy.Modeller.Tool](https://www.nuget.org/packages/Hy.Modeller.Tool/) - a [dotnet global tool](https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools) that can generate the code using an existing module definition file.
+
+## Generators
+The modeller tool can't do much without generator packages.  These packages must be installed locally on the developers computer to be able to generate code.  
