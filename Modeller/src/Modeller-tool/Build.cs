@@ -1,4 +1,5 @@
-﻿using Hy.Modeller.Generator;
+﻿using Hy.Modeller.Core.Outputs;
+using Hy.Modeller.Generator;
 using Hy.Modeller.Interfaces;
 using Hy.Modeller.Outputs;
 using McMaster.Extensions.CommandLineUtils;
@@ -49,7 +50,7 @@ namespace Hy.Modeller.Cli
         public string Settings { get; }
 
         [Option(Description = "Specific version to use for the generator", ShortName = "")]
-        public string Version { get; } = Defaults.Version.ToString();
+        public string Version { get; } = "1.0.0";
 
         [Option(ShortName = "", Inherited = true)]
         public bool Verbose { get; }
@@ -58,9 +59,27 @@ namespace Hy.Modeller.Cli
         {
             try
             {
-                var context = new Context(SourceModel, LocalFolder, Generator, Target, Version, Settings, Model, Output, output: s => console.WriteLine(s));
+                IGeneratorConfiguration config = new GeneratorConfiguration()
+                {
+                    GeneratorName = Generator,
+                    LocalFolder = LocalFolder,
+                    ModelName = Model,
+                    OutputPath = Output,
+                    Target = Target,
+                    Version = Version,
+                    Verbose = Verbose,
+                    SettingsFile = Settings
+                };
+                ISettingsLoader settingsLoader = new JsonSettingsLoader();
+                IModuleLoader moduleLoader = new JsonModuleLoader();
+                IGeneratorLoader generatorLoader = new GeneratorLoader();
+
+                IFileWriter fileWriter = new FileWriter();
+                IFileCreator fileCreator = new FileCreator(s => console.WriteLine(s));
+
+                var context = new Context(config, settingsLoader, moduleLoader, generatorLoader);
                 var codeGenerator = new CodeGenerator(context, s => console.WriteLine(s), Verbose);
-                var presenter = new Creator(context, s => console.WriteLine(s), Verbose);
+                var presenter = new Creator(context,fileWriter, fileCreator , s => console.WriteLine(s));
                 presenter.Create(codeGenerator.Create());
                 return 0;
             }
