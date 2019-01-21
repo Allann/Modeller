@@ -4,28 +4,29 @@
     <ToolCommandName>model</ToolCommandName>
     <PackAsTool>True</PackAsTool>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <Authors>Allan Nielsen</Authors>
-    <Company>Hybrid Solution</Company>
-    <Description>dotnet global tool providing code generation via components and a model file</Description>
+    <Company>Hybrid Solutions</Company>
+    <Description>Code generator using model files and compiled template components</Description>
     <Copyright>Copyright 2018</Copyright>
     <RepositoryType>git</RepositoryType>
     <PackageTags>code generator c#</PackageTags>
     <NeutralLanguage>en-AU</NeutralLanguage>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <RootNamespace>Hy.Modeller.Cli</RootNamespace>
     <LangVersion>7.3</LangVersion>
     <PackageId>Hy.Modeller.Tool</PackageId>
-    <Version>1.0.1</Version>
+    <Version>2.0.0</Version>
+    <AssemblyName>model</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hy.Modeller.Core" Version="1.1.2" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.0-rc.460" />
-    <PackageReference Include="McMaster.Extensions.Hosting.CommandLine" Version="2.3.0-rc.460" />
+    <PackageReference Include="Hy.Modeller.Core" Version="2.1.6" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.1" />
+    <PackageReference Include="McMaster.Extensions.Hosting.CommandLine" Version="2.3.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
@@ -33,6 +34,9 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.0.0" />
   </ItemGroup>
 
 </Project>

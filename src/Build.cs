@@ -1,6 +1,5 @@
-﻿using Hy.Modeller.Generator;
+﻿using Hy.Modeller.Base.Models;
 using Hy.Modeller.Interfaces;
-using Hy.Modeller.Outputs;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,13 +9,13 @@ namespace Hy.Modeller.Cli
     [Command(Name = "build", Description = "Use DLL components to generate code")]
     internal class Build
     {
+        private readonly IBuilder _builder;
         private readonly ILogger<Program> _logger;
-        private readonly ISettings _settings;
 
-        public Build(ILogger<Program> logger, ISettings settings)
+        public Build(IBuilder builder, ILogger<Program> logger)
         {
-            _logger = logger;
-            _settings = settings;
+            _builder = builder ?? throw new ArgumentNullException(nameof(builder));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [Argument(0, Description = "The generator to use.")]
@@ -48,26 +47,39 @@ namespace Hy.Modeller.Cli
         public string Settings { get; }
 
         [Option(Description = "Specific version to use for the generator", ShortName = "")]
-        public string Version { get; } = Defaults.Version.ToString();
+        public string Version { get; } = "1.0.0";
 
         [Option(ShortName = "", Inherited = true)]
         public bool Verbose { get; }
 
-        internal int OnExecute(IConsole console)
+        internal int OnExecute()
         {
             try
             {
-                var context = new Context(SourceModel, LocalFolder, Generator, Target, Version, Settings, Model, Output, output: s => console.WriteLine(s));
-                var codeGenerator = new CodeGenerator(context, s => console.WriteLine(s), Verbose);
-                var presenter = new Creator(context, s => console.WriteLine(s), Verbose);
-                presenter.Create(codeGenerator.Create());
+                _logger.LogTrace("Generator Build Command - OnExecute");
+
+                _builder.Context.GeneratorConfiguration.GeneratorName = Generator;
+                _builder.Context.GeneratorConfiguration.LocalFolder = LocalFolder;
+                _builder.Context.GeneratorConfiguration.ModelName = Model;
+                _builder.Context.GeneratorConfiguration.OutputPath = Output;
+                _builder.Context.GeneratorConfiguration.SettingsFile = Settings;
+                _builder.Context.GeneratorConfiguration.SourceModel = SourceModel;
+                _builder.Context.GeneratorConfiguration.Target = Target;
+                _builder.Context.GeneratorConfiguration.Verbose = Verbose;
+                _builder.Context.GeneratorConfiguration.Version = new GeneratorVersion(Version);
+
+                _builder.Create();
+
                 return 0;
             }
             catch (Exception ex)
             {
-                console.WriteLine("ERROR - {0}", ex.Message);
                 _logger.LogError(LoggingEvents.BuildError, ex, "Build command failed. " + ex.Message);
                 return 1;
+            }
+            finally
+            {
+                _logger.LogTrace("Generator Build Command - complete");
             }
         }
     }
