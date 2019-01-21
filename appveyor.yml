@@ -14,9 +14,9 @@ before_build:
 - cmd: >-
     dotnet --version
 
-    dotnet restore ./modeller/Modeller-tool.sln
+    dotnet restore ./Modeller-tool.sln
 build:
-  project: ./modeller/modeller-tool.sln
+  project: ./modeller-tool.sln
   publish_nuget: true
   publish_nuget_symbols: true
   verbosity: normal
