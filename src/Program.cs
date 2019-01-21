@@ -3,11 +3,14 @@ using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using System;
+using Hy.Modeller.Generator;
+using Hy.Modeller.Core.Outputs;
+using Serilog;
+using Hy.Modeller.Outputs;
 
 namespace Hy.Modeller.Cli
 {
@@ -42,21 +45,49 @@ namespace Hy.Modeller.Cli
                     })
                     .ConfigureLogging((context, builder) =>
                     {
-                        if (context.HostingEnvironment.IsDevelopment())
-                        {
-                            builder.AddDebug();
-                        }
+                        Log.Logger = new LoggerConfiguration()
+                            .WriteTo.File("model.log")
+                            .WriteTo.Console(outputTemplate: "{Message:lj}{NewLine}{Exception}")
+                            .CreateLogger();
                     })
                     .ConfigureServices((context, services) =>
                     {
+                        services.AddLogging(configure => configure.AddSerilog());
+
                         services.AddSingleton<ISettings, Settings>();
+                        
+                        services.AddScoped<IGeneratorConfiguration, GeneratorConfiguration>();
+                        services.AddScoped<ISettingsLoader, JsonSettingsLoader>();
+                        services.AddScoped<IModuleLoader, JsonModuleLoader>();
+                        services.AddScoped<IGeneratorLoader, GeneratorLoader>();
+                        services.AddScoped<IContext, Context>();
+                        services.AddScoped<ICodeGenerator, CodeGenerator>();
+                        services.AddScoped<IPresenter, Presenter>();
+                        services.AddScoped<IBuilder, Outputs.Builder>();
+                        services.AddScoped<IUpdater, Updater>();
+                        services.AddScoped<IPackageService, PackageService>();
+                        services.AddScoped<IPackageFileLoader, PackageFileLoader>();
+
+                        services.AddTransient<IFileWriter, FileWriter>();
+
+                        services.AddScoped<IOutputStrategy, OutputStrategy>();
+                        services.AddTransient<IFileCreator, CreateFile>();
+                        services.AddTransient<IFileCreator, CreateSnippet>();
+                        services.AddTransient<IFileCreator, CreateProject>();
+                        services.AddTransient<IFileCreator, CreateSolution>();
+                        services.AddTransient<IFileCreator, FileCopier>();
+                        services.AddTransient<IFileCreator, FolderCopier>();
+                        services.AddTransient<IFileCreator, CreateFileGroup>();
                     });
 
-                return await hostBuilder.RunCommandLineApplicationAsync<ModellerApp>(args);
+                var host = await hostBuilder.RunCommandLineApplicationAsync<ModellerApp>(args);
+                Console.WriteLine("Press [Enter] to finish");
+                Console.ReadLine();
+                return host;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Fatal(ex, "Model program.cs caught an issue");
                 return 1;
             }
         }
