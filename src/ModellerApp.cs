@@ -12,7 +12,7 @@ namespace Hy.Modeller.Cli
         private readonly ISettings _settings;
         private readonly IHostingEnvironment _env;
         private readonly ILogger<ModellerApp> _logger;
-               
+
         public ModellerApp(IHostingEnvironment env, ILogger<ModellerApp> logger, ISettings settings)
         {
             _env = env;
