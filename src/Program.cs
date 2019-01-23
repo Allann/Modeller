@@ -81,8 +81,8 @@ namespace Hy.Modeller.Cli
                     });
 
                 var host = await hostBuilder.RunCommandLineApplicationAsync<ModellerApp>(args);
-                Console.WriteLine("Press [Enter] to finish");
-                Console.ReadLine();
+                //Console.WriteLine("Press [Enter] to finish");
+                //Console.ReadLine();
                 return host;
             }
             catch (Exception ex)
