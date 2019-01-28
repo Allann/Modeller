@@ -71,18 +71,18 @@ namespace Hy.Modeller.Cli
                         services.AddTransient<IFileWriter, FileWriter>();
 
                         services.AddScoped<IOutputStrategy, OutputStrategy>();
-                        services.AddTransient<IFileCreator, CreateFile>();
-                        services.AddTransient<IFileCreator, CreateSnippet>();
-                        services.AddTransient<IFileCreator, CreateProject>();
-                        services.AddTransient<IFileCreator, CreateSolution>();
-                        services.AddTransient<IFileCreator, FileCopier>();
-                        services.AddTransient<IFileCreator, FolderCopier>();
-                        services.AddTransient<IFileCreator, CreateFileGroup>();
+                        services.AddScoped<IFileCreator, CreateFile>();
+                        services.AddScoped<IFileCreator, CreateSnippet>();
+                        services.AddScoped<IFileCreator, CreateProject>();
+                        services.AddScoped<IFileCreator, CreateSolution>();
+                        services.AddScoped<IFileCreator, FileCopier>();
+                        services.AddScoped<IFileCreator, FolderCopier>();
+                        services.AddScoped<IFileCreator, CreateFileGroup>();
                     });
 
                 var host = await hostBuilder.RunCommandLineApplicationAsync<ModellerApp>(args);
-                Console.WriteLine("Press [Enter] to finish");
-                Console.ReadLine();
+                //Console.WriteLine("Press [Enter] to finish");
+                //Console.ReadLine();
                 return host;
             }
             catch (Exception ex)
