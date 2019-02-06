@@ -33,7 +33,6 @@ namespace Hy.Modeller.Cli
         public string Model { get; }
 
         [Option(Description = "Output folder")]
-        [DirectoryExists]
         public string Output { get; } = Defaults.OutputFolder;
 
         [Option(Inherited = true, ShortName = "")]
