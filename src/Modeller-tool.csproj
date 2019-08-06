@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hy.Modeller.Core" Version="2.1.16" />
+    <PackageReference Include="Hy.Modeller.Core" Version="2.1.23" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
     <PackageReference Include="McMaster.Extensions.Hosting.CommandLine" Version="2.3.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
