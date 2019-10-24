@@ -1,29 +1,29 @@
+﻿using Hy.Modeller.Generator;
+using Hy.Modeller.Generator.Outputs;
 using Hy.Modeller.Interfaces;
-using System.Threading.Tasks;
+using Hy.Modeller.Loaders;
 using McMaster.Extensions.CommandLineUtils;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Reflection;
-using System.IO;
-using Microsoft.Extensions.Configuration;
-using System;
-using Hy.Modeller.Generator;
-using Hy.Modeller.Core.Outputs;
 using Serilog;
-using Hy.Modeller.Outputs;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 
-namespace Hy.Modeller.Cli
+namespace Hy.Modeller
 {
-    [Command(Name = "Modeller", Description = "Modeller tool is used to generate code via DLL plug-ins.")]
+    [Command(Name = "codegen", Description = "CodeGen tool is used to generate code via DLL plug-ins.")]
     [VersionOptionFromMember("--version", MemberName = nameof(GetVersion))]
     internal class Program
     {
-        private const string _prefix = "HY_";
         private const string _appsettings = "appsettings.json";
         private const string _hostsettings = "hostsettings.json";
 
         internal static string GetVersion()
-            => typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            => typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0";
 
         public static async Task<int> Main(string[] args)
         {
@@ -35,7 +35,6 @@ namespace Hy.Modeller.Cli
                     {
                         configHost.SetBasePath(Directory.GetCurrentDirectory());
                         configHost.AddJsonFile(_hostsettings, optional: true);
-                        configHost.AddEnvironmentVariables(prefix: _prefix);
                     })
                     .ConfigureAppConfiguration((hostContext, configApp) =>
                     {
@@ -46,7 +45,7 @@ namespace Hy.Modeller.Cli
                     .ConfigureLogging((context, builder) =>
                     {
                         Log.Logger = new LoggerConfiguration()
-                            .WriteTo.File("model.log")
+                            .WriteTo.File("codegen.log")
                             .WriteTo.Console(outputTemplate: "{Message:lj}{NewLine}{Exception}")
                             .CreateLogger();
                     })
@@ -55,18 +54,18 @@ namespace Hy.Modeller.Cli
                         services.AddLogging(configure => configure.AddSerilog());
 
                         services.AddSingleton<ISettings, Settings>();
-                        
-                        services.AddScoped<IGeneratorConfiguration, GeneratorConfiguration>();
-                        services.AddScoped<ISettingsLoader, JsonSettingsLoader>();
-                        services.AddScoped<IModuleLoader, JsonModuleLoader>();
-                        services.AddScoped<IGeneratorLoader, GeneratorLoader>();
-                        services.AddScoped<IContext, Context>();
+                        services.AddSingleton<IGeneratorConfiguration, GeneratorConfiguration>();
+                        services.AddSingleton<IContext, Context>();
+
+                        services.AddScoped<ILoader<ISettings>, JsonSettingsLoader>();
+                        services.AddScoped<ILoader<IEnumerable<INamedElement>>, JsonModuleLoader>();
+                        services.AddScoped<ILoader<IEnumerable<IGeneratorItem>>, GeneratorLoader>();
                         services.AddScoped<ICodeGenerator, CodeGenerator>();
                         services.AddScoped<IPresenter, Presenter>();
-                        services.AddScoped<IBuilder, Outputs.Builder>();
+                        services.AddScoped<IBuilder, Builder>();
                         services.AddScoped<IUpdater, Updater>();
                         services.AddScoped<IPackageService, PackageService>();
-                        services.AddScoped<IPackageFileLoader, PackageFileLoader>();
+                        services.AddScoped<ILoader<IEnumerable<IPackage>>, PackageFileLoader>();
 
                         services.AddTransient<IFileWriter, FileWriter>();
 
@@ -80,16 +79,15 @@ namespace Hy.Modeller.Cli
                         services.AddScoped<IFileCreator, CreateFileGroup>();
                     });
 
-                var host = await hostBuilder.RunCommandLineApplicationAsync<ModellerApp>(args);
-                //Console.WriteLine("Press [Enter] to finish");
-                //Console.ReadLine();
-                return host;
+                return await hostBuilder.RunCommandLineApplicationAsync<ModellerApp>(args).ConfigureAwait(false);
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex)
             {
-                Log.Fatal(ex, "Model program.cs caught an issue");
+                Log.Fatal(ex, "CodeGen program.cs caught an issue");
                 return 1;
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
     }
 }

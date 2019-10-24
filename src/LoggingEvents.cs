@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
-namespace Hy.Modeller.Cli
+namespace Hy.Modeller
 {
-    public class LoggingEvents
+    public static class LoggingEvents
     {
         public static readonly EventId StartEvent = new EventId(100, "StartInfo");
         public static readonly EventId ParameterEvent = new EventId(101, "ParameterInfo");

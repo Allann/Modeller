@@ -1,4 +1,6 @@
-﻿using Hy.Modeller.Interfaces;
+﻿using Hy.Modeller.Cli.Properties;
+using Hy.Modeller.Generator;
+using Hy.Modeller.Interfaces;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,6 +18,7 @@ namespace Hy.Modeller.Cli
         }
 
         [Command(Description = "List available generators"), HelpOption]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated via reflection")]
         private class List
         {
             private readonly IPresenter _presenter;
@@ -37,11 +40,12 @@ namespace Hy.Modeller.Cli
             [Option]
             public bool Verbose { get; }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Top level unexpected catch all")]
             internal int OnExecute()
             {
                 try
                 {
-                    _logger.LogTrace("Generator List Command - OnExecute");
+                    _logger.LogTrace(Resources.ListOnExecute);
 
                     _presenter.GeneratorConfiguration.LocalFolder = LocalFolder;
                     _presenter.GeneratorConfiguration.Target = Target;
@@ -52,17 +56,18 @@ namespace Hy.Modeller.Cli
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(LoggingEvents.ListError, ex, "List command failed. " + ex.Message);
+                    _logger.LogError(LoggingEvents.ListError, ex, Resources.ListFailed);
                     return 1;
                 }
                 finally
                 {
-                    _logger.LogTrace("Generator List Command - complete");
+                    _logger.LogTrace(Resources.ListComplete);
                 }
             }
         }
 
         [Command(Description = "Update generators"), HelpOption]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated via reflection")]
         private class Update
         {
             private readonly IUpdater _updater;
@@ -76,10 +81,10 @@ namespace Hy.Modeller.Cli
 
             [Option(Description = "Path to the locally cached generators")]
             [DirectoryExists]
-            public string LocalFolder { get; }
+            public string LocalFolder { get; } = Defaults.LocalFolder;
 
             [Option(Inherited = true, ShortName = "")]
-            public bool Overwrite { get; } 
+            public bool Overwrite { get; }
 
             [Option(Description = "Server path to the host of the generators")]
             [DirectoryExists]
@@ -92,9 +97,10 @@ namespace Hy.Modeller.Cli
             [Option]
             public bool Verbose { get; } = false;
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Top level unexpected catch all")]
             internal int OnExecute()
             {
-                _logger.LogTrace("Generator Update Command - OnExecute");
+                _logger.LogTrace(Resources.UpdateOnExecute);
                 try
                 {
                     _updater.GeneratorConfiguration.LocalFolder = LocalFolder;
@@ -108,12 +114,12 @@ namespace Hy.Modeller.Cli
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(LoggingEvents.UpdateError, ex, "Update command failed. " + ex.Message);
+                    _logger.LogError(LoggingEvents.UpdateError, ex, Resources.UpdateFailed);
                     return 1;
                 }
                 finally
                 {
-                    _logger.LogTrace("Generator Update Command - complete");
+                    _logger.LogTrace(Resources.UpdateComplete);
                 }
             }
         }
@@ -121,7 +127,7 @@ namespace Hy.Modeller.Cli
         internal int OnExecute(IConsole console, CommandLineApplication app)
         {
             console.WriteLine();
-            console.WriteLine("You need to specify a command.");
+            console.WriteLine(Resources.SpecifyCommand);
             console.WriteLine();
 
             app.ShowHelp();
