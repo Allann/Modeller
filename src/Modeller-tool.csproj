@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hy.Modeller.Core" Version="2.1.27" />
+    <PackageReference Include="Hy.Modeller.Core" Version="2.1.28" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.4.2" />
     <PackageReference Include="McMaster.Extensions.Hosting.CommandLine" Version="2.4.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
@@ -57,5 +57,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties hostsettings_1json__JsonSchema="https://raw.githubusercontent.com/dolittle/Runtime/master/Schemas/Tenancy/tenants.json" /></VisualStudio></ProjectExtensions>
 
 </Project>
