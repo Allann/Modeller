@@ -1,0 +1,81 @@
+{
+  "$schema": "vscode://schemas/icon-theme",
+  "hidesExplorerArrows": false,
+  "iconDefinitions": {
+    "_modeller_def": {
+      "iconPath": "./icons/def.svg"
+    },
+    "_modeller_entity": {
+      "iconPath": "./icons/entity.svg"
+    },
+    "_modeller_key": {
+      "iconPath": "./icons/key.svg"
+    },
+    "_modeller_enum": {
+      "iconPath": "./icons/enum.svg"
+    },
+    "_modeller_flags": {
+      "iconPath": "./icons/flags.svg"
+    },
+    "_modeller_service": {
+      "iconPath": "./icons/service.svg"
+    },
+    "_modeller_command": {
+      "iconPath": "./icons/command.svg"
+    },
+    "_modeller_query": {
+      "iconPath": "./icons/query.svg"
+    },
+    "_modeller_value": {
+      "iconPath": "./icons/value.svg"
+    },
+    "_modeller_shared": {
+      "iconPath": "./icons/shared.svg"
+    },
+    "_modeller_event": {
+      "iconPath": "./icons/event.svg"
+    },
+    "_modeller_projection": {
+      "iconPath": "./icons/projection.svg"
+    },
+    "_modeller_default": {
+      "iconPath": "./icons/modeller.svg"
+    },
+    "_folder": {
+      "iconPath": "./icons/modeller.svg"
+    }
+  },
+  "file": "_modeller_default",
+  "fileExtensions": {
+    "def": "_modeller_def",
+    "entity": "_modeller_entity",
+    "key": "_modeller_key",
+    "enum": "_modeller_enum",
+    "flags": "_modeller_flags",
+    "service": "_modeller_service",
+    "command": "_modeller_command",
+    "query": "_modeller_query",
+    "value": "_modeller_value",
+    "shared": "_modeller_shared",
+    "event": "_modeller_event",
+    "projection": "_modeller_projection"
+  },
+  "fileNames": {
+    "domain.def": "_modeller_def"
+  },
+  "languageIds": {
+    "modeller-def": "_modeller_def",
+    "modeller-entity": "_modeller_entity",
+    "modeller-key": "_modeller_key",
+    "modeller-enum": "_modeller_enum",
+    "modeller-flags": "_modeller_flags",
+    "modeller-service": "_modeller_service",
+    "modeller-command": "_modeller_command",
+    "modeller-query": "_modeller_query",
+    "modeller-value": "_modeller_value",
+    "modeller-shared": "_modeller_shared",
+    "modeller-event": "_modeller_event",
+    "modeller-projection": "_modeller_projection"
+  }
+}
+

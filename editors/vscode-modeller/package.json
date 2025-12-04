@@ -1,14 +1,15 @@
 {
   "name": "modeller-dsl",
   "displayName": "Modeller DSL",
-  "description": "Syntax highlighting for Modeller domain definition language",
-  "version": "1.1.0",
+  "description": "Syntax highlighting and file icons for Modeller domain definition language",
+  "version": "1.2.0",
   "publisher": "catalyst",
   "engines": {
     "vscode": "^1.75.0"
   },
   "categories": [
-    "Programming Languages"
+    "Programming Languages",
+    "Themes"
   ],
   "keywords": [
     "modeller",
@@ -156,6 +157,13 @@
         "language": "modeller-projection",
         "scopeName": "source.modeller",
         "path": "./syntaxes/modeller.tmLanguage.json"
+      }
+    ],
+    "iconThemes": [
+      {
+        "id": "modeller-icons",
+        "label": "Modeller DSL Icons",
+        "path": "./modeller-icon-theme.json"
       }
     ]
   }

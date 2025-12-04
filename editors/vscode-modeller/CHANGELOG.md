@@ -2,6 +2,14 @@
 
 All notable changes to the Modeller DSL extension will be documented in this file.
 
+## [1.2.0] - 2024-12-04
+
+### Added
+
+- **Icon Theme**: Custom file icons for all Modeller DSL file types
+  - Unique icons for each file type (.def, .entity, .key, .enum, .flags, .service, .command, .query, .value, .shared, .event, .projection)
+  - Enable via: File > Preferences > File Icon Theme > Modeller DSL Icons
+
 ## [1.1.0] - 2024-12-04
 
 ### Added

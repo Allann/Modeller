@@ -1,10 +1,11 @@
 # Modeller DSL - VS Code Extension
 
-Syntax highlighting and language support for the Modeller domain definition language.
+Syntax highlighting, language support, and file icons for the Modeller domain definition language.
 
 ## Features
 
 - ✅ Syntax highlighting for all Modeller DSL file types
+- ✅ **Custom file icons** for each file type (see below)
 - ✅ Comment toggling with `Ctrl+/` (uses `#`)
 - ✅ Bracket matching and auto-closing for `[]`, `()`, and `""`
 - ✅ Code folding for blocks (domain...end, entity...end, etc.)
@@ -12,14 +13,32 @@ Syntax highlighting and language support for the Modeller domain definition lang
 
 ## Supported File Extensions
 
-| Extension | Description | Example |
-|-----------|-------------|---------|
-| `.def` | Domain definitions | `domain.def` |
-| `.entity` | Entity definitions | `customer.entity` |
-| `.enum` | Enum/flags definitions | `status.enum` |
-| `.service` | Service definitions | `orders.service` |
-| `.command` | Command definitions | `create-order.command` |
-| `.query` | Query definitions | `get-customer.query` |
+| Extension | Description | Icon |
+|-----------|-------------|------|
+| `.def` | Domain definitions | 🟣 Purple hub |
+| `.entity` | Entity definitions | 🔵 Blue table |
+| `.key` | Key definitions | 🟡 Gold key |
+| `.enum` | Enum definitions | 🟢 Green bars |
+| `.flags` | Flags (bitwise) definitions | 🔴 Red flag |
+| `.service` | Service definitions | 🟣 Purple gear |
+| `.command` | Command definitions | 💗 Pink checkbox |
+| `.query` | Query definitions | 🔵 Cyan search |
+| `.value` | Value objects | 🟢 Teal cube |
+| `.shared` | Shared/lookup data | 🔵 Indigo network |
+| `.event` | Domain events | ⚡ Yellow lightning |
+| `.projection` | Projections/views | 🟣 Purple grid |
+
+## Enabling File Icons
+
+After installing the extension, enable the icon theme:
+
+1. Open Command Palette (`Ctrl+Shift+P`)
+2. Type **"File Icon Theme"**
+3. Select **"Modeller DSL Icons"**
+
+Or go to: **File → Preferences → File Icon Theme → Modeller DSL Icons**
+
+> **Note**: The Modeller icon theme only defines icons for Modeller file types. For a complete icon set, you may want to use it alongside another icon theme, or configure your preferred icon theme to use Modeller icons for these extensions.
 
 ---
 
