@@ -1,5 +1,7 @@
 # Definitions
 
+> ⚠️ **Legacy Documentation** - This describes the existing C# fluent API implementation. For the future YAML-based approach, see [Future Specification](architecture/draft/README.md).
+
 Definitions describe your **domain model** - the entities, services, fields, and relationships that templates will transform into code.
 
 ## Structure
@@ -17,8 +19,7 @@ Enterprise
 │   ├── Name
 │   ├── Key
 │   ├── Fields[]
-│   ├── Relationships[]
-│   └── Behaviours[]
+│   └── Relationships[]
 └── Enumerations[]
     ├── Name
     └── Values[]

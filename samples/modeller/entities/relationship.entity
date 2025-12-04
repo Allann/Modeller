@@ -1,0 +1,21 @@
+# Relationship Entity
+# A connection between entities
+
+entity Relationship
+  "A relationship between two entities"
+  
+  Name: name "The relationship name"
+  Description: text(500), optional "Description of the relationship"
+  Type: RelationshipType "The type of relationship"
+  IsOptional: boolean, default(false) "Can be null"
+  TargetEntity: name "The related entity name"
+  
+  belongs_to Entity
+end
+
+key Relationship
+  RelationshipId: guid, generated
+  
+  index [Entity, Name] unique
+end
+

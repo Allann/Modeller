@@ -53,22 +53,18 @@ Booking:
     Status: current state of the booking
     
   belongs to: Child
-  
-  can:
-    be created: when a routine or casual arrangement exists
-    be cancelled: before attendance is recorded
-    record attendance: when child arrives
-    record absence: when child does not attend
 ```
+
+> Note: What can be done (behaviours) is defined separately - see [Behaviours](03-behaviours.md).
 
 ### 3. AI Agent Compatibility
 
 Structured for machine understanding:
 
 - **Predictable schema** - AI knows what fields to expect
-- **Semantic keys** - `has`, `belongs to`, `can` convey meaning
+- **Semantic keys** - `has`, `belongs to`, `involves` convey meaning
 - **Self-documenting** - Every element has a description
-- **Queryable** - "What can a Booking do?" → parse `can` section
+- **Queryable** - "What can be done with a Booking?" → parse related commands
 
 ### 4. Separation of Concerns
 

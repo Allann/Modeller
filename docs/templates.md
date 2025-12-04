@@ -1,5 +1,7 @@
 # Templates
 
+> ⚠️ **Legacy Documentation** - This describes the existing C# template implementation. For the future text-based templating approach using Scriban, see [Future Templates](architecture/draft/10-templates.md).
+
 Templates are **code generators** that transform definitions into source code. Each template is a compiled C# DLL that implements the `IGenerator` interface.
 
 ## Template Structure

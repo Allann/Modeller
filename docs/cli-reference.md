@@ -1,5 +1,7 @@
 # CLI Reference
 
+> ⚠️ **Legacy Documentation** - This describes the existing CLI tool. The future implementation may have a different command structure.
+
 The Modeller CLI (`model`) provides commands for code generation, conversion, and management.
 
 ## Installation

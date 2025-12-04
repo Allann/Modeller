@@ -1,0 +1,21 @@
+# Entity Entity
+# A domain object with identity
+
+entity Entity
+  "A domain object with attributes and relationships"
+  
+  Name: name "The entity name"
+  Description: text(500) "Description of the entity"
+  IsAggregateRoot: boolean, default(false) "Is this an aggregate root"
+  
+  belongs_to Service
+  has_many Attribute
+  has_many Relationship
+end
+
+key Entity
+  EntityId: guid, generated
+  
+  index [Service, Name] unique
+end
+

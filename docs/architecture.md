@@ -1,5 +1,7 @@
 # Architecture
 
+> ⚠️ **Legacy Documentation** - This describes the existing plugin-based C# implementation. For the future architecture, see [Future Specification](architecture/draft/README.md).
+
 Modeller uses a **plugin-based code generation architecture** where both definitions and templates are loaded dynamically at runtime.
 
 ## System Components

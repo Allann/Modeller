@@ -1,0 +1,16 @@
+# OutputType Enum
+# Types of generated output
+
+enum OutputType
+  "The types of output a generator can produce"
+  
+  CSharpClass: 1 "C# class file"
+  CSharpRecord: 2 "C# record file"
+  CSharpInterface: 3 "C# interface file"
+  SqlTable: 4 "SQL table script"
+  SqlMigration: 5 "SQL migration script"
+  OpenApiSpec: 6 "OpenAPI specification"
+  Documentation: 7 "Markdown documentation"
+  TypeScript: 8 "TypeScript file"
+end
+

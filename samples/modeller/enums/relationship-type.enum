@@ -1,0 +1,12 @@
+# RelationshipType Enum
+# Types of relationships between entities
+
+enum RelationshipType
+  "The types of relationships between entities"
+  
+  HasOne: 1 "One-to-one relationship"
+  HasMany: 2 "One-to-many relationship"
+  BelongsTo: 3 "Inverse of has_one or has_many"
+  ManyToMany: 4 "Many-to-many relationship"
+end
+

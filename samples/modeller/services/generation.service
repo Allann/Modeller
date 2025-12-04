@@ -1,0 +1,23 @@
+# Generation Service
+# Manages code generation from domain definitions
+
+service Generation
+  "Transforms domain definitions into source code using templates"
+  
+  entities
+    Template
+    TemplateOutput
+    Generator
+    GeneratorRun
+  end
+  
+  enums
+    OutputType
+    GeneratorStatus
+  end
+  
+  references
+    Definition: [Domain, Entity, Enum]
+  end
+end
+

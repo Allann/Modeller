@@ -1,0 +1,15 @@
+# GetDomain Query
+# Retrieves a domain by name
+
+query GetDomain
+  "Retrieves a domain with all its definitions"
+  
+  input
+    Name: name "The domain name"
+    IncludeServices: boolean, default(true) "Include services"
+    IncludeEntities: boolean, default(true) "Include entities"
+  end
+  
+  returns Domain
+end
+

@@ -1,0 +1,26 @@
+# Definition Service
+# Manages the domain model structure
+
+service Definition
+  "Manages domain definitions including entities, enums, and behaviours"
+  
+  entities
+    Domain
+    Service
+    Entity
+    Attribute
+    Relationship
+    Enum
+    EnumValue
+    Flags
+    Command
+    Query
+  end
+  
+  enums
+    DataType
+    Cardinality
+    RelationshipType
+  end
+end
+

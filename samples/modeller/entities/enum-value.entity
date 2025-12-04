@@ -1,0 +1,20 @@
+# EnumValue Entity
+# A single value in an enumeration
+
+entity EnumValue
+  "A named value within an enumeration"
+  
+  Name: name "The value name"
+  Description: text(200) "Description of the value"
+  Value: integer "The numeric value"
+  
+  belongs_to Enum
+end
+
+key EnumValue
+  EnumValueId: guid, generated
+  
+  index [Enum, Name] unique
+  index [Enum, Value] unique
+end
+

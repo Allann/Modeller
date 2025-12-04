@@ -1,0 +1,20 @@
+# Generator Entity
+# A collection of templates for a specific output
+
+entity Generator
+  "A generator that produces code from domain definitions"
+  
+  Name: name "The generator name"
+  Description: text(500) "Description of the generator"
+  OutputPath: text(500) "Base output path"
+  
+  has_many Template
+  has_many GeneratorRun
+end
+
+key Generator
+  GeneratorId: guid, generated
+  
+  index Name unique
+end
+

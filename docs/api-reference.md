@@ -1,5 +1,7 @@
 # API Reference
 
+> ⚠️ **Legacy Documentation** - This describes the existing C# API. The future implementation will have a different API structure.
+
 Core interfaces and classes in the Modeller library.
 
 ## Interfaces

@@ -1,0 +1,20 @@
+# Domain Entity
+# Top-level container for all definitions
+
+entity Domain
+  "The root container for a domain model"
+  
+  Name: name "The domain name"
+  Description: text(500) "Description of the domain"
+  Version: text(20) "Semantic version"
+  Company: text(100), optional "Owning company"
+  
+  has_many Service
+  has_many Enum
+  has_many Flags
+end
+
+key Domain
+  DomainId: guid, generated
+end
+

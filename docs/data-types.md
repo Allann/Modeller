@@ -1,5 +1,7 @@
 # Data Types
 
+> ⚠️ **Legacy Documentation** - This describes data types in the existing C# implementation. For the future type system, see [Future Data Types](architecture/draft/07-data-types.md).
+
 This document describes the data types available for defining fields in entities.
 
 ## Primitive Types

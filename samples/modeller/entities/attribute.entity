@@ -1,0 +1,26 @@
+# Attribute Entity
+# A field on an entity
+
+entity Attribute
+  "A property or field on an entity"
+  
+  Name: name "The attribute name"
+  Description: text(500) "Description of the attribute"
+  DataType: DataType "The data type"
+  MaxLength: integer, optional "Max length for text types"
+  Precision: integer, optional "Precision for decimal types"
+  Scale: integer, optional "Scale for decimal types"
+  IsOptional: boolean, default(false) "Can be null"
+  IsUnique: boolean, default(false) "Must be unique"
+  IsReadonly: boolean, default(false) "Cannot be modified after creation"
+  DefaultValue: text(100), optional "Default value expression"
+  
+  belongs_to Entity
+end
+
+key Attribute
+  AttributeId: guid, generated
+  
+  index [Entity, Name] unique
+end
+

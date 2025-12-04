@@ -1,0 +1,21 @@
+# DataType Enum
+# Supported data types for attributes
+
+enum DataType
+  "The primitive data types supported by the domain model"
+  
+  Text: 1 "Variable length text"
+  Integer: 2 "Whole number"
+  Long: 3 "Large whole number"
+  Decimal: 4 "Precise decimal number"
+  Boolean: 5 "True or false"
+  Date: 6 "Date only"
+  Time: 7 "Time only"
+  DateTime: 8 "Date and time"
+  Guid: 9 "Globally unique identifier"
+  Name: 10 "Smart name with casing variants"
+  Image: 11 "Binary image data"
+  Email: 12 "Email address"
+  Url: 13 "Web address"
+end
+

@@ -1,0 +1,19 @@
+# Enum Entity
+# An enumeration type
+
+entity Enum
+  "An enumeration with named values"
+  
+  Name: name "The enum name"
+  Description: text(500) "Description of the enum"
+  
+  belongs_to Domain
+  has_many EnumValue
+end
+
+key Enum
+  EnumId: guid, generated
+  
+  index [Domain, Name] unique
+end
+

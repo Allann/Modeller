@@ -1,5 +1,7 @@
 # Getting Started
 
+> ⚠️ **Legacy Documentation** - This guide covers the existing C# implementation. For the future approach, see [Future Specification](architecture/draft/README.md).
+
 This guide walks you through using Modeller to generate code from a definition.
 
 ## Prerequisites

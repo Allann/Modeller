@@ -1,0 +1,13 @@
+# GeneratorStatus Enum
+# Status of a generator run
+
+enum GeneratorStatus
+  "The status of a generator execution"
+  
+  Pending: 1 "Waiting to run"
+  Running: 2 "Currently executing"
+  Completed: 3 "Finished successfully"
+  Failed: 4 "Finished with errors"
+  Cancelled: 5 "Cancelled by user"
+end
+

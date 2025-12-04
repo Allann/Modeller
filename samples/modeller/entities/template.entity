@@ -1,0 +1,22 @@
+# Template Entity
+# A Scriban template for code generation
+
+entity Template
+  "A template that generates output from domain definitions"
+  
+  Name: name "The template name"
+  Description: text(500) "Description of the template"
+  Content: text(max) "The Scriban template content"
+  OutputType: OutputType "What type of output this produces"
+  FilePattern: text(200) "Output filename pattern"
+  TargetType: name "The entity type this applies to"
+  
+  belongs_to Generator
+end
+
+key Template
+  TemplateId: guid, generated
+  
+  index [Generator, Name] unique
+end
+

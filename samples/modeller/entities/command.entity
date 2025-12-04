@@ -1,0 +1,19 @@
+# Command Entity
+# A write operation that changes state
+
+entity Command
+  "A behaviour that changes state"
+  
+  Name: name "The command name"
+  Description: text(500) "Description of the command"
+  
+  belongs_to Service
+  has_many Attribute as Parameters
+end
+
+key Command
+  CommandId: guid, generated
+  
+  index [Service, Name] unique
+end
+

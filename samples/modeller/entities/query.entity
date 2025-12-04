@@ -1,0 +1,21 @@
+# Query Entity
+# A read operation that returns data
+
+entity Query
+  "A behaviour that reads data without side effects"
+  
+  Name: name "The query name"
+  Description: text(500) "Description of the query"
+  ReturnType: name "The return type"
+  ReturnsMany: boolean, default(false) "Returns a collection"
+  
+  belongs_to Service
+  has_many Attribute as Parameters
+end
+
+key Query
+  QueryId: guid, generated
+  
+  index [Service, Name] unique
+end
+

@@ -1,0 +1,21 @@
+# Service Entity
+# A bounded context within the domain
+
+entity Service
+  "A bounded context grouping related entities and behaviours"
+  
+  Name: name "The service name"
+  Description: text(500) "Description of the service"
+  
+  belongs_to Domain
+  has_many Entity
+  has_many Command
+  has_many Query
+end
+
+key Service
+  ServiceId: guid, generated
+  
+  index Name unique
+end
+

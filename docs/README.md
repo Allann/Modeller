@@ -15,17 +15,39 @@ Modeller is a **code generation tool** that transforms domain definitions into s
 - **Templates** are code generators that transform definitions into source code
 - **Output** is the generated code (files, projects, solutions)
 
-## Documentation Index
+---
+
+## 🚀 Future Direction (Recommended Reading)
+
+This repository is focused on designing the **next generation** of Modeller using a natural language-oriented, YAML-based domain definition format.
 
 | Document | Description |
 |----------|-------------|
-| [Architecture](architecture.md) | System architecture and component overview |
-| [Definitions](definitions.md) | How to create and structure domain definitions |
-| [Templates](templates.md) | How templates work and how to create them |
-| [CLI Reference](cli-reference.md) | Command-line tool usage |
-| [API Reference](api-reference.md) | Core interfaces and classes |
+| **[Future Specification](architecture/draft/README.md)** | **Start here** - The new domain definition language |
+| [Domain Concepts](architecture/draft/02-domain-concepts.md) | Entities, Value Objects, Shared Data |
+| [Behaviours](architecture/draft/03-behaviours.md) | Commands, Queries, Workflows, Events |
+| [Examples](architecture/draft/05-examples.md) | Concrete definition examples |
+| [AI Integration](architecture/draft/06-ai-integration.md) | AI agent compatibility |
 
-## Quick Start
+---
+
+## 📦 Legacy Implementation Reference
+
+The documents below describe the **existing C# fluent API implementation** (in a separate repository). These are preserved for reference but represent the approach being replaced.
+
+| Document | Description |
+|----------|-------------|
+| [Architecture](architecture.md) | Legacy system architecture |
+| [Definitions](definitions.md) | Legacy C# fluent API for definitions |
+| [Templates](templates.md) | Legacy C# template system |
+| [CLI Reference](cli-reference.md) | Legacy command-line tool |
+| [API Reference](api-reference.md) | Legacy interfaces and classes |
+| [Data Types](data-types.md) | Data type reference |
+| [Getting Started](getting-started.md) | Legacy quick start guide |
+
+---
+
+## Quick Start (Legacy)
 
 ### Building Code from a Definition
 
@@ -52,6 +74,8 @@ model list definitions --folder <path-to-definitions>
 
 ## Key Concepts
 
+These concepts apply to both legacy and future implementations:
+
 ### Enterprise
 The top-level container representing your entire domain. Contains services, entities, and enumerations.
 
@@ -60,6 +84,9 @@ A bounded context or domain service containing related entities and business log
 
 ### Entity
 A domain object with identity, fields, keys, and relationships.
+
+### Behaviours (Future)
+Commands, queries, and workflows that define what can be done in the domain. See [Behaviours](architecture/draft/03-behaviours.md).
 
 ### Template
 A code generator (C# DLL) that consumes definitions and produces output files.

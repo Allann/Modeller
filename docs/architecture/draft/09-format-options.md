@@ -67,7 +67,7 @@ belongs_to: Child
 
 ### 3. Custom DSL (Evolved from existing format)
 
-Based on your existing `/definition` format:
+Based on your existing `/definition.old` format:
 
 ```
 entity Booking

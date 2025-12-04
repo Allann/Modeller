@@ -1,8 +1,10 @@
-# Domain Definition Language - Draft Specification
+# Domain Definition Language
 
-> **Status**: Draft - Work in Progress
+> **Status**: Future Direction
+>
+> This specification describes the **next generation** of Modeller - a natural language-oriented, YAML-based domain definition format designed to replace the [legacy C# fluent API](../../definitions.md).
 
-This folder contains the draft specification for a natural language-oriented domain definition format designed for:
+This specification defines a domain definition format designed for:
 
 1. **Business readability** - Definitions read like documentation that business stakeholders can review
 2. **Technology agnostic** - Describes *what* the business does, not *how* systems implement it

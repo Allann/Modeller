@@ -1,0 +1,13 @@
+# ListGenerators Query
+# Lists available generators
+
+query ListGenerators
+  "Lists all available generators"
+  
+  input
+    OutputType: OutputType, optional "Filter by output type"
+  end
+  
+  returns many Generator
+end
+

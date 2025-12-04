@@ -18,17 +18,16 @@ attributes:
     type: [DataType]
     description: [Text]
     optional: [boolean]
-    
+
 relationships:
   [RelationshipName]:
     has_one|has_many: [EntityName]
     description: [Text]
-    
-belongs_to: [ParentEntity]
 
-can:
-  - [action verb phrase]
+belongs_to: [ParentEntity]
 ```
+
+> Note: What can be done with an entity is defined in separate behaviour files (commands, queries).
 
 ### Semantic Keys
 
@@ -41,7 +40,7 @@ Keywords convey meaning that AI can understand:
 | `belongs_to` | Parent relationship |
 | `has_one` | Single relationship |
 | `has_many` | Collection relationship |
-| `can` | Available behaviours |
+| `involves` | Entities participating in a behaviour |
 | `uses` | Reference data fields |
 | `publishes` | Events produced |
 | `changes` | State mutations |
@@ -66,7 +65,7 @@ Q: "What is a Booking?"
 A: Parse entity.description → "Planned attendance for a child..."
 
 Q: "What can you do with a Booking?"
-A: Parse entity.can → "place, cancel, record attendance, record absence"
+A: Parse related commands → "PlaceBooking, CancelBooking, RecordAttendance, RecordAbsence"
 
 Q: "What does a Booking contain?"
 A: Parse entity.attributes → "Date, Status, Session times..."
@@ -99,14 +98,17 @@ AI can validate definitions for:
 
 ### 4. Code Generation Guidance
 
-AI understands what code to generate:
+AI understands what code to generate from behaviours:
 
 ```yaml
-entity: Booking
-can:
-  - be cancelled  # → CancelBooking command
-                  # → BookingCancelled event
-                  # → Booking.Cancel() method
+command: CancelBooking
+description: Cancels a booking before attendance is recorded
+owner: Booking
+
+# Generates:
+#   → CancelBooking command handler
+#   → BookingCancelled event
+#   → Booking.Cancel() domain method
 ```
 
 ---
@@ -205,17 +207,15 @@ For tooling and validation, provide JSON Schema:
     "relationships": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "#/definitions/relationship"  
+        "$ref": "#/definitions/relationship"
       }
     },
-    "belongs_to": { "type": "string" },
-    "can": {
-      "type": "array",
-      "items": { "type": "string" }
-    }
+    "belongs_to": { "type": "string" }
   }
 }
 ```
+
+> Note: Behaviours (what can be done with an entity) are defined in separate command/query files, not in the entity schema.
 
 This enables:
 - IDE autocompletion
