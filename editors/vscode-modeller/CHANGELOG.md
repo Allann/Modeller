@@ -1,0 +1,31 @@
+# Changelog
+
+All notable changes to the Modeller DSL extension will be documented in this file.
+
+## [1.0.0] - 2024-12-04
+
+### Added
+
+- Initial release
+- Syntax highlighting for Modeller DSL files
+  - Domain definitions (`.def`)
+  - Entity definitions (`.entity`)
+  - Enum definitions (`.enum`)
+  - Service definitions (`.service`)
+  - Command definitions (`.command`)
+  - Query definitions (`.query`)
+- Language configuration
+  - Line comments with `#`
+  - Bracket matching for `[]` and `()`
+  - Auto-closing pairs
+  - Code folding for block structures
+  - Indentation rules
+- Highlighting support for:
+  - Declaration keywords (`domain`, `entity`, `enum`, `service`, `command`, `query`, `key`, `flags`)
+  - Block keywords (`end`, `input`, `output`, `errors`, `publishes`, etc.)
+  - Built-in data types (`text`, `integer`, `boolean`, `guid`, etc.)
+  - Relationship keywords (`has_one`, `has_many`, `belongs_to`, `many_to_many`)
+  - Modifiers (`optional`, `default`, `generated`, `unique`)
+  - Boolean literals and numbers
+  - Strings and comments
+

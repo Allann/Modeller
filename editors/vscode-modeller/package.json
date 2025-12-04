@@ -1,0 +1,97 @@
+{
+  "name": "modeller-dsl",
+  "displayName": "Modeller DSL",
+  "description": "Syntax highlighting for Modeller domain definition language",
+  "version": "1.0.0",
+  "publisher": "catalyst",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "modeller",
+    "dsl",
+    "domain",
+    "entity",
+    "code generation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CSharp-Catalyst/Modeller"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "modeller-def",
+        "aliases": ["Modeller Domain", "def"],
+        "extensions": [".def"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-entity",
+        "aliases": ["Modeller Entity", "entity"],
+        "extensions": [".entity"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-enum",
+        "aliases": ["Modeller Enum", "enum"],
+        "extensions": [".enum"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-service",
+        "aliases": ["Modeller Service", "service"],
+        "extensions": [".service"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-command",
+        "aliases": ["Modeller Command", "command"],
+        "extensions": [".command"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-query",
+        "aliases": ["Modeller Query", "query"],
+        "extensions": [".query"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "modeller-def",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-entity",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-enum",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-service",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-command",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-query",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      }
+    ]
+  }
+}
+

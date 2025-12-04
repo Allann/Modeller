@@ -1,0 +1,28 @@
+# Files to exclude when packaging the extension
+
+# Source control
+.git/**
+.gitignore
+
+# Development files
+.vscode/**
+*.md
+!README.md
+
+# Build artifacts
+*.vsix
+node_modules/**
+
+# Test files
+test/**
+tests/**
+**/*.test.js
+
+# TypeScript source (if any)
+src/**
+tsconfig.json
+
+# Other
+.eslintrc.json
+.prettierrc
+

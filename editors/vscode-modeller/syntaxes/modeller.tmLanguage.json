@@ -1,0 +1,116 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Modeller DSL",
+  "scopeName": "source.modeller",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#definition-keywords" },
+    { "include": "#block-keywords" },
+    { "include": "#modifiers" },
+    { "include": "#data-types" },
+    { "include": "#relationship-keywords" },
+    { "include": "#constants" },
+    { "include": "#operators" },
+    { "include": "#identifiers" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.modeller",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.modeller",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.modeller",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.modeller",
+          "match": "\\b[0-9]+(\\.[0-9]+)?\\b"
+        }
+      ]
+    },
+    "definition-keywords": {
+      "patterns": [
+        {
+          "name": "keyword.declaration.modeller",
+          "match": "\\b(domain|entity|key|enum|flags|service|command|query)\\b"
+        }
+      ]
+    },
+    "block-keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.modeller",
+          "match": "\\b(end|input|output|errors|publishes|entities|enums|services|references|returns|index)\\b"
+        }
+      ]
+    },
+    "modifiers": {
+      "patterns": [
+        {
+          "name": "keyword.other.modifier.modeller",
+          "match": "\\b(optional|default|generated|unique|many|as|max)\\b"
+        }
+      ]
+    },
+    "data-types": {
+      "patterns": [
+        {
+          "name": "support.type.primitive.modeller",
+          "match": "\\b(text|integer|long|decimal|boolean|date|time|datetime|guid|name|image|email|url)\\b"
+        }
+      ]
+    },
+    "relationship-keywords": {
+      "patterns": [
+        {
+          "name": "keyword.other.relationship.modeller",
+          "match": "\\b(has_one|has_many|belongs_to|many_to_many)\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.modeller",
+          "match": "\\b(true|false)\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "punctuation.separator.modeller",
+          "match": "[:\\[\\]\\(\\),]"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "variable.other.property.modeller",
+          "match": "\\b(company|version)\\b"
+        }
+      ]
+    }
+  }
+}
+
