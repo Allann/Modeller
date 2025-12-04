@@ -40,12 +40,8 @@
     },
     "_modeller_default": {
       "iconPath": "./icons/modeller.svg"
-    },
-    "_folder": {
-      "iconPath": "./icons/modeller.svg"
     }
   },
-  "file": "_modeller_default",
   "fileExtensions": {
     "def": "_modeller_def",
     "entity": "_modeller_entity",
