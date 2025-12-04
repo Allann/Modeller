@@ -77,6 +77,30 @@ public static class DslParser
         Parse(input, BehaviourParsers.Query);
 
     /// <summary>
+    /// Parses a value object definition file
+    /// </summary>
+    public static ParseResult<ValueNode> ParseValue(string input) =>
+        Parse(input, ValueParsers.Value);
+
+    /// <summary>
+    /// Parses a shared/lookup data definition file
+    /// </summary>
+    public static ParseResult<SharedNode> ParseShared(string input) =>
+        Parse(input, SharedParsers.Shared);
+
+    /// <summary>
+    /// Parses an event definition file
+    /// </summary>
+    public static ParseResult<EventNode> ParseEvent(string input) =>
+        Parse(input, EventParsers.Event);
+
+    /// <summary>
+    /// Parses a projection definition file
+    /// </summary>
+    public static ParseResult<ProjectionNode> ParseProjection(string input) =>
+        Parse(input, ProjectionParsers.Projection);
+
+    /// <summary>
     /// Core parse function
     /// </summary>
     private static ParseResult<T> Parse<T>(string input, Parser<char, T> parser) where T : AstNode

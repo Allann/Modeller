@@ -2,7 +2,7 @@
   "name": "modeller-dsl",
   "displayName": "Modeller DSL",
   "description": "Syntax highlighting for Modeller domain definition language",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "catalyst",
   "engines": {
     "vscode": "^1.75.0"
@@ -36,9 +36,21 @@
         "configuration": "./language-configuration.json"
       },
       {
+        "id": "modeller-key",
+        "aliases": ["Modeller Key", "key"],
+        "extensions": [".key"],
+        "configuration": "./language-configuration.json"
+      },
+      {
         "id": "modeller-enum",
         "aliases": ["Modeller Enum", "enum"],
         "extensions": [".enum"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-flags",
+        "aliases": ["Modeller Flags", "flags"],
+        "extensions": [".flags"],
         "configuration": "./language-configuration.json"
       },
       {
@@ -58,6 +70,30 @@
         "aliases": ["Modeller Query", "query"],
         "extensions": [".query"],
         "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-value",
+        "aliases": ["Modeller Value", "value"],
+        "extensions": [".value"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-shared",
+        "aliases": ["Modeller Shared", "shared"],
+        "extensions": [".shared"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-event",
+        "aliases": ["Modeller Event", "event"],
+        "extensions": [".event"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-projection",
+        "aliases": ["Modeller Projection", "projection"],
+        "extensions": [".projection"],
+        "configuration": "./language-configuration.json"
       }
     ],
     "grammars": [
@@ -72,7 +108,17 @@
         "path": "./syntaxes/modeller.tmLanguage.json"
       },
       {
+        "language": "modeller-key",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
         "language": "modeller-enum",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-flags",
         "scopeName": "source.modeller",
         "path": "./syntaxes/modeller.tmLanguage.json"
       },
@@ -88,6 +134,26 @@
       },
       {
         "language": "modeller-query",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-value",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-shared",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-event",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-projection",
         "scopeName": "source.modeller",
         "path": "./syntaxes/modeller.tmLanguage.json"
       }

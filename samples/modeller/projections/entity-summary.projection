@@ -1,0 +1,14 @@
+# EntitySummary Projection
+# A flattened view of entity data for listing
+
+projection EntitySummary
+  "A summary view of entities for list displays"
+  
+  EntityId: guid "The entity identifier"
+  Name: name "Entity name"
+  ServiceName: name "Owning service name"
+  AttributeCount: integer "Number of attributes"
+  RelationshipCount: integer "Number of relationships"
+  IsAggregateRoot: boolean "Whether this is an aggregate root"
+end
+

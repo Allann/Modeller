@@ -1,0 +1,12 @@
+# EntityCreated Event
+# Domain event raised when an entity is created
+
+event EntityCreated
+  "Raised when a new entity is defined"
+  
+  EntityId: guid "The unique identifier of the entity"
+  Name: name "The name of the entity"
+  ServiceId: guid "The owning service"
+  Timestamp: datetime "When the entity was created"
+end
+

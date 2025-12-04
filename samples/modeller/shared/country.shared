@@ -1,0 +1,11 @@
+# Country Shared Data
+# External lookup data for countries
+
+shared Country
+  "Reference data for countries - externally managed"
+  
+  Code: text(2) "ISO 3166-1 alpha-2 country code"
+  Name: text(100) "Country name"
+  Region: text(50), optional "Geographic region"
+end
+

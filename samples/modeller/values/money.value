@@ -1,0 +1,10 @@
+# Money Value Object
+# An immutable value object representing a monetary amount
+
+value Money
+  "A monetary amount with currency"
+  
+  Amount: decimal "The monetary value"
+  Currency: text(3), default("AUD") "ISO 4217 currency code"
+end
+

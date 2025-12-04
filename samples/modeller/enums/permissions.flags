@@ -1,0 +1,14 @@
+# Permissions Flags
+# Bitwise flags for access control
+
+flags Permissions
+  "Bitwise flags for controlling access permissions"
+  
+  None: 0 "No permissions"
+  Read: 1 "Can read data"
+  Write: 2 "Can write data"
+  Delete: 4 "Can delete data"
+  Execute: 8 "Can execute commands"
+  Admin: 16 "Administrative access"
+end
+

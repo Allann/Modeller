@@ -2,6 +2,22 @@
 
 All notable changes to the Modeller DSL extension will be documented in this file.
 
+## [1.1.0] - 2024-12-04
+
+### Added
+
+- New file type support:
+  - Key definitions (`.key`)
+  - Flags definitions (`.flags`)
+  - Value object definitions (`.value`)
+  - Shared/lookup data definitions (`.shared`)
+  - Event definitions (`.event`)
+  - Projection definitions (`.projection`)
+- New syntax highlighting keywords:
+  - Declaration: `value`, `shared`, `event`, `projection`
+  - Block: `attributes`, `identity`, `ownership`, `data`, `fields`, `owned`
+  - Modifiers: `immutable`, `on_create`, `through`, `parent`
+
 ## [1.0.0] - 2024-12-04
 
 ### Added

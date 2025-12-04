@@ -1,0 +1,13 @@
+# Address Value Object
+# An immutable value object representing a physical address
+
+value Address
+  "A physical or mailing address"
+  
+  Street: text(200) "Street address line"
+  City: text(100) "City name"
+  State: text(50) "State or province"
+  PostalCode: text(20) "Postal or ZIP code"
+  Country: text(100), default("Australia") "Country name"
+end
+

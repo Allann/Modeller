@@ -187,3 +187,55 @@ public sealed record EnumValueNode(
     int Value,
     string? Description = null,
     SourceSpan Span = default) : AstNode(Span);
+
+/// <summary>
+/// A value object definition - an immutable object without identity
+/// </summary>
+/// <param name="Name">The value object name</param>
+/// <param name="Description">Optional description</param>
+/// <param name="Attributes">List of attributes</param>
+/// <param name="Span">Source location</param>
+public sealed record ValueNode(
+    string Name,
+    string? Description = null,
+    IReadOnlyList<AttributeNode>? Attributes = null,
+    SourceSpan Span = default) : AstNode(Span);
+
+/// <summary>
+/// A shared/lookup data definition - external data projection
+/// </summary>
+/// <param name="Name">The shared data name</param>
+/// <param name="Description">Optional description</param>
+/// <param name="Attributes">List of attributes exposed</param>
+/// <param name="Span">Source location</param>
+public sealed record SharedNode(
+    string Name,
+    string? Description = null,
+    IReadOnlyList<AttributeNode>? Attributes = null,
+    SourceSpan Span = default) : AstNode(Span);
+
+/// <summary>
+/// A domain event definition
+/// </summary>
+/// <param name="Name">The event name</param>
+/// <param name="Description">Optional description</param>
+/// <param name="Attributes">Event data attributes</param>
+/// <param name="Span">Source location</param>
+public sealed record EventNode(
+    string Name,
+    string? Description = null,
+    IReadOnlyList<AttributeNode>? Attributes = null,
+    SourceSpan Span = default) : AstNode(Span);
+
+/// <summary>
+/// A projection definition - query return shape
+/// </summary>
+/// <param name="Name">The projection name</param>
+/// <param name="Description">Optional description</param>
+/// <param name="Attributes">Projected attributes</param>
+/// <param name="Span">Source location</param>
+public sealed record ProjectionNode(
+    string Name,
+    string? Description = null,
+    IReadOnlyList<AttributeNode>? Attributes = null,
+    SourceSpan Span = default) : AstNode(Span);

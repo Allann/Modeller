@@ -1,0 +1,13 @@
+# GenerationCompleted Event
+# Domain event raised when code generation completes
+
+event GenerationCompleted
+  "Raised when code generation is successfully completed"
+  
+  GeneratorId: guid "The generator that was used"
+  DomainId: guid "The domain that was generated"
+  OutputPath: text(500) "Where output was written"
+  FileCount: integer "Number of files generated"
+  CompletedAt: datetime "When generation finished"
+end
+

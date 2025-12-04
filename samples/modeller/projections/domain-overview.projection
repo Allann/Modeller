@@ -1,0 +1,15 @@
+# DomainOverview Projection
+# A high-level summary of a domain
+
+projection DomainOverview
+  "A high-level overview of a domain for dashboards"
+  
+  DomainId: guid "The domain identifier"
+  Name: name "Domain name"
+  Description: text(500), optional "Domain description"
+  ServiceCount: integer "Number of services"
+  EntityCount: integer "Total entities across all services"
+  EnumCount: integer "Total enumerations"
+  Version: text(20), optional "Current version"
+end
+

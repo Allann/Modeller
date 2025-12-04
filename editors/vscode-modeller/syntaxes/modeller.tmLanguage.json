@@ -51,7 +51,7 @@
       "patterns": [
         {
           "name": "keyword.declaration.modeller",
-          "match": "\\b(domain|entity|key|enum|flags|service|command|query)\\b"
+          "match": "\\b(domain|entity|key|enum|flags|service|command|query|value|shared|event|projection)\\b"
         }
       ]
     },
@@ -59,7 +59,7 @@
       "patterns": [
         {
           "name": "keyword.control.modeller",
-          "match": "\\b(end|input|output|errors|publishes|entities|enums|services|references|returns|index)\\b"
+          "match": "\\b(end|input|output|errors|publishes|entities|enums|services|references|returns|index|attributes|identity|ownership|data|fields|owned)\\b"
         }
       ]
     },
@@ -67,7 +67,7 @@
       "patterns": [
         {
           "name": "keyword.other.modifier.modeller",
-          "match": "\\b(optional|default|generated|unique|many|as|max)\\b"
+          "match": "\\b(optional|default|generated|unique|many|as|max|immutable|on_create|through|parent)\\b"
         }
       ]
     },
