@@ -2,6 +2,13 @@
 
 All notable changes to the Modeller DSL extension will be documented in this file.
 
+## [1.3.0] - 2024-12-04
+
+### Added
+
+- **Auto-prompt for icon theme**: Extension now prompts to enable custom icons on first install
+- Options: "Yes, enable icons", "No thanks", or "Remind me later"
+
 ## [1.2.0] - 2024-12-04
 
 ### Added

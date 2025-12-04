@@ -2,11 +2,15 @@
   "name": "modeller-dsl",
   "displayName": "Modeller DSL",
   "description": "Syntax highlighting and file icons for Modeller domain definition language",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "publisher": "catalyst",
   "engines": {
     "vscode": "^1.75.0"
   },
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "categories": [
     "Programming Languages",
     "Themes"
@@ -166,6 +170,16 @@
         "path": "./modeller-icon-theme.json"
       }
     ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
   }
 }
 
