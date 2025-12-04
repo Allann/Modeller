@@ -23,36 +23,42 @@ A domain definition should describe **what the business cares about**, not how i
 
 Define concepts in business terms:
 
-```yaml
-# Good - describes the business concept
-Adult:
-  is: A person responsible for children at the centre
-  has:
-    Name: person's full name
-    Contact: how to reach them
-    
-# Avoid - leaks persistence concerns
-Adult:
-  AdultId: auto-increment integer
-  FK_OrganisationId: foreign key to Organisation
+```
+// Good - describes the business concept
+entity Adult
+    "A person responsible for children at the centre"
+
+    attributes
+        Name: text "Person's full name"
+        Contact: Contact "How to reach them"
+end
+
+// Avoid - leaks persistence concerns
+entity Adult
+    attributes
+        AdultId: int generated     // Technical ID
+        FK_OrganisationId: int     // Foreign key
+end
 ```
 
 ### 2. Natural Language Orientation
 
 Definitions should read like documentation:
 
-```yaml
-Booking:
-  is: |
+```
+entity Booking
+    """
     Planned attendance for a child at a centre for a session.
     Transitions through: planned → attending → attended (or absence).
-    
-  has:
-    Date: when attendance is planned
-    Session: the session being booked
-    Status: current state of the booking
-    
-  belongs to: Child
+    """
+
+    attributes
+        Date: date "When attendance is planned"
+        Session: Session "The session being booked"
+        Status: BookingStatus "Current state of the booking"
+
+    belongs_to Child
+end
 ```
 
 > Note: What can be done (behaviours) is defined separately - see [Behaviours](03-behaviours.md).
@@ -61,44 +67,53 @@ Booking:
 
 Structured for machine understanding:
 
-- **Predictable schema** - AI knows what fields to expect
-- **Semantic keys** - `has`, `belongs to`, `involves` convey meaning
-- **Self-documenting** - Every element has a description
+- **Predictable grammar** - AI knows what keywords and structure to expect
+- **Semantic keywords** - `attributes`, `belongs_to`, `involves` convey meaning
+- **Self-documenting** - Every element can have a description
 - **Queryable** - "What can be done with a Booking?" → parse related commands
 
 ### 4. Separation of Concerns
 
 | File Type | Contains | Example |
 |-----------|----------|---------|
-| `.entity` | Domain structure | `Booking.entity.yaml` |
-| `.key` | Identity/persistence | `Booking.key.yaml` |
-| `.cmd` | Commands (mutations) | `CancelBooking.cmd.yaml` |
-| `.query` | Queries (reads) | `GetBookings.query.yaml` |
-| `.enum` | Enumerations | `BookingStatus.enum.yaml` |
-| `.service` | Bounded context | `Scheduling.service.yaml` |
+| `.entity` | Domain structure | `booking.entity` |
+| `.key` | Identity/persistence | `booking.key` |
+| `.command` | Commands (mutations) | `cancel-booking.command` |
+| `.query` | Queries (reads) | `get-bookings.query` |
+| `.enum` | Enumerations | `booking-status.enum` |
+| `.service` | Bounded context | `scheduling.service` |
+| `.value` | Value objects | `address.value` |
+| `.shared` | Lookup data | `country.shared` |
+| `.event` | Domain events | `booking-created.event` |
+| `.projection` | Read models | `booking-summary.projection` |
 
 ### 5. Version Support
 
 Interface evolution without domain pollution:
 
-```yaml
-# Domain stays clean
-Booking:
-  has:
-    Status: current state
+```
+// Domain stays clean
+entity Booking
+    attributes
+        Status: BookingStatus "Current state"
+end
 
-# Versioning is separate - for when systems need different views
-Booking.v1:
-  version: v1
-  maps_to: Booking
-  shape:
-    status: Status.name  # v1 returns name only
+// Versioning is separate - for when systems need different views
+projection BookingV1
+    version "v1"
+    from Booking
 
-Booking.v2:
-  version: v2
-  maps_to: Booking
-  shape:
-    status: Status  # v2 returns full status
+    fields
+        status: Status.name    // v1 returns name only
+end
+
+projection BookingV2
+    version "v2"
+    from Booking
+
+    fields
+        status: Status         // v2 returns full status object
+end
 ```
 
 ## What This Enables
@@ -108,4 +123,3 @@ Booking.v2:
 3. **Business stakeholders** can review and discuss definitions
 4. **Versioned interfaces** without domain model changes
 5. **Rules engine integration** for business logic (future)
-

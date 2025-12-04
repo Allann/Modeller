@@ -1,5 +1,7 @@
 # Format Options
 
+> **Decision**: We chose the **Custom DSL** approach (Option 3), implemented with [Pidgin](https://github.com/benjamin-hodgson/Pidgin) parser combinators. See the rationale below.
+
 This document discusses the trade-offs between different formats for writing domain definitions.
 
 ## Options
@@ -283,12 +285,20 @@ DSL compiles to YAML/JSON for:
 
 ---
 
-## Questions to Decide
+## Implementation Status ✅
 
-1. **Primary audience**: Who writes definitions most? Developers? Business analysts?
+We implemented the **Custom DSL with Hybrid Approach**:
 
-2. **AI interaction**: Should AI work with the DSL directly or the intermediate format?
+| Component | Status | Notes |
+|-----------|--------|-------|
+| **Pidgin Parser** | ✅ Complete | All file types supported |
+| **Domain Models** | ✅ Complete | Immutable records with factory validation |
+| **VS Code Extension** | ✅ Complete | Syntax highlighting + custom icons |
+| **Sample Definitions** | ✅ Complete | Full example in `samples/modeller/` |
 
-3. **Existing format**: How much of the current `/definition` format should we preserve?
+### Decisions Made
 
-4. **IDE support**: Should we prioritise VS Code extension for syntax highlighting/validation?
+1. **Primary audience**: Developers author definitions; business stakeholders review them
+2. **AI interaction**: AI works with the DSL directly (structured grammar is AI-friendly)
+3. **Existing format**: Clean break - new DSL designed for domain modelling
+4. **IDE support**: VS Code extension with syntax highlighting and file icons

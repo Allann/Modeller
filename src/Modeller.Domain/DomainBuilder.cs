@@ -74,42 +74,42 @@ public sealed class DomainBuilder
     public Domain Build()
     {
         // Build entities first (other things reference them)
-        var entities = _entityNodes.Select(BuildEntity).ToList();
-        var enums = _enumNodes.Select(BuildEnum).ToList();
-        var commands = _commandNodes.Select(BuildCommand).ToList();
-        var queries = _queryNodes.Select(BuildQuery).ToList();
-        var services = _serviceNodes.Select(BuildService).ToList();
+        var entities = _entityNodes.Select(BuildEntity).Where(e => e is not null).Cast<Entity>().ToList();
+        var enums = _enumNodes.Select(BuildEnum).Where(e => e is not null).Cast<Enumeration>().ToList();
+        var commands = _commandNodes.Select(BuildCommand).Where(c => c is not null).Cast<Command>().ToList();
+        var queries = _queryNodes.Select(BuildQuery).Where(q => q is not null).Cast<Query>().ToList();
+        var services = _serviceNodes.Select(BuildService).Where(s => s is not null).Cast<Service>().ToList();
 
-        var domain = new Domain(
-            Name: _domainNode?.Name ?? "Unknown",
-            Description: _domainNode?.Description,
-            Version: _domainNode?.Version,
-            Entities: entities,
-            Enums: enums,
-            Commands: commands,
-            Queries: queries,
-            Services: services);
+        var domain = Domain.New(
+            name: _domainNode?.Name ?? "Unknown",
+            description: _domainNode?.Description,
+            version: _domainNode?.Version,
+            entities: entities,
+            enums: enums,
+            commands: commands,
+            queries: queries,
+            services: services) ?? throw new InvalidOperationException("Failed to create domain");
 
         // Resolve references and return new immutable domain
         return ResolveReferences(domain);
     }
 
-    private static Entity BuildEntity(EntityNode node) => new(
-        Name: node.Name,
-        Description: node.Description,
-        Attributes: node.Attributes?.Select(BuildAttribute).ToList(),
-        Relationships: node.Relationships?.Select(BuildRelationship).ToList(),
-        Key: node.Key is not null ? BuildKey(node.Key) : null);
+    private static Entity? BuildEntity(EntityNode node) => Entity.New(
+        name: node.Name,
+        description: node.Description,
+        attributes: node.Attributes?.Select(BuildAttribute).Where(a => a is not null).Cast<Attribute>().ToList(),
+        relationships: node.Relationships?.Select(BuildRelationship).Where(r => r is not null).Cast<Relationship>().ToList(),
+        key: node.Key is not null ? BuildKey(node.Key) : null);
 
-    private static Attribute BuildAttribute(AttributeNode node) => new(
-        Name: node.Name,
-        DataType: new DataType(TypeName: node.DataType, Length: node.MaxLength),
-        Description: node.Description,
-        IsRequired: !node.IsOptional,
-        DefaultValue: node.DefaultValue);
+    private static Attribute? BuildAttribute(AttributeNode node) => Attribute.New(
+        name: node.Name,
+        dataType: DataType.New(typeName: node.DataType, length: node.MaxLength) ?? throw new InvalidOperationException($"Invalid data type: {node.DataType}"),
+        description: node.Description,
+        isRequired: !node.IsOptional,
+        defaultValue: node.DefaultValue);
 
-    private static Relationship BuildRelationship(RelationshipNode node) => new(
-        Type: node.Type switch
+    private static Relationship? BuildRelationship(RelationshipNode node) => Relationship.New(
+        type: node.Type switch
         {
             Parser.Ast.RelationshipType.HasOne => RelationshipType.HasOne,
             Parser.Ast.RelationshipType.HasMany => RelationshipType.HasMany,
@@ -117,46 +117,46 @@ public sealed class DomainBuilder
             Parser.Ast.RelationshipType.ManyToMany => RelationshipType.HasMany,
             _ => RelationshipType.HasOne
         },
-        TargetEntityName: node.TargetEntity,
-        Alias: node.Alias);
+        targetEntityName: node.TargetEntity,
+        alias: node.Alias);
 
-    private static Key BuildKey(KeyNode node) => new(
-        Fields: node.Fields?.Select(f => new KeyField(
-            Name: f.Name,
-            TypeName: f.DataType,
-            IsGenerated: f.IsGenerated)).ToList(),
-        Indexes: node.Indexes?.Select(i => new Index(
-            Fields: i.Fields?.ToList(),
-            IsUnique: i.IsUnique)).ToList());
+    private static Key BuildKey(KeyNode node) => Key.New(
+        fields: node.Fields?.Select(f => KeyField.New(
+            name: f.Name,
+            typeName: f.DataType,
+            isGenerated: f.IsGenerated)).Where(k => k is not null).Cast<KeyField>().ToList(),
+        indexes: node.Indexes?.Select(i => Index.New(
+            fields: i.Fields?.ToList(),
+            isUnique: i.IsUnique)).ToList());
 
-    private static Enumeration BuildEnum(EnumNode node) => new(
-        Name: node.Name,
-        Description: node.Description,
-        Values: node.Values?.Select(v => new EnumValue(
-            Name: v.Name,
-            Description: v.Description,
-            Value: v.Value)).ToList());
+    private static Enumeration? BuildEnum(EnumNode node) => Enumeration.New(
+        name: node.Name,
+        description: node.Description,
+        values: node.Values?.Select(v => EnumValue.New(
+            name: v.Name,
+            description: v.Description,
+            value: v.Value)).Where(e => e is not null).Cast<EnumValue>().ToList());
 
-    private static Command BuildCommand(CommandNode node) => new(
-        Name: node.Name,
-        Description: node.Description,
-        Inputs: node.Inputs?.Select(BuildAttribute).ToList(),
-        OutputTypeName: node.Output,
-        Errors: node.Errors?.Select(e => new ErrorType(
-            Name: e.Name,
-            Description: e.Description)).ToList(),
-        Events: node.Events?.ToList());
+    private static Command? BuildCommand(CommandNode node) => Command.New(
+        name: node.Name,
+        description: node.Description,
+        inputs: node.Inputs?.Select(BuildAttribute).Where(a => a is not null).Cast<Attribute>().ToList(),
+        outputTypeName: node.Output,
+        errors: node.Errors?.Select(e => ErrorType.New(
+            name: e.Name,
+            description: e.Description)).Where(e => e is not null).Cast<ErrorType>().ToList(),
+        events: node.Events?.ToList());
 
-    private static Query BuildQuery(QueryNode node) => new(
-        Name: node.Name,
-        Description: node.Description,
-        Inputs: node.Inputs?.Select(BuildAttribute).ToList(),
-        OutputTypeName: node.Returns,
-        ReturnsCollection: node.ReturnsMany);
+    private static Query? BuildQuery(QueryNode node) => Query.New(
+        name: node.Name,
+        description: node.Description,
+        inputs: node.Inputs?.Select(BuildAttribute).Where(a => a is not null).Cast<Attribute>().ToList(),
+        outputTypeName: node.Returns,
+        returnsCollection: node.ReturnsMany);
 
-    private static Service BuildService(ServiceNode node) => new(
-        Name: node.Name,
-        Description: node.Description);
+    private static Service? BuildService(ServiceNode node) => Service.New(
+        name: node.Name,
+        description: node.Description);
 
     /// <summary>
     /// Resolves all cross-references in the domain, returning a new immutable domain
@@ -165,48 +165,84 @@ public sealed class DomainBuilder
     {
         // Resolve entities with their relationships resolved
         var resolvedEntities = domain.Entities
-            .Select(entity => entity with
-            {
-                Relationships = entity.Relationships
-                    .Select(rel => rel with { TargetEntity = domain.GetEntity(rel.TargetEntityName) })
-                    .ToList()
-            })
+            .Select(entity => Entity.CreateValid(
+                entity.PublicId,
+                entity.Name,
+                entity.Description,
+                entity.IsAggregateRoot,
+                entity.Service,
+                entity.Attributes,
+                entity.Relationships
+                    .Select(rel => Relationship.New(
+                        rel.Type,
+                        rel.TargetEntityName,
+                        rel.Alias,
+                        domain.GetEntity(rel.TargetEntityName)))
+                    .Where(r => r is not null)
+                    .Cast<Relationship>()
+                    .ToList(),
+                entity.Key)!)
             .ToList();
 
         // Resolve commands with output entities
         var resolvedCommands = domain.Commands
-            .Select(cmd => cmd with
-            {
-                OutputEntity = cmd.OutputTypeName is not null
-                    ? domain.GetEntity(cmd.OutputTypeName)
-                    : null
-            })
+            .Select(cmd => Command.CreateValid(
+                cmd.PublicId,
+                cmd.Name,
+                cmd.Description,
+                cmd.Inputs,
+                cmd.OutputTypeName,
+                cmd.OutputTypeName is not null ? domain.GetEntity(cmd.OutputTypeName) : null,
+                cmd.Errors,
+                cmd.Events)!)
             .ToList();
 
         // Resolve queries with output entities
         var resolvedQueries = domain.Queries
-            .Select(q => q with
-            {
-                OutputEntity = q.OutputTypeName is not null
-                    ? domain.GetEntity(q.OutputTypeName)
-                    : null
-            })
+            .Select(q => Query.CreateValid(
+                q.PublicId,
+                q.Name,
+                q.Description,
+                q.Inputs,
+                q.OutputTypeName,
+                q.ReturnsCollection,
+                q.OutputTypeName is not null ? domain.GetEntity(q.OutputTypeName) : null)!)
             .ToList();
 
         // Create resolved domain
-        var resolvedDomain = domain with
-        {
-            Entities = resolvedEntities,
-            Commands = resolvedCommands,
-            Queries = resolvedQueries
-        };
+        var resolvedDomain = Domain.CreateValid(
+            domain.PublicId,
+            domain.Name,
+            domain.Description,
+            domain.Version,
+            domain.Services,
+            resolvedEntities,
+            domain.Enums,
+            resolvedCommands,
+            resolvedQueries) ?? throw new InvalidOperationException("Failed to create resolved domain");
 
         // Resolve services with parent domain reference
         var resolvedServices = domain.Services
-            .Select(svc => svc with { Domain = resolvedDomain })
+            .Select(svc => Service.CreateValid(
+                svc.PublicId,
+                svc.Name,
+                svc.Description,
+                resolvedDomain,
+                svc.Entities,
+                svc.Commands,
+                svc.Queries)!)
             .ToList();
 
-        return resolvedDomain with { Services = resolvedServices };
+        return Domain.CreateValid(
+            resolvedDomain.PublicId,
+            resolvedDomain.Name,
+            resolvedDomain.Description,
+            resolvedDomain.Version,
+            resolvedServices,
+            resolvedDomain.Entities,
+            resolvedDomain.Enums,
+            resolvedDomain.Commands,
+            resolvedDomain.Queries) ?? throw new InvalidOperationException("Failed to create final domain");
     }
 }
 

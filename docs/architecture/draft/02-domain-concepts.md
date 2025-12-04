@@ -15,41 +15,24 @@ An entity has **identity** and a **lifecycle**. Two entities with the same attri
 
 ### Definition Structure
 
-```yaml
-entity: Booking
-description: |
-  Planned attendance for a child at a centre for a session.
-  Transitions through states as attendance is recorded.
+```
+entity Booking
+    """
+    Planned attendance for a child at a centre for a session.
+    Transitions through states as attendance is recorded.
+    """
 
-attributes:
-  Date:
-    type: date
-    description: When attendance is planned
-    
-  Status:
-    type: BookingStatus
-    description: Current state of the booking
-    
-  AdjustedHours:
-    type: decimal
-    optional: true
-    description: Total adjusted hours after modifications
+    attributes
+        Date: date "When attendance is planned"
+        Status: BookingStatus "Current state of the booking"
+        AdjustedHours: decimal? "Total adjusted hours after modifications"
 
-relationships:
-  Session:
-    has_one: Session
-    description: The session being booked
-    
-  Attendances:
-    has_many: Attendance
-    description: Recorded attendance instances
-    
-  Absence:
-    has_one: Absence
-    optional: true
-    description: Absence record if child did not attend
+    has_one Session "The session being booked"
+    has_many Attendance as Attendances "Recorded attendance instances"
+    has_one Absence? "Absence record if child did not attend"
 
-belongs_to: Child
+    belongs_to Child
+end
 ```
 
 ### Key Concepts
@@ -57,10 +40,10 @@ belongs_to: Child
 | Keyword | Meaning |
 |---------|---------|
 | `attributes` | Data the entity holds |
-| `relationships` | Connections to other entities |
-| `belongs_to` | Parent entity (ownership) |
 | `has_one` | Single related entity |
 | `has_many` | Collection of related entities |
+| `belongs_to` | Parent entity (ownership) |
+| `?` suffix | Optional (nullable) |
 
 ---
 
@@ -78,31 +61,17 @@ A value object has **no identity**. It is defined entirely by its attributes. Tw
 
 ### Definition Structure
 
-```yaml
-value: Address
-description: A physical or postal address
+```
+value Address
+    "A physical or postal address"
 
-attributes:
-  Street:
-    type: text
-    description: Street number and name
-    
-  Suburb:
-    type: text
-    description: Suburb or city
-    
-  State:
-    type: State
-    description: State or territory
-    
-  PostCode:
-    type: text(4)
-    description: Postal code
-    
-  Country:
-    type: text
-    default: Australia
-    description: Country name
+    attributes
+        Street: text "Street number and name"
+        Suburb: text "Suburb or city"
+        State: State "State or territory"
+        PostCode: text(4) "Postal code"
+        Country: text = "Australia" "Country name"
+end
 ```
 
 ### Common Value Objects
@@ -132,64 +101,46 @@ Shared data is **owned by another domain** but used within this domain. It is re
 
 ### Definition Structure
 
-```yaml
-shared: Organisation
-description: Organisation data managed by the Organisation service
-source: OrganisationService
+```
+shared Organisation
+    "Organisation data managed by the Organisation service"
+    source OrganisationService
 
-uses:
-  Name:
-    type: text
-    description: Organisation name
-
-  Code:
-    type: text
-    description: Short code identifier
-
-  Status:
-    type: OrganisationStatus
-    description: Active/Inactive state
+    attributes
+        Name: text "Organisation name"
+        Code: text "Short code identifier"
+        Status: OrganisationStatus "Active/Inactive state"
+end
 ```
 
 ### Lookup Data
 
 Simple shared data used for selection (dropdowns, lists):
 
-```yaml
-shared: AbsenceReason
-description: Standard reasons for child absences
-lookup: true
+```
+shared AbsenceReason
+    "Standard reasons for child absences"
+    lookup
 
-uses:
-  Code:
-    type: text
-    description: Short code
-
-  Name:
-    type: text
-    description: Display name
-
-  IsChargeable:
-    type: boolean
-    description: Whether this reason incurs charges
+    attributes
+        Code: text "Short code"
+        Name: text "Display name"
+        IsChargeable: bool "Whether this reason incurs charges"
+end
 ```
 
 ### Usage in Entities
 
-```yaml
-entity: Centre
-description: A childcare centre
+```
+entity Centre
+    "A childcare centre"
 
-attributes:
-  Name:
-    type: text
-    description: Centre name
+    attributes
+        Name: text "Centre name"
 
-shared:
-  Organisation:
-    from: OrganisationService
-    uses: [Name, Code]
-    description: The organisation that owns this centre
+    uses Organisation from OrganisationService [Name, Code]
+        "The organisation that owns this centre"
+end
 ```
 
 ---
@@ -210,33 +161,32 @@ shared:
 
 Enumerations define a fixed set of named values.
 
-```yaml
-enum: BookingStatus
-description: Possible states of a booking
+```
+enum BookingStatus
+    "Possible states of a booking"
 
-values:
-  Planned: Booking is scheduled for the future
-  Attending: Child has signed in
-  Attended: Child has signed out
-  Absence: Child did not attend
-  Cancelled: Booking was cancelled
+    Planned "Booking is scheduled for the future"
+    Attending "Child has signed in"
+    Attended "Child has signed out"
+    Absence "Child did not attend"
+    Cancelled "Booking was cancelled"
+end
 ```
 
 ### Flags
 
 Flags are enumerations that can be combined (bitwise).
 
-```yaml
-flags: DaysOfWeek
-description: Set of days, can select multiple
-
-values:
-  Monday: 1
-  Tuesday: 2
-  Wednesday: 4
-  Thursday: 8
-  Friday: 16
-  Saturday: 32
-  Sunday: 64
 ```
+flags DaysOfWeek
+    "Set of days, can select multiple"
 
+    Monday = 1
+    Tuesday = 2
+    Wednesday = 4
+    Thursday = 8
+    Friday = 16
+    Saturday = 32
+    Sunday = 64
+end
+```

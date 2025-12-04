@@ -6,187 +6,171 @@ Domain definitions are organized in a hierarchical file structure that separates
 
 ```
 domain/
-├── domain.yaml                      # Domain metadata
+├── domain.def                       # Domain metadata
 │
 ├── services/                        # Bounded contexts
-│   ├── scheduling.service.yaml
-│   ├── billing.service.yaml
-│   └── organisation.service.yaml
+│   ├── scheduling.service
+│   ├── billing.service
+│   └── organisation.service
 │
 ├── entities/                        # Domain entities
-│   ├── booking/
-│   │   ├── booking.entity.yaml      # Domain definition
-│   │   └── booking.key.yaml         # Identity (persistence)
-│   ├── attendance/
-│   │   ├── attendance.entity.yaml
-│   │   └── attendance.key.yaml
-│   └── child/
-│       ├── child.entity.yaml
-│       └── child.key.yaml
+│   ├── booking.entity
+│   ├── attendance.entity
+│   └── child.entity
+│
+├── keys/                            # Identity definitions
+│   ├── booking.key
+│   ├── attendance.key
+│   └── child.key
 │
 ├── values/                          # Value objects
-│   ├── address.value.yaml
-│   ├── date-range.value.yaml
-│   └── person-name.value.yaml
+│   ├── address.value
+│   ├── date-range.value
+│   └── person-name.value
 │
 ├── shared/                          # Shared/lookup data (external)
-│   ├── organisation.shared.yaml
-│   └── absence-reason.shared.yaml
+│   ├── organisation.shared
+│   └── absence-reason.shared
 │
-├── commands/                        # Business actions
-│   ├── booking/
-│   │   ├── place-booking.cmd.yaml
-│   │   ├── cancel-booking.cmd.yaml
-│   │   └── record-attendance.cmd.yaml
-│   └── billing/
-│       └── generate-invoice.cmd.yaml
-│
-├── queries/                         # Read operations
-│   ├── booking/
-│   │   ├── get-bookings.query.yaml
-│   │   └── get-actual-bookings.query.yaml
-│   └── billing/
-│       └── get-invoice-summary.query.yaml
+├── behaviours/                      # Commands and queries
+│   ├── place-booking.command
+│   ├── cancel-booking.command
+│   ├── record-attendance.command
+│   ├── get-bookings.query
+│   └── get-actual-bookings.query
 │
 ├── events/                          # Domain events
-│   ├── booking-placed.event.yaml
-│   ├── booking-cancelled.event.yaml
-│   └── attendance-recorded.event.yaml
+│   ├── booking-placed.event
+│   ├── booking-cancelled.event
+│   └── attendance-recorded.event
 │
 ├── enums/                           # Enumerations
-│   ├── booking-status.enum.yaml
-│   └── care-type.enum.yaml
+│   ├── booking-status.enum
+│   └── care-type.enum
 │
 ├── flags/                           # Bitwise flags
-│   └── days-of-week.flags.yaml
+│   └── days-of-week.flags
 │
 └── projections/                     # Query return shapes
-    ├── actual-booking-result.projection.yaml
-    └── invoice-summary.projection.yaml
+    ├── actual-booking-result.projection
+    └── invoice-summary.projection
 ```
 
 ## File Types
 
 | Extension | Purpose | Contains |
 |-----------|---------|----------|
-| `.entity.yaml` | Entity definition | Attributes, relationships, belongs_to |
-| `.key.yaml` | Entity identity | Primary key, ownership chain |
-| `.value.yaml` | Value object | Immutable attributes |
-| `.shared.yaml` | Shared/lookup data | External data projection |
-| `.service.yaml` | Bounded context | Groups entities, commands, queries |
-| `.cmd.yaml` | Command | Input, outcome, events |
-| `.query.yaml` | Query | Parameters, return shape |
-| `.event.yaml` | Domain event | Event data |
-| `.enum.yaml` | Enumeration | Named values |
-| `.flags.yaml` | Flags | Bitwise values |
-| `.projection.yaml` | Projection | Query return shape |
+| `.def` | Domain definition | Domain metadata, version, description |
+| `.entity` | Entity definition | Attributes, relationships, belongs_to |
+| `.key` | Entity identity | Primary key, ownership chain |
+| `.value` | Value object | Immutable attributes |
+| `.shared` | Shared/lookup data | External data projection |
+| `.service` | Bounded context | Groups entities, commands, queries |
+| `.command` | Command | Input, outcome, events |
+| `.query` | Query | Parameters, return shape |
+| `.event` | Domain event | Event data |
+| `.enum` | Enumeration | Named values |
+| `.flags` | Flags | Bitwise values |
+| `.projection` | Projection | Query return shape |
 
 ## Domain Metadata
 
-```yaml
-# domain.yaml
-domain: ChildcareManagement
-version: 2.0
-description: |
-  Domain model for childcare centre management including
-  bookings, attendance, billing, and family management.
+```
+// domain.def
+domain ChildcareManagement
+    version "2.0"
+    """
+    Domain model for childcare centre management including
+    bookings, attendance, billing, and family management.
+    """
 
-services:
-  - scheduling
-  - billing
-  - organisation
-  - family
+    services
+        scheduling
+        billing
+        organisation
+        family
 
-defaults:
-  text_max_length: 200
-  date_format: ISO8601
+    defaults
+        text_max_length 200
+        date_format ISO8601
+end
 ```
 
 ## Service Definition
 
-```yaml
-# services/scheduling.service.yaml
-service: Scheduling
-description: Manages bookings, attendance, and sessions
+```
+// services/scheduling.service
+service Scheduling
+    "Manages bookings, attendance, and sessions"
 
-entities:
-  owned:
-    - Booking
-    - Attendance
-    - Absence
-    - Session
-    - Room
-    
-  shared:
-    - Child: [Name, DateOfBirth]
-    - Centre: [Name, Token]
-    - Adult: [Name, Contact]
+    owns
+        Booking
+        Attendance
+        Absence
+        Session
+        Room
 
-enums:
-  - BookingStatus
-  - CareType
-  - AbsenceType
+    uses
+        Child [Name, DateOfBirth]
+        Centre [Name, Token]
+        Adult [Name, Contact]
 
-commands:
-  - PlaceBooking
-  - CancelBooking
-  - RecordAttendance
-  - RecordAbsence
+    enums
+        BookingStatus
+        CareType
+        AbsenceType
 
-queries:
-  - GetBookings
-  - GetActualBookings
-  - GetAttendanceReport
+    commands
+        PlaceBooking
+        CancelBooking
+        RecordAttendance
+        RecordAbsence
+
+    queries
+        GetBookings
+        GetActualBookings
+        GetAttendanceReport
+end
 ```
 
 ## Separation of Domain and Persistence
 
 ### Entity Definition (Domain)
 
-```yaml
-# entities/booking/booking.entity.yaml
-entity: Booking
-description: Planned attendance for a child at a session
+```
+// entities/booking.entity
+entity Booking
+    "Planned attendance for a child at a session"
 
-attributes:
-  Date:
-    type: date
-    description: When attendance is planned
-    
-  Status:
-    type: BookingStatus
-    
-relationships:
-  Session:
-    has_one: Session
-    
-  Child:
-    belongs_to: Child
+    attributes
+        Date: date "When attendance is planned"
+        Status: BookingStatus
+
+    has_one Session
+    belongs_to Child
+end
 ```
 
 ### Key Definition (Persistence)
 
-```yaml
-# entities/booking/booking.key.yaml
-key: Booking
-description: Identity for Booking entity
+```
+// keys/booking.key
+key Booking
+    "Identity for Booking entity"
 
-identity:
-  BookingId:
-    type: integer
-    generated: on_create
-    
-ownership:
-  parent: Child
-  through: ChildId
-  
-indexes:
-  - fields: [Date, Session]
-    unique: true
+    identity
+        BookingId: int generated
+
+    ownership
+        parent Child
+        through ChildId
+
+    indexes
+        [Date, Session] unique
+end
 ```
 
 This separation allows:
 - Domain stays clean of persistence concerns
 - Keys can vary by storage technology
 - Code generators combine as needed
-

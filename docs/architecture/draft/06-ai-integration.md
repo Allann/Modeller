@@ -4,39 +4,36 @@ This document describes how the domain definition format is designed for AI agen
 
 ## Design for AI
 
-### Predictable Schema
+### Predictable Grammar
 
 AI agents work best with consistent, predictable structures:
 
-```yaml
-# Every entity follows the same pattern
-entity: [Name]
-description: [Text]
+```
+// Every entity follows the same pattern
+entity [Name]
+    "[Description]"
 
-attributes:
-  [FieldName]:
-    type: [DataType]
-    description: [Text]
-    optional: [boolean]
+    attributes
+        [FieldName]: [DataType] "[Description]"
+        [FieldName]: [DataType]? "[Optional field description]"
 
-relationships:
-  [RelationshipName]:
-    has_one|has_many: [EntityName]
-    description: [Text]
+    has_one [EntityName] "[Description]"
+    has_many [EntityName] as [CollectionName] "[Description]"
 
-belongs_to: [ParentEntity]
+    belongs_to [ParentEntity]
+end
 ```
 
 > Note: What can be done with an entity is defined in separate behaviour files (commands, queries).
 
-### Semantic Keys
+### Semantic Keywords
 
 Keywords convey meaning that AI can understand:
 
 | Keyword | Semantic Meaning |
 |---------|------------------|
-| `is` | Definition/description |
-| `has` | Owns attributes |
+| `entity`, `value`, `shared` | Type of domain concept |
+| `attributes` | Data the type holds |
 | `belongs_to` | Parent relationship |
 | `has_one` | Single relationship |
 | `has_many` | Collection relationship |
@@ -44,10 +41,11 @@ Keywords convey meaning that AI can understand:
 | `uses` | Reference data fields |
 | `publishes` | Events produced |
 | `changes` | State mutations |
+| `?` suffix | Optional/nullable |
 
 ### Self-Documenting
 
-Every element requires a description, enabling AI to:
+Every element can have a description (in quotes), enabling AI to:
 - Explain what concepts mean
 - Generate appropriate implementations
 - Answer questions about the domain
@@ -76,16 +74,16 @@ A: Parse entity.attributes → "Date, Status, Session times..."
 AI can generate definitions from natural language:
 
 ```
-User: "I need to track vehicle maintenance. A vehicle belongs to a 
-       depot and can have scheduled services. Each service has a 
+User: "I need to track vehicle maintenance. A vehicle belongs to a
+       depot and can have scheduled services. Each service has a
        date, type, and cost."
 
 AI generates:
-- Vehicle.entity.yaml
-- MaintenanceService.entity.yaml  
-- ServiceType.enum.yaml
-- ScheduleService.cmd.yaml
-- GetVehicleServices.query.yaml
+- vehicle.entity
+- maintenance-service.entity
+- service-type.enum
+- schedule-service.command
+- get-vehicle-services.query
 ```
 
 ### 3. Validation
@@ -100,15 +98,16 @@ AI can validate definitions for:
 
 AI understands what code to generate from behaviours:
 
-```yaml
-command: CancelBooking
-description: Cancels a booking before attendance is recorded
-owner: Booking
+```
+command CancelBooking
+    "Cancels a booking before attendance is recorded"
+    owner Booking
 
-# Generates:
-#   → CancelBooking command handler
-#   → BookingCancelled event
-#   → Booking.Cancel() domain method
+    // Generates:
+    //   → CancelBooking command handler
+    //   → BookingCancelled event
+    //   → Booking.Cancel() domain method
+end
 ```
 
 ---
@@ -117,30 +116,29 @@ owner: Booking
 
 Structured queries AI can execute against definitions:
 
-```yaml
-# List all entities in a service
-query:
-  type: entities
-  service: Scheduling
-  
-# Find commands that affect an entity
-query:
-  type: commands
-  affects: Booking
-  
-# Get relationships for an entity
-query:
-  type: relationships
-  entity: Booking
-  
-# Find all events in domain
-query:
-  type: events
-  
-# Search by description
-query:
-  type: search
-  text: "attendance"
+```
+// List all entities in a service
+query
+    type entities
+    service Scheduling
+
+// Find commands that affect an entity
+query
+    type commands
+    affects Booking
+
+// Get relationships for an entity
+    type relationships
+    entity Booking
+
+// Find all events in domain
+query
+    type events
+
+// Search by description
+query
+    type search
+    text "attendance"
 ```
 
 ---
@@ -151,13 +149,13 @@ query:
 
 ```
 User: "Describe the scheduling domain"
-AI: [Reads scheduling.service.yaml]
+AI: [Reads scheduling.service]
     "The Scheduling service manages bookings, attendance, and sessions.
      It owns entities: Booking, Attendance, Absence, Session, Room.
      Key operations include placing bookings and recording attendance."
 
 User: "How does attendance work?"
-AI: [Reads Booking.entity.yaml, RecordAttendance.cmd.yaml]
+AI: [Reads booking.entity, record-attendance.command]
     "When a child arrives, the RecordAttendance command is used.
      It requires the booking, arrival time, and the adult who signed in.
      This changes the booking status to 'Attending' and creates an
@@ -168,15 +166,12 @@ AI: [Reads Booking.entity.yaml, RecordAttendance.cmd.yaml]
 
 ```
 User: "Add a notes field to Booking"
-AI: [Modifies booking.entity.yaml]
+AI: [Modifies booking.entity]
     "I've added an optional Notes attribute to Booking:
-     Notes:
-       type: text(500)
-       optional: true
-       description: Additional notes about the booking"
+     Notes: text(500)? 'Additional notes about the booking'"
 
 User: "Bookings should be able to be rescheduled"
-AI: [Creates reschedule-booking.cmd.yaml]
+AI: [Creates reschedule-booking.command]
     "I've created a RescheduleBooking command with:
      - Input: Booking, NewDate, NewSession, Reason
      - Changes: Booking.Date, Booking.Session
@@ -185,40 +180,21 @@ AI: [Creates reschedule-booking.cmd.yaml]
 
 ---
 
-## JSON Schema
+## Tooling Support
 
-For tooling and validation, provide JSON Schema:
+The DSL is parsed using [Pidgin](https://github.com/benjamin-hodgson/Pidgin) parser combinators, which provides:
+- Precise error messages with line/column information
+- Consistent parsing across all definition types
+- Easy extension for new syntax
 
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://modeller.dev/schema/entity.json",
-  "type": "object",
-  "required": ["entity", "description", "attributes"],
-  "properties": {
-    "entity": { "type": "string" },
-    "description": { "type": "string" },
-    "attributes": {
-      "type": "object",
-      "additionalProperties": {
-        "$ref": "#/definitions/attribute"
-      }
-    },
-    "relationships": {
-      "type": "object",
-      "additionalProperties": {
-        "$ref": "#/definitions/relationship"
-      }
-    },
-    "belongs_to": { "type": "string" }
-  }
-}
-```
+The VS Code extension provides:
+- Syntax highlighting for all file types
+- Custom file icons for visual identification
+- Language configuration for comments and brackets
 
-> Note: Behaviours (what can be done with an entity) are defined in separate command/query files, not in the entity schema.
+> Note: Behaviours (what can be done with an entity) are defined in separate command/query files, not in the entity definition.
 
 This enables:
-- IDE autocompletion
-- Validation tooling
+- IDE syntax highlighting
+- Parser-based validation
 - AI-assisted editing
-

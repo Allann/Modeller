@@ -7,9 +7,9 @@ This document defines the type system for domain definitions.
 | Type | Description | Example |
 |------|-------------|---------|
 | `text` | Variable-length string | `text`, `text(100)` |
-| `integer` | Whole number | `integer`, `integer(min=0)` |
+| `int` | Whole number | `int`, `int(min=0)` |
 | `decimal` | Fixed-point number | `decimal(10,2)` |
-| `boolean` | True/false | `boolean` |
+| `bool` | True/false | `bool` |
 | `date` | Date without time | `date` |
 | `time` | Time without date | `time` |
 | `datetime` | Date and time | `datetime` |
@@ -20,38 +20,21 @@ This document defines the type system for domain definitions.
 
 ### Text Options
 
-```yaml
-Name:
-  type: text(100)           # Max 100 characters
-  
-Code:
-  type: text(2..10)         # Between 2 and 10 characters
-  
-Email:
-  type: text
-  format: email             # Semantic format hint
-  
-Phone:
-  type: text
-  pattern: "[0-9]{10}"      # Regex pattern
+```
+attributes
+    Name: text(100)                    // Max 100 characters
+    Code: text(2..10)                  // Between 2 and 10 characters
+    Email: text format email           // Semantic format hint
+    Phone: text pattern "[0-9]{10}"    // Regex pattern
 ```
 
 ### Numeric Options
 
-```yaml
-Age:
-  type: integer
-  min: 0
-  max: 150
-  
-Price:
-  type: decimal(10,2)       # 10 digits, 2 decimal places
-  min: 0
-  
-Percentage:
-  type: decimal(5,2)
-  min: 0
-  max: 100
+```
+attributes
+    Age: int min 0 max 150
+    Price: decimal(10,2) min 0         // 10 digits, 2 decimal places
+    Percentage: decimal(5,2) min 0 max 100
 ```
 
 ### Common Formats
@@ -70,66 +53,58 @@ Percentage:
 
 ### Enumeration Reference
 
-```yaml
-Status:
-  type: BookingStatus       # Reference to enum
+```
+attributes
+    Status: BookingStatus              // Reference to enum
 ```
 
 ### Entity Reference
 
-```yaml
-Session:
-  type: Session             # Reference to entity
+attributes
+    Session: Session                   // Reference to entity
 ```
 
 ### Value Object Reference
 
-```yaml
-HomeAddress:
-  type: Address             # Reference to value object
+```
+attributes
+    HomeAddress: Address               // Reference to value object
 ```
 
 ---
 
 ## Collections
 
-```yaml
-# List of primitives
-Tags:
-  type: list of text
-  
-# List of entities (relationship)
-Attendances:
-  has_many: Attendance
-  
-# List of value objects
-Addresses:
-  type: list of Address
+```
+// List of primitives
+attributes
+    Tags: list of text
+
+// List of entities (relationship)
+has_many Attendance as Attendances
+
+// List of value objects
+attributes
+    Addresses: list of Address
 ```
 
 ---
 
 ## Optional and Defaults
 
-```yaml
-# Required (default)
-Name:
-  type: text
+```
+attributes
+    // Required (default)
+    Name: text
 
-# Optional
-MiddleName:
-  type: text
-  optional: true
-  
-# Default value
-Country:
-  type: text
-  default: Australia
-  
-# Computed (read-only)
-FullName:
-  type: text
-  computed: "{FirstName} {LastName}"
+    // Optional (use ? suffix)
+    MiddleName: text?
+
+    // Default value
+    Country: text = "Australia"
+
+    // Computed (read-only)
+    FullName: text computed "{FirstName} {LastName}"
 ```
 
 ---
@@ -138,27 +113,26 @@ FullName:
 
 Define reusable types for your domain:
 
-```yaml
-# types/australian-state.type.yaml
-type: AustralianState
-base: text(3)
-description: Australian state or territory code
+```
+// enums/australian-state.enum
+enum AustralianState
+    "Australian state or territory code"
 
-allowed:
-  - NSW: New South Wales
-  - VIC: Victoria
-  - QLD: Queensland
-  - WA: Western Australia
-  - SA: South Australia
-  - TAS: Tasmania
-  - ACT: Australian Capital Territory
-  - NT: Northern Territory
+    NSW "New South Wales"
+    VIC "Victoria"
+    QLD "Queensland"
+    WA "Western Australia"
+    SA "South Australia"
+    TAS "Tasmania"
+    ACT "Australian Capital Territory"
+    NT "Northern Territory"
+end
 ```
 
 Usage:
-```yaml
-State:
-  type: AustralianState
+```
+attributes
+    State: AustralianState
 ```
 
 ---
@@ -169,15 +143,15 @@ For AI generation, types can often be inferred:
 
 | Field Name Pattern | Inferred Type |
 |-------------------|---------------|
-| `*Id` | guid or integer |
+| `*Id` | guid or int |
 | `*Date`, `*At`, `*On` | date or datetime |
 | `*Time` | time |
 | `*Name`, `*Title` | text |
 | `*Email` | text (email format) |
 | `*Phone` | text (phone format) |
 | `*Amount`, `*Price`, `*Cost` | decimal |
-| `*Count`, `*Number`, `*Quantity` | integer |
-| `Is*`, `Has*`, `Can*` | boolean |
+| `*Count`, `*Number`, `*Quantity` | int |
+| `Is*`, `Has*`, `Can*` | bool |
 | `*Status`, `*Type`, `*Category` | enum reference |
 
 ---
@@ -188,13 +162,12 @@ For AI generation, types can often be inferred:
 |-------------|-----|------------|------------|
 | `text` | `string` | `nvarchar` | `varchar` |
 | `text(n)` | `string` | `nvarchar(n)` | `varchar(n)` |
-| `integer` | `int` | `int` | `integer` |
+| `int` | `int` | `int` | `integer` |
 | `decimal(p,s)` | `decimal` | `decimal(p,s)` | `numeric(p,s)` |
-| `boolean` | `bool` | `bit` | `boolean` |
+| `bool` | `bool` | `bit` | `boolean` |
 | `date` | `DateOnly` | `date` | `date` |
 | `time` | `TimeOnly` | `time` | `time` |
 | `datetime` | `DateTime` | `datetime2` | `timestamp` |
 | `guid` | `Guid` | `uniqueidentifier` | `uuid` |
 
 Mapping is handled by code generators, keeping domain definitions clean.
-

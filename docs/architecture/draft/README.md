@@ -1,8 +1,8 @@
 # Domain Definition Language
 
-> **Status**: Future Direction
+> **Status**: Implemented
 >
-> This specification describes the **next generation** of Modeller - a natural language-oriented, YAML-based domain definition format designed to replace the [legacy C# fluent API](../../definitions.md).
+> This specification describes the domain definition language for Modeller. We chose a **custom DSL** parsed with [Pidgin](https://github.com/benjamin-hodgson/Pidgin) parser combinators, rather than YAML (see [Format Options](09-format-options.md) for the rationale).
 
 This specification defines a domain definition format designed for:
 
@@ -46,6 +46,17 @@ This specification defines a domain definition format designed for:
 └─────────────────────────────────────────────────────────────┘
 ```
 
+## Implementation
+
+The DSL is implemented with:
+
+| Component | Technology | Location |
+|-----------|------------|----------|
+| **Parser** | [Pidgin](https://github.com/benjamin-hodgson/Pidgin) parser combinators | `src/Modeller.Parser/` |
+| **Domain Models** | Immutable C# records with factory validation | `src/Modeller.Domain/` |
+| **VS Code Extension** | TextMate grammar + custom icons | `editors/vscode-modeller/` |
+| **Sample Domain** | Full example definitions | `samples/modeller/` |
+
 ## Documents
 
 | Document | Description |
@@ -53,13 +64,14 @@ This specification defines a domain definition format designed for:
 | [Overview](01-overview.md) | Philosophy and design goals |
 | [Domain Concepts](02-domain-concepts.md) | Entities, Value Objects, Shared Data |
 | [Behaviours](03-behaviours.md) | Commands, Queries, Workflows, and Events |
-| [File Structure](04-file-structure.md) | Proposed file organization |
+| [File Structure](04-file-structure.md) | Project organization |
 | [Examples](05-examples.md) | Concrete definition examples |
 | [AI Integration](06-ai-integration.md) | How AI agents consume and generate definitions |
 | [Data Types](07-data-types.md) | Type system reference |
 | [Glossary](08-glossary.md) | Key terms and definitions |
-| [Format Options](09-format-options.md) | DSL vs YAML vs JSON trade-offs |
+| [Format Options](09-format-options.md) | Why we chose custom DSL over YAML |
 | [Templates](10-templates.md) | Code generation templates and engines |
+| [Implementation Status](11-implementation-status.md) | Current build status and next steps |
 
 ## Design Goals
 
@@ -68,4 +80,3 @@ This specification defines a domain definition format designed for:
 3. **AI-friendly** - Clear semantics for AI understanding and generation
 4. **Version-aware** - Support for evolution over time
 5. **Composable** - Services can reference other services' data
-

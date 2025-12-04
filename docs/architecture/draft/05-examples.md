@@ -1,309 +1,205 @@
 # Examples
 
-Concrete examples of domain definitions using the proposed format.
+Concrete examples of domain definitions using the DSL format.
 
 ## Complete Entity Example
 
 ### Domain Definition
 
-```yaml
-# entities/booking/booking.entity.yaml
-entity: Booking
-description: |
-  Planned attendance for a child at a centre for a session.
-  A booking represents the intention for a child to attend.
-  It transitions through states as attendance is recorded.
+```
+// entities/booking.entity
+entity Booking
+    """
+    Planned attendance for a child at a centre for a session.
+    A booking represents the intention for a child to attend.
+    It transitions through states as attendance is recorded.
+    """
 
-attributes:
-  Date:
-    type: date
-    description: Date when attendance is planned
-    
-  SessionStartTime:
-    type: time
-    description: Start time taken from session
-    
-  SessionEndTime:
-    type: time
-    description: End time taken from session
-    
-  AdjustedStartTime:
-    type: time
-    optional: true
-    description: Adjusted start accounting for closures
-    
-  AdjustedEndTime:
-    type: time
-    optional: true
-    description: Adjusted end accounting for closures
-    
-  AdjustedHours:
-    type: decimal(5,2)
-    optional: true
-    description: Total adjusted hours
-    
-  Status:
-    type: BookingStatus
-    description: Current state of the booking
-    
-  AdjustedReason:
-    type: BookingAdjustedReason
-    optional: true
-    description: Why hours were adjusted
+    attributes
+        Date: date "Date when attendance is planned"
+        SessionStartTime: time "Start time taken from session"
+        SessionEndTime: time "End time taken from session"
+        AdjustedStartTime: time? "Adjusted start accounting for closures"
+        AdjustedEndTime: time? "Adjusted end accounting for closures"
+        AdjustedHours: decimal(5,2)? "Total adjusted hours"
+        Status: BookingStatus "Current state of the booking"
+        AdjustedReason: BookingAdjustedReason? "Why hours were adjusted"
 
-relationships:
-  Session:
-    has_one: Session
-    description: The session being booked
-    
-  Room:
-    has_one: Room
-    description: Room where attendance occurs
-    
-  Attendances:
-    has_many: Attendance
-    description: Recorded attendance instances
-    
-  Absence:
-    has_one: Absence
-    optional: true
-    description: Absence record if applicable
+    has_one Session "The session being booked"
+    has_one Room "Room where attendance occurs"
+    has_many Attendance as Attendances "Recorded attendance instances"
+    has_one Absence? "Absence record if applicable"
 
-belongs_to: Child
+    belongs_to Child
+end
 ```
 
 > Note: What can be done with a Booking is defined in behaviours, not in the entity itself.
 
 ### Key Definition
 
-```yaml
-# entities/booking/booking.key.yaml
-key: Booking
+```
+// keys/booking.key
+key Booking
 
-identity:
-  BookingId:
-    type: integer
-    generated: on_create
+    identity
+        BookingId: int generated
 
-ownership:
-  parent: Child
-  
-indexes:
-  - fields: [Date, Session, Child]
-    unique: true
-    name: UX_Booking_DateSessionChild
+    ownership
+        parent Child
+
+    indexes
+        [Date, Session, Child] unique as UX_Booking_DateSessionChild
+end
 ```
 
 ---
 
 ## Value Object Example
 
-```yaml
-# values/address.value.yaml
-value: Address
-description: A physical or postal address
+```
+// values/address.value
+value Address
+    "A physical or postal address"
 
-attributes:
-  Line1:
-    type: text(100)
-    description: Street address line 1
-    
-  Line2:
-    type: text(100)
-    optional: true
-    description: Street address line 2
-    
-  Suburb:
-    type: text(50)
-    description: Suburb or city
-    
-  State:
-    type: AustralianState
-    description: State or territory
-    
-  PostCode:
-    type: text(4)
-    pattern: "[0-9]{4}"
-    description: Postal code
-    
-  Country:
-    type: text(50)
-    default: Australia
+    attributes
+        Line1: text(100) "Street address line 1"
+        Line2: text(100)? "Street address line 2"
+        Suburb: text(50) "Suburb or city"
+        State: AustralianState "State or territory"
+        PostCode: text(4) pattern "[0-9]{4}" "Postal code"
+        Country: text(50) = "Australia"
+end
 ```
 
 ---
 
 ## Reference Data Example
 
-```yaml
-# references/organisation.ref.yaml
-reference: Organisation
-description: Organisation data from OrganisationService
-source: OrganisationService
+```
+// shared/organisation.shared
+shared Organisation
+    "Organisation data from OrganisationService"
+    source OrganisationService
 
-uses:
-  Name:
-    type: text
-    description: Organisation display name
-    
-  Code:
-    type: text
-    description: Short identifier
-    
-  ABN:
-    type: text
-    description: Australian Business Number
-    
-  Status:
-    type: OrganisationStatus
-    description: Active/Inactive
+    attributes
+        Name: text "Organisation display name"
+        Code: text "Short identifier"
+        ABN: text "Australian Business Number"
+        Status: OrganisationStatus "Active/Inactive"
+end
 ```
 
 ---
 
 ## Command Example
 
-```yaml
-# commands/booking/record-attendance.cmd.yaml
-command: RecordAttendance
-description: Records that a child has arrived for their booking
-owner: Booking
+```
+// behaviours/record-attendance.command
+command RecordAttendance
+    "Records that a child has arrived for their booking"
+    owner Booking
 
-input:
-  Booking:
-    type: Booking
-    description: The booking to record attendance for
-    
-  TimeIn:
-    type: time
-    description: When the child arrived
-    
-  SignedInBy:
-    type: Adult
-    description: Adult who signed the child in
-    
-  AuthorisedBy:
-    type: Adult
-    optional: true
-    description: Adult authorising if different from signer
+    input
+        Booking: Booking "The booking to record attendance for"
+        TimeIn: time "When the child arrived"
+        SignedInBy: Adult "Adult who signed the child in"
+        AuthorisedBy: Adult? "Adult authorising if different from signer"
 
-outcome:
-  creates:
-    - Attendance
-    
-  changes:
-    - Booking.Status: Attending
-    
-  publishes:
-    - AttendanceRecorded
+    outcome
+            Attendance
+
+        changes
+            Booking.Status to Attending
+
+        publishes
+            AttendanceRecorded
+end
 ```
 
 ---
 
 ## Query Example
 
-```yaml
-# queries/booking/get-actual-bookings.query.yaml
-query: GetActualBookings
-description: Retrieves bookings with attendance and absence data
-owner: Booking
+```
+// behaviours/get-actual-bookings.query
+query GetActualBookings
+    "Retrieves bookings with attendance and absence data"
+    owner Booking
 
-parameters:
-  Centre:
-    type: Centre
-    description: Centre to query bookings for
-    
-  FromDate:
-    type: date
-    description: Start of date range
-    
-  ToDate:
-    type: date
-    description: End of date range
-    
-  IncludeCancelled:
-    type: boolean
-    default: false
-    description: Include cancelled bookings
+    parameters
+        Centre: Centre "Centre to query bookings for"
+        FromDate: date "Start of date range"
+        ToDate: date "End of date range"
+        IncludeCancelled: bool = false "Include cancelled bookings"
 
-returns:
-  type: list of ActualBookingResult
+    returns list of ActualBookingResult
+end
 ```
 
 ---
 
 ## Enumeration Example
 
-```yaml
-# enums/booking-status.enum.yaml
-enum: BookingStatus
-description: Possible states of a booking
+```
+// enums/booking-status.enum
+enum BookingStatus
+    "Possible states of a booking"
 
-values:
-  Planned:
-    description: Booking is scheduled for the future
-    
-  Attending:
-    description: Child has signed in, not yet signed out
-    
-  Attended:
-    description: Child has signed in and out
-    
-  Absence:
-    description: Child did not attend
-    
-  Cancelled:
-    description: Booking was cancelled before attendance
+    Planned "Booking is scheduled for the future"
+    Attending "Child has signed in, not yet signed out"
+    Attended "Child has signed in and out"
+    Absence "Child did not attend"
+    Cancelled "Booking was cancelled before attendance"
+end
 ```
 
 ---
 
 ## Service Example
 
-```yaml
-# services/scheduling.service.yaml
-service: Scheduling
-description: |
-  Manages the scheduling of child attendance including
-  bookings, sessions, and attendance recording.
-
-entities:
-  - Booking
-  - Attendance
-  - Absence
-  - Session
-  - Room
-  - RoutineBookingSession
-  - CasualBookingSession
-
-values:
-  - TimeRange
-
-references:
-  Child:
-    uses: [Name, DateOfBirth, ChildNumber]
-  Centre:
-    uses: [Name, Token]
-  Adult:
-    uses: [Name, Contact]
-
-enums:
-  - BookingStatus
-  - BookingAdjustedReason
-  - AbsenceType
-  - CareType
-
-commands:
-  - PlaceBooking
-  - CancelBooking
-  - RecordAttendance
-  - RecordAbsence
-  - AdjustBooking
-
-queries:
-  - GetBookings
-  - GetActualBookings
-  - GetAttendanceReport
-  - GetAbsenceSummary
 ```
+// services/scheduling.service
+service Scheduling
+    """
+    Manages the scheduling of child attendance including
+    bookings, sessions, and attendance recording.
+    """
 
+    owns
+        Booking
+        Attendance
+        Absence
+        Session
+        Room
+        RoutineBookingSession
+        CasualBookingSession
+
+    values
+        TimeRange
+
+    uses
+        Child [Name, DateOfBirth, ChildNumber]
+        Centre [Name, Token]
+        Adult [Name, Contact]
+
+    enums
+        BookingStatus
+        BookingAdjustedReason
+        AbsenceType
+        CareType
+
+    commands
+        PlaceBooking
+        CancelBooking
+        RecordAttendance
+        RecordAbsence
+        AdjustBooking
+
+    queries
+        GetBookings
+        GetActualBookings
+        GetAttendanceReport
+        GetAbsenceSummary
+end
+```

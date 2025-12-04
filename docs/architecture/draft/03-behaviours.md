@@ -22,38 +22,26 @@ Commands represent **business actions** that change state. They are named using 
 
 ### Definition Structure
 
-```yaml
-command: RecordAttendance
-description: Records that a child has arrived for their booked session
+```
+command RecordAttendance
+    "Records that a child has arrived for their booked session"
 
-involves:
-  Booking: accessed through
-  Attendance: creates
-  Child: reads
-  Adult: reads (the person signing in)
+    involves
+        Booking accessed_through
+        Attendance creates
+        Child reads
+        Adult reads "The person signing in"
 
-input:
-  Booking:
-    type: Booking
-    description: The booking to record attendance for
+    input
+        Booking: Booking "The booking to record attendance for"
+        TimeIn: time "When the child arrived"
+        SignedInBy: Adult "Adult who signed the child in"
 
-  TimeIn:
-    type: time
-    description: When the child arrived
-
-  SignedInBy:
-    type: Adult
-    description: Adult who signed the child in
-
-outcome:
-  creates:
-    - Attendance
-
-  changes:
-    - Booking.Status: Attending
-
-  publishes:
-    - AttendanceRecorded
+    outcome
+        creates Attendance
+        changes Booking.Status to Attending
+        publishes AttendanceRecorded
+end
 ```
 
 ### The `involves` Keyword
@@ -62,7 +50,7 @@ The `involves` section defines which entities participate in a behaviour and how
 
 | Relationship | Meaning |
 |--------------|---------|
-| `accessed through` | This is the main entity; others are accessed via it |
+| `accessed_through` | This is the main entity; others are accessed via it |
 | `reads` | Information is read from this entity |
 | `creates` | A new instance of this entity is created |
 | `updates` | This entity is modified |
@@ -83,15 +71,14 @@ Prefer business language over technical operations:
 
 For straightforward lookup/shared data where CRUD is appropriate:
 
-```yaml
-entity: AbsenceReason
-description: Reasons why a child may be absent
-crud: all  # Generates standard Create, Update, Delete commands
+```
+entity AbsenceReason
+    "Reasons why a child may be absent"
+    crud all  // Generates standard Create, Update, Delete commands
 
-attributes:
-  Name:
-    type: text
-    description: Display name of the reason
+    attributes
+        Name: text "Display name of the reason"
+end
 ```
 
 This generates standard commands: Create, Update, Delete.
@@ -111,59 +98,37 @@ Queries retrieve data without modifying state. They return projections of domain
 
 ### Definition Structure
 
-```yaml
-query: GetActualBookings
-description: Retrieves bookings with attendance and absence data
-owner: Booking
+```
+query GetActualBookings
+    "Retrieves bookings with attendance and absence data"
+    owner Booking
 
-parameters:
-  Centre:
-    type: Centre
-    description: The centre to query
-    
-  DateRange:
-    type: DateRange
-    description: Period to include
-    
-  IncludeAbsences:
-    type: boolean
-    default: true
-    description: Whether to include absence records
+    parameters
+        Centre: Centre "The centre to query"
+        DateRange: DateRange "Period to include"
+        IncludeAbsences: bool = true "Whether to include absence records"
 
-returns:
-  type: list
-  shape: ActualBookingResult
-  description: Bookings grouped by room
+    returns list of ActualBookingResult
+        "Bookings grouped by room"
+end
 ```
 
 ### Projections
 
 Queries return projections, not raw entities:
 
-```yaml
-projection: ActualBookingResult
-description: Booking with attendance details for reporting
+```
+projection ActualBookingResult
+    "Booking with attendance details for reporting"
 
-shape:
-  BookingDate:
-    from: Booking.Date
-    
-  ChildName:
-    from: Booking.Child.Name
-    format: "{FirstName} {LastName}"
-    
-  SessionName:
-    from: Booking.Session.Name
-    
-  Status:
-    from: Booking.Status
-    
-  Attendances:
-    from: Booking.Attendances
-    shape: AttendanceResult
-    
-  HasAbsence:
-    computed: Booking.Absence is not null
+    fields
+        BookingDate from Booking.Date
+        ChildName from Booking.Child.Name format "{FirstName} {LastName}"
+        SessionName from Booking.Session.Name
+        Status from Booking.Status
+        Attendances from Booking.Attendances as AttendanceResult
+        HasAbsence computed Booking.Absence is not null
+end
 ```
 
 ---
@@ -185,38 +150,36 @@ shape:
 
 Workflows are behaviours that orchestrate multiple commands in a sequence. They represent business processes.
 
-```yaml
-workflow: ProcessEnrolment
-description: Complete enrolment of a child at a centre
+```
+workflow ProcessEnrolment
+    "Complete enrolment of a child at a centre"
 
-involves:
-  Child: reads, updates
-  Centre: reads
-  Arrangement: creates
-  Family: reads, notifies
+    involves
+        Child reads, updates
+        Centre reads
+        Arrangement creates
+        Family reads, notifies
 
-steps:
-  - VerifyChildDetails:
-      description: Ensure child information is complete
-      command: ValidateChild
+    steps
+        VerifyChildDetails
+            "Ensure child information is complete"
+            command ValidateChild
 
-  - CreateArrangement:
-      description: Set up the care arrangement
-      command: CreateArrangement
-      after: VerifyChildDetails
+        CreateArrangement
+            "Set up the care arrangement"
+            command CreateArrangement
+            after VerifyChildDetails
 
-  - NotifyParties:
-      description: Inform relevant parties
-      commands:
-        - NotifyCentre
-        - NotifyFamily
-      parallel: true
-      after: CreateArrangement
+        NotifyParties
+            "Inform relevant parties"
+            commands NotifyCentre, NotifyFamily
+            parallel
+            after CreateArrangement
 
-outcome:
-  publishes:
-    - EnrolmentCompleted (when successful)
-    - EnrolmentFailed (when unsuccessful)
+    outcome
+        publishes EnrolmentCompleted when successful
+        publishes EnrolmentFailed when unsuccessful
+end
 ```
 
 ---
@@ -235,46 +198,32 @@ Events signal that something has happened. They are always named in **past tense
 
 ### Domain Event
 
-```yaml
-event: AttendanceRecorded
-type: domain
-description: A child's attendance has been recorded
-source: RecordAttendance
+```
+event AttendanceRecorded
+    "A child's attendance has been recorded"
+    type domain
+    source RecordAttendance
 
-data:
-  Booking:
-    type: Booking
-    description: The booking attendance was recorded for
-
-  Attendance:
-    type: Attendance
-    description: The attendance record created
-
-  RecordedAt:
-    type: datetime
-    description: When the attendance was recorded
+    data
+        Booking: Booking "The booking attendance was recorded for"
+        Attendance: Attendance "The attendance record created"
+        RecordedAt: datetime "When the attendance was recorded"
+end
 ```
 
 ### Integration Event
 
-```yaml
-event: ChildEnrolmentChanged
-type: integration
-description: Notifies external systems of enrolment changes
-source: ProcessEnrolment
+```
+event ChildEnrolmentChanged
+    "Notifies external systems of enrolment changes"
+    type integration
+    source ProcessEnrolment
 
-data:
-  ChildId:
-    type: text
-    description: External identifier for the child
-
-  CentreId:
-    type: text
-    description: External identifier for the centre
-
-  ChangeType:
-    type: text
-    description: Type of change (New, Modified, Ended)
+    data
+        ChildId: text "External identifier for the child"
+        CentreId: text "External identifier for the centre"
+        ChangeType: text "Type of change (New, Modified, Ended)"
+end
 ```
 
 ### Event Lifecycle
@@ -288,13 +237,14 @@ data:
 
 Other behaviours can react to events:
 
-```yaml
-command: CalculateBookingCharges
-description: Calculate charges when attendance is recorded
-triggered_by: AttendanceRecorded
+```
+command CalculateBookingCharges
+    "Calculate charges when attendance is recorded"
+    triggered_by AttendanceRecorded
 
-involves:
-  Attendance: reads
-  Booking: reads
-  Charges: creates
+    involves
+        Attendance reads
+        Booking reads
+        Charges creates
+end
 ```
