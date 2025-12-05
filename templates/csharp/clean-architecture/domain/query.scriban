@@ -1,0 +1,45 @@
+{{~ # query.scriban - Domain query record ~}}
+{{~ # Inputs are the attributes that form the query parameters ~}}
+namespace {{ namespace }};
+
+/// <summary>
+/// {{ query.description }}
+/// </summary>
+public sealed record {{ query.name }}
+{
+    internal {{ query.name }}(
+        Guid publicId{{ for input in query.inputs }},
+        {{ input | to_csharp_ctor_param }}{{ end }}) =>
+        (PublicId{{ for input in query.inputs }}, {{ input.name | pascal_case }}{{ end }}) =
+        (publicId{{ for input in query.inputs }}, {{ input | to_ctor_assignment }}{{ end }});
+
+    public Guid PublicId { get; }
+{{~ for input in query.inputs ~}}
+    public {{ input | to_csharp_type }} {{ input.name | pascal_case }} { get; }
+{{~ end ~}}
+}
+
+/// <summary>
+/// Extension methods for {{ query.name }}
+/// </summary>
+public static class {{ query.name }}Extensions
+{
+    extension({{ query.name }})
+    {
+        public static {{ query.name }}? New({{ for input in query.inputs }}
+            {{ input | to_csharp_factory_param }}{{ if !for.last }},{{ end }}{{ end }}) =>
+            {{ query.name }}.CreateValid(Guid.CreateVersion7(){{ for input in query.inputs }}, {{ input.name | camel_case }}{{ end }});
+
+        public static {{ query.name }}? CreateValid(
+            Guid publicId{{ for input in query.inputs }},
+            {{ input | to_csharp_factory_param }}{{ end }}) =>
+            publicId.Version != 7 ? null
+{{~ for input in query.inputs ~}}
+{{~ if input | needs_validation ~}}
+            : {{ input | to_validation_check }} ? null
+{{~ end ~}}
+{{~ end ~}}
+            : new {{ query.name }}(publicId{{ for input in query.inputs }}, {{ input.name | camel_case }}{{ end }});
+    }
+}
+

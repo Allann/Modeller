@@ -1,0 +1,45 @@
+{{~ # command.scriban - Domain command record ~}}
+{{~ # Inputs are the attributes that form the command parameters ~}}
+namespace {{ namespace }};
+
+/// <summary>
+/// {{ command.description }}
+/// </summary>
+public sealed record {{ command.name }}
+{
+    internal {{ command.name }}(
+        Guid publicId{{ for input in command.inputs }},
+        {{ input | to_csharp_ctor_param }}{{ end }}) =>
+        (PublicId{{ for input in command.inputs }}, {{ input.name | pascal_case }}{{ end }}) =
+        (publicId{{ for input in command.inputs }}, {{ input | to_ctor_assignment }}{{ end }});
+
+    public Guid PublicId { get; }
+{{~ for input in command.inputs ~}}
+    public {{ input | to_csharp_type }} {{ input.name | pascal_case }} { get; }
+{{~ end ~}}
+}
+
+/// <summary>
+/// Extension methods for {{ command.name }}
+/// </summary>
+public static class {{ command.name }}Extensions
+{
+    extension({{ command.name }})
+    {
+        public static {{ command.name }}? New({{ for input in command.inputs }}
+            {{ input | to_csharp_factory_param }}{{ if !for.last }},{{ end }}{{ end }}) =>
+            {{ command.name }}.CreateValid(Guid.CreateVersion7(){{ for input in command.inputs }}, {{ input.name | camel_case }}{{ end }});
+
+        public static {{ command.name }}? CreateValid(
+            Guid publicId{{ for input in command.inputs }},
+            {{ input | to_csharp_factory_param }}{{ end }}) =>
+            publicId.Version != 7 ? null
+{{~ for input in command.inputs ~}}
+{{~ if input | needs_validation ~}}
+            : {{ input | to_validation_check }} ? null
+{{~ end ~}}
+{{~ end ~}}
+            : new {{ command.name }}(publicId{{ for input in command.inputs }}, {{ input.name | camel_case }}{{ end }});
+    }
+}
+

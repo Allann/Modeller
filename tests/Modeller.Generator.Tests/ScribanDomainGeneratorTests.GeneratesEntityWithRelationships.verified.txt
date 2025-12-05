@@ -1,0 +1,45 @@
+﻿namespace TestDomain;
+
+/// <summary>
+/// Represents a customer order
+/// </summary>
+public sealed record Order
+{
+    internal Order(
+        Guid publicId,
+        Customer? customer = null,
+        IReadOnlyList<OrderLine>? lines = null,
+        ShippingAddress? address = null) =>
+        (PublicId, Customer, Lines, Address) =
+        (publicId, customer, lines ?? [], address);
+
+    public Guid PublicId { get; }
+    public Customer? Customer { get; }
+    public IReadOnlyList<OrderLine> Lines { get; }
+    public ShippingAddress? Address { get; }
+}
+
+/// <summary>
+/// Extension methods for Order
+/// </summary>
+public static class OrderExtensions
+{
+    extension(Order)
+    {
+        public static Order? New(
+            Customer? customer = null,
+            IReadOnlyList<OrderLine>? lines = null,
+            ShippingAddress? address = null
+            ) =>
+            Order.CreateValid(Guid.CreateVersion7(), customer, lines, address);
+
+        public static Order? CreateValid(
+            Guid publicId,
+            Customer? customer = null,
+            IReadOnlyList<OrderLine>? lines = null,
+            ShippingAddress? address = null) =>
+            publicId.Version != 7 ? null
+            : new Order(publicId, customer, lines, address);
+    }
+}
+

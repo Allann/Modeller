@@ -1,0 +1,51 @@
+# Template manifest for Domain layer
+name: Domain Layer
+description: |
+  Generates domain records with internal constructors, 
+  C# 14 extension blocks, and factory methods.
+
+# Snippets this template uses
+snippets:
+  - _snippets/csharp/header
+  - _snippets/csharp/property
+  - _snippets/csharp/factory-methods
+
+# Files this template generates
+generates:
+  # GuidExtensions - once per domain
+  - template: guid-extensions.scriban
+    per: domain
+    output: "GuidExtensions.g.cs"
+    description: "Guid.IsVersion7() extension method"
+
+  # Entity records - one per entity
+  - template: entity.scriban
+    per: entity
+    output: "Entities/{{ entity.name | pascal_case }}.g.cs"
+    description: "Domain entity record with extension block"
+
+  # Enumeration records - one per enum
+  - template: enumeration.scriban
+    per: enum
+    output: "Enumerations/{{ enumeration.name | pascal_case }}.g.cs"
+    description: "Domain enumeration record"
+
+  # Command records - one per command
+  - template: command.scriban
+    per: command
+    output: "Commands/{{ command.name | pascal_case }}.g.cs"
+    description: "Domain command record"
+
+  # Query records - one per query
+  - template: query.scriban
+    per: query
+    output: "Queries/{{ query.name | pascal_case }}.g.cs"
+    description: "Domain query record"
+
+  # Projection records - one per projection
+  - template: projection.scriban
+    per: projection
+    output: "Projections/{{ projection.name | pascal_case }}.g.cs"
+    description: "Domain projection record"
+    condition: "projection != null"
+

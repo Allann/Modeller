@@ -1,0 +1,445 @@
+@page "/units/home"
+@inject UnitApiService UnitApiService
+@inject IUnitsSyncApiService SyncApiService
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+
+@using JJs.UnitsManagement.Ui.Components.Pages.Sync
+
+<PageTitle>Units Management Dashboard</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <MudText Typo="Typo.h1" GutterBottom="true">Units Management Dashboard</MudText>
+    <MudText Class="mb-8">Overview of units, statistics, and sync operations</MudText>
+
+    @* Units Statistics Section *@
+    <MudPaper Class="pa-6 mb-6 statistics-section" Elevation="4">
+        <MudStack Spacing="4">
+            <div class="d-flex align-center justify-space-between">
+                <MudText Typo="Typo.h5">
+                    <MudIcon Icon="@Icons.Material.Filled.Analytics" Class="mr-2" />
+                    Unit Statistics & Overview
+                </MudText>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Refresh"
+                    OnClick="RefreshStatistics">
+                    Refresh
+                </MudButton>
+            </div>
+            @if (isLoadingStatistics)
+            {
+                <div class="loading-container">
+                    <MudProgressCircular Indeterminate="true" Size="Size.Large" />
+                    <MudText Typo="Typo.body1" Class="mt-4">Loading statistics...</MudText>
+                </div>
+            }
+            else if (hasStatisticsError)
+            {
+                <div class="error-container">
+                    <MudAlert Severity="Severity.Error" Class="mb-4">
+                        <MudText>Failed to load unit statistics. Please try refreshing the page or contact support if the
+                            issue persists.</MudText>
+                        <MudButton Variant="Variant.Text" Color="Color.Error" StartIcon="@Icons.Material.Filled.Refresh"
+                            OnClick="@(() => LoadStatisticsAsync())" Class="mt-2">
+                            Retry
+                        </MudButton>
+                    </MudAlert>
+                </div>
+            }
+            else
+            {
+                @* Statistics Cards *@
+                <div class="fade-in">
+                    <MudGrid Class="mb-6">
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="stat-card">
+                                <MudCardContent>
+                                    <div class="stat-content">
+                                        <MudIcon Icon="@Icons.Material.Filled.LocalShipping" Class="stat-icon"
+                                            Color="Color.Primary" />
+                                        <div class="stat-text">
+                                            <MudText Typo="Typo.h4" Color="Color.Primary">
+                                                @statistics?.TotalUnits.ToString("N0")</MudText>
+                                            <MudText Typo="Typo.body2" Color="Color.Secondary">Total Units</MudText>
+                                        </div>
+                                    </div>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="stat-card">
+                                <MudCardContent>
+                                    <div class="stat-content">
+                                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Class="stat-icon"
+                                            Color="Color.Success" />
+                                        <div class="stat-text">
+                                            <MudText Typo="Typo.h4" Color="Color.Success">
+                                                @statistics?.ActiveUnits.ToString("N0")</MudText>
+                                            <MudText Typo="Typo.body2" Color="Color.Secondary">Active Units</MudText>
+                                        </div>
+                                    </div>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="stat-card">
+                                <MudCardContent>
+                                    <div class="stat-content">
+                                        <MudIcon Icon="@Icons.Material.Filled.Cancel" Class="stat-icon"
+                                            Color="Color.Warning" />
+                                        <div class="stat-text">
+                                            <MudText Typo="Typo.h4" Color="Color.Warning">
+                                                @statistics?.InactiveUnits.ToString("N0")</MudText>
+                                            <MudText Typo="Typo.body2" Color="Color.Secondary">Inactive Units</MudText>
+                                        </div>
+                                    </div>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6" md="3">
+                            <MudCard Elevation="2" Class="stat-card">
+                                <MudCardContent>
+                                    <div class="stat-content">
+                                        <MudIcon Icon="@Icons.Material.Filled.NewReleases" Class="stat-icon"
+                                            Color="Color.Info" />
+                                        <div class="stat-text">
+                                            <MudText Typo="Typo.h4" Color="Color.Info">
+                                                @statistics?.RecentUnits.ToString("N0")</MudText>
+                                            <MudText Typo="Typo.body2" Color="Color.Secondary">Recent (30 days)</MudText>
+                                        </div>
+                                    </div>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                    </MudGrid>
+
+                </div>
+                @* Recent Activity Section - Integrated into Statistics *@
+                <MudDivider Class="my-4" />
+
+                <div class="d-flex align-center justify-space-between">
+                    <MudText Typo="Typo.h6" Class="mb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.History" Class="mr-2" />
+                        Recent Activity
+                    </MudText>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Refresh"
+                        OnClick="RefreshRecentActivity">
+                        Refresh
+                    </MudButton>
+                </div>
+
+                <!-- Truck Type Breakdown -->
+                <MudGrid Class="mb-6">
+                    <MudItem xs="12" md="6">
+                        <MudCard Elevation="2">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6">
+                                        <MudIcon Icon="@Icons.Material.Filled.PieChart" Class="mr-2" />
+                                        Units by Truck Type
+                                    </MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudGrid>
+                                    <MudItem xs="4">
+                                        <div class="breakdown-item">
+                                            <MudIcon Icon="@Icons.Material.Filled.Business" Color="Color.Primary" />
+                                            <MudText Typo="Typo.body1" Class="ml-2">Commercial:
+                                                <strong>@statistics?.CommercialUnits.ToString("N0")</strong></MudText>
+                                        </div>
+                                    </MudItem>
+                                    <MudItem xs="4">
+                                        <div class="breakdown-item">
+                                            <MudIcon Icon="@Icons.Material.Filled.Delete" Color="Color.Secondary" />
+                                            <MudText Typo="Typo.body1" Class="ml-2">Garbage:
+                                                <strong>@statistics?.GarbageUnits.ToString("N0")</strong></MudText>
+                                        </div>
+                                    </MudItem>
+                                    <MudItem xs="4">
+                                        <div class="breakdown-item">
+                                            <MudIcon Icon="@Icons.Material.Filled.Recycling" Color="Color.Success" />
+                                            <MudText Typo="Typo.body1" Class="ml-2">Recycling:
+                                                <strong>@statistics?.RecyclingUnits.ToString("N0")</strong></MudText>
+                                        </div>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+
+                    <MudItem xs="12" md="6">
+                        <MudCard Elevation="2">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6">
+                                        <MudIcon Icon="@Icons.Material.Filled.Sync" Class="mr-2" />
+                                        Sync Status
+                                    </MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                @if (syncProgress != null)
+                                {
+                                    <div class="sync-status">
+                                        <MudText Typo="Typo.body1">
+                                            Status: <MudChip T="string" Color="@GetSyncStatusColor(syncProgress.Status)"
+                                                Size="Size.Small">@syncProgress.Status</MudChip>
+                                        </MudText>
+                                        @if (syncProgress.StartedAt.HasValue)
+                                        {
+                                            <MudText Typo="Typo.body2" Class="mt-2">
+                                                Last Sync: @syncProgress.StartedAt.Value.ToString("MMM dd, yyyy HH:mm")
+                                            </MudText>
+                                        }
+                                        @if (syncProgress.IsComplete && syncProgress.CompletedAt.HasValue)
+                                        {
+                                            <MudText Typo="Typo.body2">
+                                                Completed: @syncProgress.CompletedAt.Value.ToString("MMM dd, yyyy HH:mm")
+                                            </MudText>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary">No sync information available</MudText>
+                                }
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                </MudGrid>
+            }
+        </MudStack>
+    </MudPaper>
+
+    <MudDivider Class="my-8" />
+
+    @* Main Navigation Cards *@
+    <MudGrid>
+        <MudItem xs="12" sm="6" lg="3">
+            <MudCard Elevation="2" Class="pa-4">
+                <MudCardContent>
+                    <div class="d-flex align-center mb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.LocalShipping" Color="Color.Primary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6" Class="ml-3">Units Management</MudText>
+                    </div>
+                    <MudText>View and manage all units in the system.</MudText>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-4"
+                        Href="/units">
+                        View All Units
+                    </MudButton>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" lg="3">
+            <MudCard Elevation="2" Class="pa-4">
+                <MudCardContent>
+                    <div class="d-flex align-center mb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.Sync" Color="Color.Secondary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6" Class="ml-3">Synchronization</MudText>
+                    </div>
+                    <MudText>Configure and manage data synchronization from source systems.</MudText>
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth="true" Class="mt-4"
+                        OnClick="@(() => OpenSyncDialog())" Disabled="@isSyncRunning">
+                        @(isSyncRunning ? "Syncing..." : "Configure Sync")
+                    </MudButton>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" lg="3">
+            <MudCard Elevation="2" Class="pa-4">
+                <MudCardContent>
+                    <div class="d-flex align-center mb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.Add" Color="Color.Tertiary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6" Class="ml-3">Create Unit</MudText>
+                    </div>
+                    <MudText>Add new units to the system manually.</MudText>
+                    <MudButton Variant="Variant.Filled" Color="Color.Tertiary" FullWidth="true" Class="mt-4"
+                        Href="/units/create">
+                        Create New Unit
+                    </MudButton>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" lg="3">
+            <MudCard Elevation="2" Class="pa-4">
+                <MudCardContent>
+                    <div class="d-flex align-center mb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.Analytics" Color="Color.Info" Size="Size.Large" />
+                        <MudText Typo="Typo.h6" Class="ml-3">Reports</MudText>
+                    </div>
+                    <MudText>View detailed reports and analytics for units.</MudText>
+                    <MudButton Variant="Variant.Filled" Color="Color.Info" FullWidth="true" Class="mt-4"
+                        OnClick="@(() => RefreshData())">
+                        Refresh Data
+                    </MudButton>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private bool isLoadingStatistics = true;
+    private bool isSyncRunning = false;
+    private bool hasStatisticsError = false;
+    private UnitsStatisticsResponse? statistics;
+    private SyncProgress? syncProgress;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load all dashboard data in parallel for better performance
+        await Task.WhenAll(
+        LoadStatisticsAsync(),
+        LoadSyncStatusAsync(),
+        CheckSyncRunningAsync()
+        );
+    }
+
+    private async Task LoadDashboardData()
+    {
+        await InvokeAsync(StateHasChanged);
+
+        try
+        {
+            // Load all data in parallel for better performance
+            await Task.WhenAll(
+            LoadStatisticsAsync(),
+            LoadSyncStatusAsync(),
+            CheckSyncRunningAsync()
+            );
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading dashboard data: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task LoadStatisticsAsync()
+    {
+        isLoadingStatistics = true;
+        hasStatisticsError = false;
+        try
+        {
+            var statsResult = await UnitApiService.GetStatisticsAsync();
+            if (statsResult.IsSuccess)
+            {
+                statistics = statsResult.Data;
+                hasStatisticsError = false;
+            }
+            else
+            {
+                hasStatisticsError = true;
+                Snackbar.Add($"Failed to load statistics: {statsResult.ErrorMessage}", Severity.Warning);
+                // Set default values to prevent UI errors
+                statistics = new();
+            }
+        }
+        catch (Exception ex)
+        {
+            hasStatisticsError = true;
+            Snackbar.Add($"Error loading statistics: {ex.Message}", Severity.Error);
+            // Set default values to prevent UI errors
+            statistics = new();
+        }
+        finally
+        {
+            isLoadingStatistics = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task LoadSyncStatusAsync()
+    {
+        try
+        {
+            var syncResult = await SyncApiService.GetLatestSyncStatusAsync();
+            if (syncResult.IsSuccess)
+            {
+                syncProgress = syncResult.Data;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Silently handle sync status errors to avoid disrupting dashboard
+            Console.WriteLine($"Error loading sync status: {ex.Message}");
+        }
+    }
+
+    private async Task CheckSyncRunningAsync()
+    {
+        try
+        {
+            var runningSyncResult = await SyncApiService.IsSyncRunningAsync();
+            if (runningSyncResult.IsSuccess)
+            {
+                isSyncRunning = runningSyncResult.Data;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Silently handle sync running check errors
+            Console.WriteLine($"Error checking sync running status: {ex.Message}");
+            isSyncRunning = false;
+        }
+    }
+
+    private async Task OpenSyncDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true
+        };
+
+        var dialog = await DialogService.ShowAsync<SyncDialog>("Sync Units from Source of Truth", options);
+        var result = await dialog.Result;
+
+        if (!result?.Canceled ?? false)
+        {
+            // Refresh statistics after successful sync
+            await LoadDashboardData();
+        }
+    }
+
+    private async Task RefreshData()
+    {
+        await LoadDashboardData();
+        Snackbar.Add("Dashboard data refreshed", Severity.Info);
+    }
+
+    private async Task RefreshStatistics()
+    {
+        await LoadStatisticsAsync();
+        Snackbar.Add("Statistics refreshed", Severity.Info);
+    }
+
+    private async Task RefreshRecentActivity()
+    {
+        await LoadStatisticsAsync(); // Recent activity is part of statistics
+        Snackbar.Add("Recent activity refreshed", Severity.Info);
+    }
+
+    private Color GetSyncStatusColor(SyncJobStatus status)
+    {
+        return status switch
+        {
+            SyncJobStatus.Running => Color.Info,
+            SyncJobStatus.Completed => Color.Success,
+            SyncJobStatus.Failed => Color.Error,
+            SyncJobStatus.Cancelled => Color.Warning,
+            _ => Color.Default
+        };
+    }
+}

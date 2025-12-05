@@ -1,0 +1,51 @@
+{{~ # projection.scriban - Domain projection record ~}}
+{{~ # Projections are read-only views of data, often with computed properties ~}}
+namespace {{ namespace }};
+
+/// <summary>
+/// {{ projection.description }}
+/// </summary>
+public sealed record {{ projection.name }}
+{
+    internal {{ projection.name }}(
+{{~ for attr in projection.attributes ~}}
+        {{ attr | to_csharp_ctor_param }}{{ if !for.last || projection.computed.size > 0 }},{{ end }}
+{{~ end ~}}
+{{~ for comp in projection.computed ~}}
+        {{ comp | to_csharp_ctor_param }}{{ if !for.last }},{{ end }}
+{{~ end ~}}) =>
+        ({{ for attr in projection.attributes }}{{ attr.name | pascal_case }}{{ if !for.last || projection.computed.size > 0 }}, {{ end }}{{ end }}{{ for comp in projection.computed }}{{ comp.name | pascal_case }}{{ if !for.last }}, {{ end }}{{ end }}) =
+        ({{ for attr in projection.attributes }}{{ attr | to_ctor_assignment }}{{ if !for.last || projection.computed.size > 0 }}, {{ end }}{{ end }}{{ for comp in projection.computed }}{{ comp | to_ctor_assignment }}{{ if !for.last }}, {{ end }}{{ end }});
+
+{{~ for attr in projection.attributes ~}}
+    public {{ attr | to_csharp_type }} {{ attr.name | pascal_case }} { get; }
+{{~ end ~}}
+{{~ for comp in projection.computed ~}}
+    public {{ comp | to_csharp_type }} {{ comp.name | pascal_case }} { get; }
+{{~ end ~}}
+}
+
+/// <summary>
+/// Extension methods for {{ projection.name }}
+/// </summary>
+public static class {{ projection.name }}Extensions
+{
+    extension({{ projection.name }})
+    {
+{{~ if projection.attributes.size == 0 && projection.computed.size == 0 ~}}
+        public static {{ projection.name }} New() =>
+            new {{ projection.name }}();
+{{~ else ~}}
+        public static {{ projection.name }} New(
+{{~ for attr in projection.attributes ~}}
+            {{ attr | to_csharp_factory_param }}{{ if !for.last || projection.computed.size > 0 }},{{ end }}
+{{~ end ~}}
+{{~ for comp in projection.computed ~}}
+            {{ comp | to_csharp_factory_param }}{{ if !for.last }},{{ end }}
+{{~ end ~}}
+            ) =>
+            new {{ projection.name }}({{ for attr in projection.attributes }}{{ attr.name | camel_case }}{{ if !for.last || projection.computed.size > 0 }}, {{ end }}{{ end }}{{ for comp in projection.computed }}{{ comp.name | camel_case }}{{ if !for.last }}, {{ end }}{{ end }});
+{{~ end ~}}
+    }
+}
+

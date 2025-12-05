@@ -1,0 +1,16 @@
+{{~ ##
+  property.scriban - Generates a single property declaration
+  
+  Parameters:
+    - attr: The attribute to generate a property for
+    - indent: Number of spaces to indent (default: 4)
+  
+  Usage:
+    {{ include '_snippets/csharp/property' attr }}
+~}}
+{{~ func property(attr, indent = 4) ~}}
+{{~ spaces = "" ~}}
+{{~ for i in 1..indent ~}}{{~ spaces = spaces + " " ~}}{{~ end ~}}
+{{ spaces }}public {{ attr | to_csharp_type }} {{ attr.name | pascal_case }} { get; }
+{{~ end ~}}
+

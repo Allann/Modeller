@@ -1,0 +1,311 @@
+@page "/units"
+
+@inject UnitApiService UnitApiService
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+
+@using JJs.UnitsManagement.Ui.Components.Pages.Sync
+
+<PageTitle>Units Management</PageTitle>
+
+<ManagementPageLayout>
+    <HeaderContent>
+        <PageHeader Title="Units Management"
+                   Icon="@Icons.Material.Filled.LocalShipping"
+                   ActionButtonText="Create Unit"
+                   ActionButtonIcon="@Icons.Material.Filled.Add"
+                   OnActionButtonClick="OpenCreateDialog"
+                   BackLinkHref="/units/home"
+                   BackLinkText="Units Dashboard"
+                   Description="Manage physical trucks used in garbage collection and recycling operations">
+            <AdditionalActions>
+                <MudButton Variant="Variant.Outlined"
+                          Color="Color.Secondary"
+                          StartIcon="@Icons.Material.Filled.Sync"
+                          OnClick="OpenSyncDialog">
+                    Configure Sync
+                </MudButton>
+            </AdditionalActions>
+        </PageHeader>
+    </HeaderContent>
+
+    <SearchFilterContent>
+        <SearchAndFilter PrimarySearchValue="@_searchString"
+                        PrimarySearchValueChanged="@(value => _searchString = value)"
+                        PrimarySearchLabel="Search"
+                        PrimarySearchPlaceholder="Search by truck number, registration, or description"
+                        OnPrimarySearchDebounced="@ApplyFilter"
+                        OnPrimarySearchIconClick="@LoadUnits"
+                        OnPrimarySearchKeyPress="@OnSearchKeyPress"
+                        ShowSecondaryFilter="true"
+                        SecondaryFilterType="FilterFieldType.Select"
+                        SecondaryFilterValue="_selectedTruckType"
+                        SecondaryFilterValueChanged="@(value => _selectedTruckType = (TruckType?)value)"
+                        SecondaryFilterLabel="Truck Type"
+                        SecondaryFilterOptions="@_truckTypeFilterOptions"
+                        OnSecondaryFilterChanged="@OnTruckTypeFilterChanged"
+                        OnSecondaryFilterCleared="@ClearTruckTypeFilter"
+                        ShowTertiaryFilter="true"
+                        TertiaryFilterType="FilterFieldType.Select"
+                        TertiaryFilterValue="_selectedActiveStatus"
+                        TertiaryFilterValueChanged="@(value => _selectedActiveStatus = (bool?)value)"
+                        TertiaryFilterLabel="Status"
+                        TertiaryFilterOptions="@_statusFilterOptions"
+                        OnTertiaryFilterChanged="@OnStatusFilterChanged"
+                        OnTertiaryFilterCleared="@ClearActiveStatusFilter" />
+    </SearchFilterContent>
+
+    <MainContent>
+
+        <MudDataGrid @ref="_dataGrid"
+                     T="UnitResponse"
+                     ServerData="@LoadServerData"
+                     Virtualize="true"
+                     FixedHeader="true"
+                     Height="600px"
+                     Dense="true"
+                     Hover="true"
+                     Striped="true"
+                     Loading="@_loading"
+                     LoadingProgressColor="Color.Info">
+            <Columns>
+                <PropertyColumn Property="x => x.TruckNumber" Title="Truck Number" Sortable="true">
+                    <CellTemplate>
+                        <MudChip T="string" Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
+                            @context.Item.TruckNumber
+                        </MudChip>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.RegistrationNumber" Title="Registration" Sortable="true" />
+                <PropertyColumn Property="x => x.Description" Title="Description" Sortable="false">
+                    <CellTemplate>
+                        <MudText Typo="Typo.body2">
+                            @(context.Item.Description?.Length > 50 ? context.Item.Description[..50] + "..." : context.Item.Description)
+                        </MudText>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.TruckType" Title="Type" Sortable="true">
+                    <CellTemplate>
+                        @if (context.Item.TruckType.HasValue)
+                        {
+                            <MudChip T="string" Size="Size.Small" Color="GetTruckTypeColor(context.Item.TruckType.Value)">
+                                @context.Item.TruckType.Value.ToString()
+                            </MudChip>
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.Make" Title="Make/Model" Sortable="true">
+                    <CellTemplate>
+                        @if (!string.IsNullOrEmpty(context.Item.Make) || !string.IsNullOrEmpty(context.Item.Model))
+                        {
+                            <MudText Typo="Typo.body2">@context.Item.Make @context.Item.Model</MudText>
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.Company" Title="Company" Sortable="true" />
+                <PropertyColumn Property="x => x.State" Title="State" Sortable="true" />
+                <PropertyColumn Property="x => x.Active" Title="Status" Sortable="true">
+                    <CellTemplate>
+                        <MudChip T="string"
+                                 Color="@(context.Item.Active ? Color.Success : Color.Default)"
+                                 Size="Size.Small">
+                            @(context.Item.Active ? "Active" : "Inactive")
+                        </MudChip>
+                    </CellTemplate>
+                </PropertyColumn>
+                <TemplateColumn CellClass="d-flex justify-end" Sortable="false" Title="Actions">
+                    <CellTemplate>
+                        <MudButtonGroup Size="Size.Small">
+                            <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                          Color="Color.Info"
+                                          Size="Size.Small"
+                                          OnClick="@(() => ViewUnit(context.Item))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                          Color="Color.Primary"
+                                          Size="Size.Small"
+                                          OnClick="@(() => OpenEditDialog(context.Item))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                          Color="Color.Error"
+                                          Size="Size.Small"
+                                          OnClick="@(() => DeleteUnit(context.Item))" />
+                        </MudButtonGroup>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="UnitResponse" />
+            </PagerContent>
+        </MudDataGrid>
+    </MainContent>
+</ManagementPageLayout>
+
+@code {
+    private MudDataGrid<UnitResponse> _dataGrid = null!;
+    private bool _loading = false; // used by DataGrid to show/hide progress bar when loading
+    private string _searchString = string.Empty;
+    private TruckType? _selectedTruckType;
+    private bool? _selectedActiveStatus;
+
+    // Filter options for SearchAndFilter component
+    private readonly List<FilterOption> _truckTypeFilterOptions =
+        Enum.GetValues<TruckType>()
+            .Select(type => new FilterOption(type, type.ToString()))
+            .ToList();
+
+    private readonly List<FilterOption> _statusFilterOptions =
+    [
+        new(true, "Active"),
+        new(false, "Inactive")
+    ];
+
+    private async Task<GridData<UnitResponse>> LoadServerData(GridState<UnitResponse> state)
+    {
+        var items = new GridData<UnitResponse>
+        {
+            Items = new List<UnitResponse>(),
+        };
+
+        try
+        {
+            var request = new ReadAllUnitsRequest
+            {
+                Page = state.Page + 1, // MudBlazor uses 0-based pages
+                PageSize = state.PageSize,
+                SearchTerm = string.IsNullOrWhiteSpace(_searchString) ? null : _searchString,
+                TruckType = _selectedTruckType,
+                ActiveOnly = _selectedActiveStatus
+            };
+
+            var result = await UnitApiService.ReadAllAsync(request);
+            if (result is { IsSuccess: true, Data: not null })
+            {
+                items.Items = result.Data.Units;
+                items.TotalItems = result.Data.TotalCount;
+                return items;
+            }
+
+            Snackbar.Add($"Error loading units: {result.ErrorMessage}", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading units: {ex.Message}", Severity.Error);
+        }
+        return items;
+    }
+
+    // Filter event handlers
+    private async Task ApplyFilter() => await _dataGrid.ReloadServerData();
+    private async Task LoadUnits() => await _dataGrid.ReloadServerData();
+    private async Task OnTruckTypeFilterChanged(object? value) => await ApplyFilter();
+    private async Task OnStatusFilterChanged(object? value) => await ApplyFilter();
+    private async Task ClearTruckTypeFilter() => await ApplyFilter();
+    private async Task ClearActiveStatusFilter() => await ApplyFilter();
+
+    private async Task OnSearchKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await ApplyFilter();
+        }
+    }
+
+    private async Task OpenCreateDialog()
+    {
+        var parameters = new DialogParameters();
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Large, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<UnitCreateDialog>("Create Unit", parameters, options);
+        var result = await dialog.Result;
+        if (!result?.Canceled ?? false)
+        {
+            await _dataGrid.ReloadServerData();
+            Snackbar.Add("Unit created successfully", Severity.Success);
+        }
+    }
+
+    private void ViewUnit(UnitResponse unit)
+    {
+        Navigation.NavigateTo($"/units/{unit.UnitId}");
+    }
+
+    private async Task OpenEditDialog(UnitResponse unit)
+    {
+        var parameters = new DialogParameters
+        {
+            ["UnitId"] = unit.UnitId
+        };
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Large, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<UnitEditDialog>("Edit Unit", parameters, options);
+        var result = await dialog.Result;
+        if (!result?.Canceled ?? false)
+        {
+            await _dataGrid.ReloadServerData();
+            Snackbar.Add("Unit updated successfully", Severity.Success);
+        }
+    }
+
+    private async Task DeleteUnit(UnitResponse unit)
+    {
+        var confirmed = await DialogService.ShowMessageBox(
+            "Confirm Delete",
+            $"Are you sure you want to delete unit '{unit.TruckNumber}'? This action cannot be undone.",
+            yesText: "Delete", cancelText: "Cancel");
+
+        if (confirmed == true)
+        {
+            try
+            {
+                var result = await UnitApiService.DeleteAsync(new()
+                    { UnitId = unit.UnitId });
+                if (result.IsSuccess)
+                {
+                    Snackbar.Add("Unit deleted successfully", Severity.Success);
+                    await _dataGrid.ReloadServerData();
+                }
+                else
+                {
+                    Snackbar.Add($"Failed to delete unit: {result.ErrorMessage}", Severity.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error deleting unit: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private async Task OpenSyncDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true
+        };
+
+        var dialog = await DialogService.ShowAsync<SyncDialog>("Sync Units from Source of Truth", options);
+        var result = await dialog.Result;
+
+        if (!result?.Canceled ?? false)
+        {
+            // Refresh units list after successful sync
+            await _dataGrid.ReloadServerData();
+        }
+    }
+
+    private Color GetTruckTypeColor(TruckType truckType)
+    {
+        return truckType switch
+        {
+            TruckType.Garbage => Color.Primary,
+            TruckType.Recycling => Color.Success,
+            TruckType.BulkWaste => Color.Warning,
+            TruckType.GreenWaste => Color.Tertiary,
+            TruckType.Commercial => Color.Secondary,
+            TruckType.Compactor => Color.Info,
+            _ => Color.Default
+        };
+    }
+}

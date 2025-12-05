@@ -1,0 +1,76 @@
+﻿namespace TestDomain;
+
+/// <summary>
+/// Status of an order
+/// </summary>
+public sealed record OrderStatus
+{
+    internal OrderStatus(
+        Guid publicId,
+        string name,
+        string? description = null,
+        IReadOnlyList<OrderStatusValue>? values = null) =>
+        (PublicId, Name, Description, Values) = (publicId, name, description, values ?? []);
+
+    public Guid PublicId { get; }
+    public string Name { get; }
+    public string? Description { get; }
+    public IReadOnlyList<OrderStatusValue> Values { get; }
+}
+
+/// <summary>
+/// Extension methods for OrderStatus
+/// </summary>
+public static class OrderStatusExtensions
+{
+    extension(OrderStatus)
+    {
+        public static OrderStatus? New(
+            string name,
+            string? description = null,
+            IReadOnlyList<OrderStatusValue>? values = null) =>
+            OrderStatus.CreateValid(Guid.CreateVersion7(), name, description, values);
+
+        public static OrderStatus? CreateValid(
+            Guid publicId,
+            string name,
+            string? description = null,
+            IReadOnlyList<OrderStatusValue>? values = null) =>
+            string.IsNullOrWhiteSpace(name) ? null
+            : publicId.Version != 7 ? null
+            : new OrderStatus(publicId, name, description, values);
+    }
+}
+
+/// <summary>
+/// Represents a single value in the OrderStatus enumeration
+/// </summary>
+public sealed record OrderStatusValue
+{
+    internal OrderStatusValue(
+        string name,
+        string? description = null,
+        int? value = null) =>
+        (Name, Description, Value) = (name, description, value);
+
+    public string Name { get; }
+    public string? Description { get; }
+    public int? Value { get; }
+}
+
+/// <summary>
+/// Extension methods for OrderStatusValue
+/// </summary>
+public static class OrderStatusValueExtensions
+{
+    extension(OrderStatusValue)
+    {
+        public static OrderStatusValue? New(
+            string name,
+            string? description = null,
+            int? value = null) =>
+            string.IsNullOrWhiteSpace(name) ? null
+            : new OrderStatusValue(name, description, value);
+    }
+}
+

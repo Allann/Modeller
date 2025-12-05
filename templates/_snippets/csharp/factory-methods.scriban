@@ -1,0 +1,40 @@
+{{~ ##
+  factory-methods.scriban - Generates New() and CreateValid() factory methods
+  
+  Parameters:
+    - type_name: The name of the type
+    - attributes: Collection of attributes for the type
+    - relationships: Collection of relationships (optional)
+  
+  Usage:
+    {{ include '_snippets/csharp/factory-methods' type_name attributes relationships }}
+~}}
+{{~ func factory_methods(type_name, attributes, relationships = []) ~}}
+{{~ if attributes.size == 0 && relationships.size == 0 ~}}
+        public static {{ type_name }}? New() =>
+            {{ type_name }}.CreateValid(Guid.CreateVersion7());
+{{~ else ~}}
+        public static {{ type_name }}? New(
+{{~ for attr in attributes ~}}
+            {{ attr | to_csharp_factory_param }}{{ if !for.last || relationships.size > 0 }},{{ end }}
+{{~ end ~}}
+{{~ for rel in relationships ~}}
+            {{ rel | to_csharp_rel_param }}{{ if !for.last }},{{ end }}
+{{~ end ~}}
+            ) =>
+            {{ type_name }}.CreateValid(Guid.CreateVersion7(){{ for attr in attributes }}, {{ attr.name | camel_case }}{{ end }}{{ for rel in relationships }}, {{ rel | to_arg_name }}{{ end }});
+{{~ end ~}}
+
+        public static {{ type_name }}? CreateValid(
+            Guid publicId{{ for attr in attributes }},
+            {{ attr | to_csharp_factory_param }}{{ end }}{{ for rel in relationships }},
+            {{ rel | to_csharp_rel_param }}{{ end }}) =>
+            publicId.Version != 7 ? null
+{{~ for attr in attributes ~}}
+{{~ if attr | needs_validation ~}}
+            : {{ attr | to_validation_check }} ? null
+{{~ end ~}}
+{{~ end ~}}
+            : new {{ type_name }}(publicId{{ for attr in attributes }}, {{ attr.name | camel_case }}{{ end }}{{ for rel in relationships }}, {{ rel | to_arg_name }}{{ end }});
+{{~ end ~}}
+

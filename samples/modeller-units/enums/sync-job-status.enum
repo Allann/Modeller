@@ -1,0 +1,13 @@
+# SyncJobStatus Enum
+# Status of a background sync job
+
+enum SyncJobStatus
+  "Status values for background sync job operations"
+  
+  NotStarted: 0 "Job has not started yet"
+  Running: 1 "Job is currently running"
+  Completed: 2 "Job completed successfully"
+  Failed: 3 "Job failed with errors"
+  Cancelled: 4 "Job was cancelled"
+end
+

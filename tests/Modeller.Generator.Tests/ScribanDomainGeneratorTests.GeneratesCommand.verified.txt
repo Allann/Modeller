@@ -1,0 +1,32 @@
+﻿namespace TestDomain;
+
+/// <summary>
+/// Creates a new order in the system
+/// </summary>
+public sealed record CreateOrder
+{
+    internal CreateOrder(
+        Guid publicId) =>
+        (PublicId) =
+        (publicId);
+
+    public Guid PublicId { get; }
+}
+
+/// <summary>
+/// Extension methods for CreateOrder
+/// </summary>
+public static class CreateOrderExtensions
+{
+    extension(CreateOrder)
+    {
+        public static CreateOrder? New() =>
+            CreateOrder.CreateValid(Guid.CreateVersion7());
+
+        public static CreateOrder? CreateValid(
+            Guid publicId) =>
+            publicId.Version != 7 ? null
+            : new CreateOrder(publicId);
+    }
+}
+

@@ -1,0 +1,18 @@
+# ListSyncJobs Query
+# Retrieves a paginated list of sync jobs
+
+query ListSyncJobs
+  "Retrieves a paginated list of sync jobs with optional filtering"
+
+  input
+    # Pagination (0-based page index)
+    PageIndex: integer, default(0), range(0, 1000) "Page index (0-based)"
+    PageSize: integer, default(10), range(1, 100) "Number of items per page"
+
+    # Filters
+    Status: SyncJobStatus, optional "Filter by job status"
+  end
+
+  returns SyncJobList
+end
+

@@ -1,0 +1,47 @@
+.stat-card {
+    height: 120px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-content {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.stat-icon {
+    font-size: 3rem !important;
+    margin-right: 1rem;
+}
+
+.stat-text {
+    flex: 1;
+}
+
+.breakdown-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.sync-status {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .stat-icon {
+        font-size: 2rem !important;
+        margin-right: 0.5rem;
+    }
+    
+    .stat-card {
+        height: 100px;
+    }
+}

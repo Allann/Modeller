@@ -1,0 +1,22 @@
+{
+  "DefaultOptions": {
+    "DefaultPageIndex": 0,
+    "DefaultPageSize": 100,
+    "EnableAuditTrail": true,
+    "EnableBulkOperations": true
+  },
+  "ApiSettings": {
+    "Units": {
+      "BaseUrl": "https://localhost:7003"
+    },
+    "TimeoutSeconds": 30,
+    "RetryCount": 3
+  },
+  "FeatureFlags": {
+    "EnableAdvancedFiltering": true,
+    "EnableExportImport": true,
+    "EnableRoleBasedAccess": true,
+    "EnableMobileView": true,
+    "EnableSyncFromSourceOfTruth": true
+  }
+}

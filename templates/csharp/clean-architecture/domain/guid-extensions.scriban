@@ -1,0 +1,19 @@
+{{~ # guid-extensions.scriban - Guid.IsVersion7() extension method ~}}
+{{~ # Generated once per domain to provide Guid validation ~}}
+namespace {{ namespace }};
+
+/// <summary>
+/// Extension methods for <see cref="Guid"/>.
+/// </summary>
+public static class GuidExtensions
+{
+    extension(Guid)
+    {
+        /// <summary>
+        /// Determines whether this GUID is a version 7 UUID.
+        /// </summary>
+        /// <returns>true if this is a version 7 UUID; otherwise, false.</returns>
+        public bool IsVersion7() => Version == 7;
+    }
+}
+

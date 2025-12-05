@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <!-- Debug builds output to Shell's plugin folder for local development -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <OutputPath>..\..\..\Shell\bin\$(Configuration)\net9.0\Plugin\Units</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+    <PackageReference Include="MudBlazor.Extensions" />
+    <PackageReference Include="Shell.Plugin" />
+    <PackageReference Include="JJs.Shared.OpenTelemetry" />
+    <PackageReference Include="JJs.Components" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Aspire\Shell.ServiceDefaults\Shell.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\JJs.UnitsManagement.Sdk\JJs.UnitsManagement.Sdk.csproj" />
+  </ItemGroup>
+  <!-- Plugin configuration files - copied to Shell output directory -->
+  <ItemGroup>
+    <None Update="units.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="units.*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

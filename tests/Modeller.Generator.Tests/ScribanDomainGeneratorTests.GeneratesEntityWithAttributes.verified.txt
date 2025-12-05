@@ -1,0 +1,54 @@
+﻿namespace TestDomain;
+
+/// <summary>
+/// Represents a product
+/// </summary>
+public sealed record Product
+{
+    internal Product(
+        Guid publicId,
+        string code,
+        decimal price,
+        int stockLevel,
+        string? notes = null,
+        bool isActive = true) =>
+        (PublicId, Code, Price, StockLevel, Notes, IsActive) =
+        (publicId, code, price, stockLevel, notes, isActive);
+
+    public Guid PublicId { get; }
+    public string Code { get; }
+    public decimal Price { get; }
+    public int StockLevel { get; }
+    public string? Notes { get; }
+    public bool IsActive { get; }
+}
+
+/// <summary>
+/// Extension methods for Product
+/// </summary>
+public static class ProductExtensions
+{
+    extension(Product)
+    {
+        public static Product? New(
+            string code,
+            decimal price,
+            int stockLevel,
+            string? notes = null,
+            bool isActive = true
+            ) =>
+            Product.CreateValid(Guid.CreateVersion7(), code, price, stockLevel, notes, isActive);
+
+        public static Product? CreateValid(
+            Guid publicId,
+            string code,
+            decimal price,
+            int stockLevel,
+            string? notes = null,
+            bool isActive = true) =>
+            publicId.Version != 7 ? null
+            : string.IsNullOrWhiteSpace(code) ? null
+            : new Product(publicId, code, price, stockLevel, notes, isActive);
+    }
+}
+

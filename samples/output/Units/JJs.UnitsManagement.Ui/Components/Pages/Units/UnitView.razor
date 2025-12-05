@@ -1,0 +1,363 @@
+@page "/units/{id:guid}"
+@inject UnitApiService UnitApiService
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+
+@using JJs.UnitsManagement.Ui.Components.Pages.Units
+@using JJs.UnitsManagement.Sdk.Unit
+
+<PageTitle>Unit Details</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    @if (isLoading)
+    {
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        <MudText Typo="Typo.body1" Class="mt-4">Loading unit details...</MudText>
+    }
+    else if (unit != null)
+    {
+        <!-- Header Section -->
+        <MudText Typo="Typo.h1" GutterBottom="true">@unit.TruckNumber</MudText>
+        <MudText Class="mb-8">Unit Details</MudText>
+
+        <!-- Back Navigation -->
+        <MudLink Href="/units" Typo="Typo.button" Class="back-button">
+            <MudIcon Icon="@Icons.Material.Filled.ArrowBack"></MudIcon> Back to Units
+        </MudLink>
+
+        <!-- Content Cards -->
+        <MudGrid Class="mt-6">
+            <!-- Basic Information Card -->
+            <MudItem xs="12" md="6">
+                <MudCard Elevation="2">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+                                Basic Information
+                            </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Truck Number</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@unit.TruckNumber</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Registration Number</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.RegistrationNumber ?? "Not specified")</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Status</MudText>
+                                <div class="mb-3">
+                                    <MudChip T="string" Size="Size.Small" Color="@(unit.Active ? Color.Success : Color.Default)">
+                                        @(unit.Active ? "Active" : "Inactive")
+                                    </MudChip>
+                                </div>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Description</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.Description ?? "No description provided")</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <!-- Vehicle Information Card -->
+            <MudItem xs="12" md="6">
+                <MudCard Elevation="2">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.LocalShipping" Class="mr-2" />
+                                Vehicle Information
+                            </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Make</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.Make ?? "Not specified")</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Model</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.Model ?? "Not specified")</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Truck Type</MudText>
+                                <div class="mb-3">
+                                    @if (unit.TruckType.HasValue)
+                                    {
+                                        <MudChip T="string" Size="Size.Small" Color="GetTruckTypeColor(unit.TruckType.Value)">
+                                            @unit.TruckType.Value.ToString()
+                                        </MudChip>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.body1">Not specified</MudText>
+                                    }
+                                </div>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Euro Type</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.EuroType ?? "Not specified")</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <!-- Technical Information Card -->
+            <MudItem xs="12" md="6">
+                <MudCard Elevation="2">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.Build" Class="mr-2" />
+                                Technical Information
+                            </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Engine Number</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.EngineNumber ?? "Not specified")</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Chassis Number</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.ChassisNumber ?? "Not specified")</MudText>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Warranty Date</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">
+                                    @if (unit.WarrantyDate.HasValue)
+                                    {
+                                        <span>@unit.WarrantyDate.Value.ToString("dd/MM/yyyy") (@GetDaysFromToday(unit.WarrantyDate.Value))</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Not specified</span>
+                                    }
+                                </MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <!-- Operational Information Card -->
+            <MudItem xs="12" md="6">
+                <MudCard Elevation="2">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.Business" Class="mr-2" />
+                                Operational Information
+                            </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Company</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.Company ?? "Not specified")</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">State</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.State ?? "Not specified")</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Department</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.Department ?? "Not specified")</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Activity</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.Activity ?? "Not specified")</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Country Code</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.CountryCode ?? "Not specified")</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">DCN</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@(unit.DCN ?? "Not specified")</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <!-- Additional Information Card -->
+            @if (!string.IsNullOrEmpty(unit.Extra))
+            {
+                <MudItem xs="12">
+                    <MudCard Elevation="2">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">
+                                    <MudIcon Icon="@Icons.Material.Filled.Notes" Class="mr-2" />
+                                    Additional Information
+                                </MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText Typo="Typo.body1">@unit.Extra</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            }
+
+            <!-- Audit Information Card -->
+            <MudItem xs="12">
+                <MudCard Elevation="2">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.History" Class="mr-2" />
+                                Audit Information
+                            </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Created</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">@unit.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</MudText>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudText Typo="Typo.subtitle2" Color="Color.Primary">Last Updated</MudText>
+                                <MudText Typo="Typo.body1" Class="mb-3">
+                                    @if (unit.UpdatedAt.HasValue)
+                                    {
+                                        <span>@unit.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm:ss")</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Never updated</span>
+                                    }
+                                </MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+
+        <!-- Action Buttons -->
+        <MudGrid Class="mt-6">
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" 
+                          Color="Color.Primary" 
+                          StartIcon="@Icons.Material.Filled.Edit"
+                          OnClick="@(() => EditUnit())">
+                    Edit Unit
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" 
+                          Color="Color.Secondary" 
+                          StartIcon="@Icons.Material.Filled.List"
+                          Href="/units"
+                          Class="ml-3">
+                    Back to List
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Error">
+            <MudText>Unit not found or failed to load.</MudText>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" 
+                      OnClick="@(() => Navigation.NavigateTo("/units"))">
+                Return to Units List
+            </MudButton>
+        </MudAlert>
+    }
+</MudContainer>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private bool isLoading = true;
+    private UnitResponse? unit;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUnit();
+    }
+
+    private async Task LoadUnit()
+    {
+        isLoading = true;
+        try
+        {
+            var result = await UnitApiService.GetByIdAsync(Id);
+            if (result is { IsSuccess: true, Data: not null })
+            {
+                unit = result.Data;
+            }
+            else
+            {
+                Snackbar.Add($"Failed to load unit: {result.ErrorMessage}", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading unit: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task EditUnit()
+    {
+        var parameters = new DialogParameters { ["UnitId"] = Id };
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Large, FullWidth = true };
+        
+        var dialog = await DialogService.ShowAsync<UnitEditDialog>("Edit Unit", parameters, options);
+        var result = await dialog.Result;
+        if (!result?.Canceled ?? false)
+        {
+            await LoadUnit();
+        }
+    }
+
+    private Color GetTruckTypeColor(TruckType truckType)
+    {
+        return truckType switch
+        {
+            TruckType.Garbage => Color.Primary,
+            TruckType.Recycling => Color.Success,
+            TruckType.BulkWaste => Color.Warning,
+            TruckType.GreenWaste => Color.Tertiary,
+            TruckType.Commercial => Color.Secondary,
+            TruckType.Compactor => Color.Info,
+            _ => Color.Default
+        };
+    }
+
+    private string GetDaysFromToday(DateTime date)
+    {
+        var days = (date.Date - DateTime.Today).Days;
+        return days switch
+        {
+            0 => "Today",
+            1 => "Tomorrow",
+            -1 => "Yesterday",
+            > 0 => $"In {days} days",
+            < 0 => $"{Math.Abs(days)} days ago"
+        };
+    }
+}
+
+<style>
+    .back-button {
+        margin-bottom: 1rem;
+    }
+</style>

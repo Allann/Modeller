@@ -1,0 +1,14 @@
+# SyncJobList Projection
+# Paginated response containing a list of sync jobs
+
+projection SyncJobList
+  "Paginated response containing a list of sync jobs"
+  
+  Jobs: list(SyncProgress) "List of sync job progress"
+  TotalCount: integer "Total number of jobs"
+  PageIndex: integer "Current page index (0-based)"
+  PageSize: integer "Page size"
+  HasNextPage: boolean, computed "Whether there are more pages"
+  HasPreviousPage: boolean, computed "Whether there are previous pages"
+end
+

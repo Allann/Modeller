@@ -1,0 +1,19 @@
+{{~ ##
+  namespace.scriban - Generates namespace declaration
+  
+  Parameters:
+    - ns: The namespace string
+    - file_scoped: Whether to use file-scoped namespace (default: true)
+  
+  Usage:
+    {{ include '_snippets/csharp/namespace' namespace }}
+~}}
+{{~ func namespace_decl(ns, file_scoped = true) ~}}
+{{~ if file_scoped ~}}
+namespace {{ ns }};
+{{~ else ~}}
+namespace {{ ns }}
+{
+{{~ end ~}}
+{{~ end ~}}
+

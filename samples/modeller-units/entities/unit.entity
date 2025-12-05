@@ -1,0 +1,54 @@
+# Unit Entity
+# A physical truck used in garbage collection and recycling operations
+
+entity Unit
+  "Infrastructure entity for Unit (physical trucks)"
+  
+  # Business key
+  TruckNumber: text(50), required, unique "The truck number (business key from TRUCK_NUMBER field)"
+  
+  # Vehicle identification
+  RegistrationNumber: text(20), optional "Vehicle registration number (from REGISTRATION_NUMBER field)"
+  Description: text(200), optional "Description of the unit (from DESCRIPTION field)"
+  Make: text(50), optional "Vehicle make (extracted from TRUCK_MODEL field)"
+  Model: text(100), optional "Vehicle model (from TRUCK_MODEL field)"
+  TruckType: TruckType, optional "Type of truck for operational classification (from TRUCK_TYPE field)"
+  
+  # Technical details
+  EuroType: text(20), optional "Euro emission standard type (from EURO_TYPE field)"
+  EngineNumber: text(50), optional "Engine number (from ENGINE_NUMBER field)"
+  ChassisNumber: text(50), optional "Chassis number (from CHASSIS_NUMBER field)"
+  WarrantyDate: datetime, optional "Warranty expiration date (from WARRANTY_DATE field)"
+  
+  # Organization details
+  State: text(10), optional "State or territory where unit operates (from STATE field)"
+  Company: text(20), optional "Company code for organisation linkage (from COMPANY field)"
+  Department: text(50), optional "Department within the company (from DEPARTMENT field)"
+  Activity: text(50), optional "Activity or operational area (from ACTIVITY field)"
+  CountryCode: text(5), optional "Country code (from COUNTRY_CODE field)"
+  DCN: text(50), optional "DCN identifier (from DCN field)"
+  Extra: text(500), optional "Additional information (from EXTRA field)"
+  
+  # Status
+  Active: boolean, default(true) "Determines if the unit is active or not"
+  
+  # Audit fields
+  CreatedAt: datetime, required "When the unit was created"
+  UpdatedAt: datetime, optional "When the unit was last updated"
+  CreatedBy: text(100), default("System") "Who created the unit"
+  UpdatedBy: text(100), optional "Who last updated the unit"
+end
+
+key Unit
+  UnitId: guid, generated "The unique identifier for the unit"
+  
+  index [TruckNumber] unique
+  index [RegistrationNumber]
+  index [Active]
+  index [TruckType]
+  index [Company]
+  index [State]
+  index [CreatedAt]
+  index [Active, TruckType, Company]
+end
+

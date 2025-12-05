@@ -1,0 +1,38 @@
+{{~ ##
+  xml-doc.scriban - Generates XML documentation comments
+  
+  Parameters:
+    - summary: The summary text
+    - params: Optional dictionary of parameter names to descriptions
+    - returns: Optional return value description
+    - remarks: Optional remarks text
+  
+  Usage:
+    {{ include '_snippets/csharp/xml-doc' summary="Creates a new instance" }}
+~}}
+{{~ func xml_doc(summary, params = null, returns = null, remarks = null) ~}}
+/// <summary>
+/// {{ summary }}
+/// </summary>
+{{~ if params ~}}
+{{~ for param in params ~}}
+/// <param name="{{ param.key }}">{{ param.value }}</param>
+{{~ end ~}}
+{{~ end ~}}
+{{~ if returns ~}}
+/// <returns>{{ returns }}</returns>
+{{~ end ~}}
+{{~ if remarks ~}}
+/// <remarks>
+/// {{ remarks }}
+/// </remarks>
+{{~ end ~}}
+{{~ end ~}}
+
+{{~ ## Simple summary-only version ~}}
+{{~ func summary(text) ~}}
+/// <summary>
+/// {{ text }}
+/// </summary>
+{{~ end ~}}
+

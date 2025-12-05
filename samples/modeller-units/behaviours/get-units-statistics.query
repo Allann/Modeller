@@ -1,0 +1,9 @@
+# GetUnitsStatistics Query
+# Retrieves comprehensive statistics about units for dashboard display
+
+query GetUnitsStatistics
+  "Retrieves comprehensive statistics about units for dashboard display"
+
+  returns UnitsStatistics
+end
+

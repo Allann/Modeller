@@ -1,0 +1,15 @@
+# UnitList Projection
+# Paginated response containing a list of units
+
+projection UnitList
+  "Paginated response containing a list of units"
+  
+  Units: list(Unit) "List of units"
+  TotalCount: integer "Total number of units available"
+  PageNumber: integer "Current page number (1-based)"
+  PageSize: integer "Number of items per page"
+  TotalPages: integer, computed "Total number of pages available"
+  HasNextPage: boolean, computed "Whether there are more pages available"
+  HasPreviousPage: boolean, computed "Whether there are previous pages available"
+end
+

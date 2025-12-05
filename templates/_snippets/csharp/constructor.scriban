@@ -1,0 +1,27 @@
+{{~ ##
+  constructor.scriban - Generates an internal constructor with tuple assignment
+  
+  Parameters:
+    - type_name: The name of the type
+    - attributes: Collection of attributes for the type
+    - relationships: Collection of relationships (optional)
+    - include_public_id: Whether to include PublicId parameter (default: true)
+  
+  Usage:
+    {{ include '_snippets/csharp/constructor' type_name attributes relationships }}
+~}}
+{{~ func constructor(type_name, attributes, relationships = [], include_public_id = true) ~}}
+    internal {{ type_name }}(
+{{~ if include_public_id ~}}
+        Guid publicId{{ if attributes.size > 0 || relationships.size > 0 }},{{ end }}
+{{~ end ~}}
+{{~ for attr in attributes ~}}
+        {{ attr | to_csharp_ctor_param }}{{ if !for.last || relationships.size > 0 }},{{ end }}
+{{~ end ~}}
+{{~ for rel in relationships ~}}
+        {{ rel | to_csharp_rel_param }}{{ if !for.last }},{{ end }}
+{{~ end ~}}) =>
+        ({{ if include_public_id }}PublicId{{ if attributes.size > 0 || relationships.size > 0 }}, {{ end }}{{ end }}{{ for attr in attributes }}{{ attr.name | pascal_case }}{{ if !for.last || relationships.size > 0 }}, {{ end }}{{ end }}{{ for rel in relationships }}{{ rel | to_property_name }}{{ if !for.last }}, {{ end }}{{ end }}) =
+        ({{ if include_public_id }}publicId{{ if attributes.size > 0 || relationships.size > 0 }}, {{ end }}{{ end }}{{ for attr in attributes }}{{ attr | to_ctor_assignment }}{{ if !for.last || relationships.size > 0 }}, {{ end }}{{ end }}{{ for rel in relationships }}{{ rel | to_tuple_value }}{{ if !for.last }}, {{ end }}{{ end }});
+{{~ end ~}}
+

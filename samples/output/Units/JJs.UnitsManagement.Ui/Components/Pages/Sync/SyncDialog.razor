@@ -1,0 +1,377 @@
+@inject IUnitsSyncApiService SyncApiService
+@inject ISnackbar Snackbar
+@implements IDisposable
+
+<MudDialog>
+    <DialogContent>
+        <MudContainer Style="max-width: 800px;">
+            <MudText Typo="Typo.h6" GutterBottom="true">
+                <MudIcon Icon="@Icons.Material.Filled.Sync" Class="mr-2" />
+                Sync from Source of Truth
+            </MudText>
+            <MudText Class="mb-4">
+                Synchronize units from the source of truth system (TRUCK_COMBINED table). This will update unit information including truck numbers, types, registrations, and other details.
+            </MudText>
+
+            @if (!isSyncing)
+            {
+                <!-- Sync Configuration -->
+                <MudCard Elevation="2" Class="mb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.Settings" Class="mr-2" />
+                                Sync Configuration
+                            </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+                                <MudText Typo="Typo.subtitle1" Class="mb-2">Entity Types</MudText>
+                                <MudCheckBox T="bool" @bind-Value="syncUnits" Label="Sync Units" />
+                            </MudItem>
+                            <MudItem xs="12" md="6">
+                                <MudText Typo="Typo.subtitle1" Class="mb-2">Operations</MudText>
+                                <MudCheckBox T="bool" @bind-Value="syncRequest.CreateNew" Label="Create New Records" />
+                                <MudCheckBox T="bool" @bind-Value="syncRequest.UpdateExisting" Label="Update Existing Records" />
+                            </MudItem>
+                        </MudGrid>
+
+
+                    </MudCardContent>
+                </MudCard>
+            }
+
+            @if (isSyncing)
+            {
+                <!-- Progress Display -->
+                <MudCard Elevation="2" Class="mb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.Sync" Class="mr-2 spin" />
+                                Sync in Progress
+                            </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Class="mb-2">@currentStatus</MudText>
+
+                        @if (currentProgress != null)
+                        {
+                            <MudProgressLinear Color="Color.Primary" Value="@currentProgress.OverallProgress" Class="mb-4" />
+                            <MudText Typo="Typo.body2" Class="mb-2">
+                                Progress: @currentProgress.OverallProgress% - @currentProgress.CurrentStep
+                            </MudText>
+
+                            @if (!string.IsNullOrEmpty(currentProgress.CurrentEntityType) && currentProgress.TotalItems > 0)
+                            {
+                                <MudText Typo="Typo.body2" Class="mb-2">
+                                    @currentProgress.CurrentEntityType: @currentProgress.ItemsProcessed / @currentProgress.TotalItems
+                                </MudText>
+                            }
+
+                            @if (currentProgress.StartedAt.HasValue)
+                            {
+                                var elapsed = DateTimeOffset.UtcNow - currentProgress.StartedAt.Value;
+                                <MudText Typo="Typo.caption" Class="mb-2">
+                                    Elapsed: @elapsed.ToString(@"mm\:ss")
+                                </MudText>
+                            }
+                        }
+                        else
+                        {
+                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+                        }
+
+                        @if (syncResults.Any())
+                        {
+                            <MudText Typo="Typo.subtitle1" Class="mb-2">Progress:</MudText>
+                            @foreach (var result in syncResults)
+                            {
+                                <MudText Class="mb-1">
+                                    <MudIcon Icon="@GetResultIcon(result.Key)" Color="@GetResultColor(result.Key)" Class="mr-2" />
+                                    @result.Key: @result.Value
+                                </MudText>
+                            }
+                        }
+                    </MudCardContent>
+                </MudCard>
+            }
+
+            @if (syncResponse != null && !isSyncing)
+            {
+                <!-- Results Display -->
+                <MudCard Elevation="2" Class="mb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@(syncResponse.IsSuccess ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Error)" 
+                                        Color="@(syncResponse.IsSuccess ? Color.Success : Color.Error)" Class="mr-2" />
+                                Sync Results
+                            </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudAlert Severity="@(syncResponse.IsSuccess ? Severity.Success : Severity.Error)" Class="mb-4">
+                            @syncResponse.Message
+                        </MudAlert>
+
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudPaper Class="pa-4" Elevation="1">
+                                    <MudText Typo="Typo.subtitle1" Class="mb-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.LocalShipping" Class="mr-2" />
+                                        Units
+                                    </MudText>
+                                    <MudText>Created: @(syncResponse.UnitResults?.Created ?? 0)</MudText>
+                                    <MudText>Updated: @(syncResponse.UnitResults?.Updated ?? 0)</MudText>
+                                    <MudText>Failed: @(syncResponse.UnitResults?.Failed ?? 0)</MudText>
+                                    <MudText>Skipped: @(syncResponse.UnitResults?.Skipped ?? 0)</MudText>
+                                </MudPaper>
+                            </MudItem>
+                        </MudGrid>
+
+                        @if (syncResponse.Errors?.Any() == true)
+                        {
+                            <MudExpansionPanels Class="mt-4">
+                                <MudExpansionPanel Text="View Errors">
+                                    @foreach (var error in syncResponse.Errors)
+                                    {
+                                        <MudAlert Severity="Severity.Error" Class="mb-2">@error</MudAlert>
+                                    }
+                                </MudExpansionPanel>
+                            </MudExpansionPanels>
+                        }
+
+                        <MudText Class="mt-4">
+                            <MudIcon Icon="@Icons.Material.Filled.Schedule" Class="mr-2" />
+                            Duration: @syncResponse.Duration.ToString(@"mm\:ss")
+                        </MudText>
+                    </MudCardContent>
+                </MudCard>
+            }
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        @if (!isSyncing)
+        {
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="StartSync" Disabled="@(!IsValidConfiguration())">
+                <MudIcon Icon="@Icons.Material.Filled.Sync" Class="mr-2" />
+                Start Background Sync
+            </MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Secondary" OnClick="CancelSync">
+                <MudIcon Icon="@Icons.Material.Filled.Cancel" Class="mr-2" />
+                Cancel Sync
+            </MudButton>
+            <MudButton Disabled="true">
+                <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                Syncing...
+            </MudButton>
+        }
+        @if (syncResponse != null && !isSyncing)
+        {
+            <MudButton Color="Color.Primary" OnClick="Close">Close</MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    private StartSyncJobRequest syncRequest = new()
+    {
+        CreateNew = true,
+        UpdateExisting = true,
+        JobName = "Manual Units Sync"
+    };
+    private SyncResponse? syncResponse;
+    private bool isSyncing = false;
+    private string currentStatus = "";
+    private Dictionary<string, string> syncResults = new();
+    private Guid? currentJobId;
+    private Timer? progressTimer;
+    private SyncProgress? currentProgress;
+    private bool syncUnits = true;
+
+    public void Dispose()
+    {
+        progressTimer?.Dispose();
+    }
+
+    private async Task StartSync()
+    {
+        if (!IsValidConfiguration())
+        {
+            Snackbar.Add("Please select at least one operation type", Severity.Warning);
+            return;
+        }
+
+        // Check if sync is already running
+        var isRunningResult = await SyncApiService.IsSyncRunningAsync();
+        if (isRunningResult.IsSuccess && isRunningResult.Data)
+        {
+            Snackbar.Add("A sync operation is already running. Please wait for it to complete.", Severity.Warning);
+            return;
+        }
+
+        isSyncing = true;
+        syncResponse = null;
+        syncResults.Clear();
+        currentProgress = null;
+        StateHasChanged();
+
+        try
+        {
+            currentStatus = "Starting background sync job...";
+            StateHasChanged();
+
+            // Start background sync job
+            var result = await SyncApiService.StartSyncJobAsync(syncRequest);
+
+            if (result.IsSuccess && result.Data != null)
+            {
+                currentJobId = result.Data.JobId;
+                currentStatus = "Sync job started successfully. Monitoring progress...";
+
+                Snackbar.Add("Background sync job started successfully", Severity.Success);
+
+                // Start polling for progress
+                StartProgressPolling();
+            }
+            else
+            {
+                currentStatus = "Failed to start sync job!";
+                Snackbar.Add($"Failed to start sync: {result.ErrorMessage}", Severity.Error);
+                isSyncing = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            currentStatus = "Failed to start sync job!";
+            Snackbar.Add($"Sync error: {ex.Message}", Severity.Error);
+            isSyncing = false;
+        }
+
+        StateHasChanged();
+    }
+
+    private void StartProgressPolling()
+    {
+        if (currentJobId.HasValue)
+        {
+            progressTimer = new(async _ => await PollProgress(), null, TimeSpan.Zero, TimeSpan.FromSeconds(2));
+        }
+    }
+
+    private async Task PollProgress()
+    {
+        if (!currentJobId.HasValue || !isSyncing)
+        {
+            progressTimer?.Dispose();
+            return;
+        }
+
+        try
+        {
+            var result = await SyncApiService.GetSyncJobStatusAsync(currentJobId.Value);
+            if (result.IsSuccess && result.Data != null)
+            {
+                currentProgress = result.Data;
+                currentStatus = currentProgress.StatusMessage;
+
+                // Update progress display
+                if (currentProgress.IsComplete)
+                {
+                    progressTimer?.Dispose();
+                    isSyncing = false;
+
+                    if (currentProgress.Status == SyncJobStatus.Completed && currentProgress.Results != null)
+                    {
+                        syncResponse = currentProgress.Results;
+                        var totalCreated = syncResponse.UnitResults?.Created ?? 0;
+                        var totalUpdated = syncResponse.UnitResults?.Updated ?? 0;
+
+                        Snackbar.Add($"Sync completed! Created: {totalCreated}, Updated: {totalUpdated}", Severity.Success);
+                    }
+                    else if (currentProgress.Status == SyncJobStatus.Failed)
+                    {
+                        Snackbar.Add($"Sync failed: {currentProgress.ErrorMessage}", Severity.Error);
+                    }
+                    else if (currentProgress.Status == SyncJobStatus.Cancelled)
+                    {
+                        Snackbar.Add("Sync was cancelled", Severity.Warning);
+                    }
+                }
+
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Silently handle polling errors to avoid disrupting the UI
+            Console.WriteLine($"Error polling sync progress: {ex.Message}");
+        }
+    }
+
+    private async Task CancelSync()
+    {
+        if (currentJobId.HasValue && isSyncing)
+        {
+            try
+            {
+                var result = await SyncApiService.CancelSyncJobAsync(currentJobId.Value);
+                if (result.IsSuccess)
+                {
+                    Snackbar.Add("Sync cancellation requested", Severity.Info);
+                }
+                else
+                {
+                    Snackbar.Add($"Failed to cancel sync: {result.ErrorMessage}", Severity.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error cancelling sync: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private bool IsValidConfiguration()
+    {
+        return syncUnits && (syncRequest.CreateNew || syncRequest.UpdateExisting);
+    }
+
+    private string GetResultIcon(string entityType)
+    {
+        return entityType switch
+        {
+            "Units" => Icons.Material.Filled.LocalShipping,
+            _ => Icons.Material.Filled.Info
+        };
+    }
+
+    private Color GetResultColor(string entityType)
+    {
+        return Color.Primary;
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+    private void Close() => MudDialog.Close(DialogResult.Ok(true));
+}
+
+<style>
+    .spin {
+        animation: spin 2s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>

@@ -1,0 +1,77 @@
+{{~ # enumeration.scriban - Domain enumeration record with values ~}}
+namespace {{ namespace }};
+
+/// <summary>
+/// {{ enumeration.description }}
+/// </summary>
+public sealed record {{ enumeration.name }}
+{
+    internal {{ enumeration.name }}(
+        Guid publicId,
+        string name,
+        string? description = null,
+        IReadOnlyList<{{ enumeration.name }}Value>? values = null) =>
+        (PublicId, Name, Description, Values) = (publicId, name, description, values ?? []);
+
+    public Guid PublicId { get; }
+    public string Name { get; }
+    public string? Description { get; }
+    public IReadOnlyList<{{ enumeration.name }}Value> Values { get; }
+}
+
+/// <summary>
+/// Extension methods for {{ enumeration.name }}
+/// </summary>
+public static class {{ enumeration.name }}Extensions
+{
+    extension({{ enumeration.name }})
+    {
+        public static {{ enumeration.name }}? New(
+            string name,
+            string? description = null,
+            IReadOnlyList<{{ enumeration.name }}Value>? values = null) =>
+            {{ enumeration.name }}.CreateValid(Guid.CreateVersion7(), name, description, values);
+
+        public static {{ enumeration.name }}? CreateValid(
+            Guid publicId,
+            string name,
+            string? description = null,
+            IReadOnlyList<{{ enumeration.name }}Value>? values = null) =>
+            string.IsNullOrWhiteSpace(name) ? null
+            : publicId.Version != 7 ? null
+            : new {{ enumeration.name }}(publicId, name, description, values);
+    }
+}
+
+/// <summary>
+/// Represents a single value in the {{ enumeration.name }} enumeration
+/// </summary>
+public sealed record {{ enumeration.name }}Value
+{
+    internal {{ enumeration.name }}Value(
+        string name,
+        string? description = null,
+        int? value = null) =>
+        (Name, Description, Value) = (name, description, value);
+
+    public string Name { get; }
+    public string? Description { get; }
+    public int? Value { get; }
+}
+
+/// <summary>
+/// Extension methods for {{ enumeration.name }}Value
+/// </summary>
+public static class {{ enumeration.name }}ValueExtensions
+{
+    extension({{ enumeration.name }}Value)
+    {
+        public static {{ enumeration.name }}Value? New(
+            string name,
+            string? description = null,
+            int? value = null) =>
+            string.IsNullOrWhiteSpace(name) ? null
+            : new {{ enumeration.name }}Value(name, description, value);
+    }
+}
+

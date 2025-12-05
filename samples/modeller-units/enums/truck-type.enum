@@ -1,0 +1,20 @@
+# TruckType Enum
+# Types of trucks used in garbage collection and recycling operations
+
+enum TruckType
+  "Types of trucks used in garbage collection and recycling operations"
+  
+  Garbage: 1 "Standard garbage collection truck"
+  Recycling: 2 "Recycling collection truck"
+  BulkWaste: 3 "Bulk waste collection truck"
+  GreenWaste: 4 "Green waste collection truck"
+  Commercial: 5 "Commercial waste truck"
+  Compactor: 6 "Compactor truck"
+  HookLift: 7 "Hook lift truck"
+  SideLoader: 8 "Side loader truck"
+  RearLoader: 9 "Rear loader truck"
+  FrontLoader: 10 "Front loader truck"
+  Utility: 11 "Multi-purpose utility truck"
+  Other: 99 "Other specialized truck type"
+end
+

@@ -1,0 +1,61 @@
+{{~ # entity.scriban - Domain entity record with extension block ~}}
+{{~ # All properties come from entity.attributes - no hardcoded properties ~}}
+namespace {{ namespace }};
+
+/// <summary>
+/// {{ entity.description }}
+/// </summary>
+public sealed record {{ entity.name }}
+{
+    internal {{ entity.name }}(
+        Guid publicId{{ for attr in entity.attributes }},
+        {{ attr | to_csharp_ctor_param }}{{ end }}{{ for rel in entity.relationships }},
+        {{ rel | to_csharp_rel_param }}{{ end }}) =>
+        (PublicId{{ for attr in entity.attributes }}, {{ attr.name | pascal_case }}{{ end }}{{ for rel in entity.relationships }}, {{ rel | to_property_name }}{{ end }}) =
+        (publicId{{ for attr in entity.attributes }}, {{ attr | to_ctor_assignment }}{{ end }}{{ for rel in entity.relationships }}, {{ rel | to_tuple_value }}{{ end }});
+
+    public Guid PublicId { get; }
+{{~ for attr in entity.attributes ~}}
+    public {{ attr | to_csharp_type }} {{ attr.name | pascal_case }} { get; }
+{{~ end ~}}
+{{~ for rel in entity.relationships ~}}
+    public {{ rel | to_csharp_rel_type }} {{ rel | to_property_name }} { get; }
+{{~ end ~}}
+}
+
+/// <summary>
+/// Extension methods for {{ entity.name }}
+/// </summary>
+public static class {{ entity.name }}Extensions
+{
+    extension({{ entity.name }})
+    {
+{{~ if entity.attributes.size == 0 && entity.relationships.size == 0 ~}}
+        public static {{ entity.name }}? New() =>
+            {{ entity.name }}.CreateValid(Guid.CreateVersion7());
+{{~ else ~}}
+        public static {{ entity.name }}? New(
+{{~ for attr in entity.attributes ~}}
+            {{ attr | to_csharp_factory_param }}{{ if !for.last || entity.relationships.size > 0 }},{{ end }}
+{{~ end ~}}
+{{~ for rel in entity.relationships ~}}
+            {{ rel | to_csharp_rel_param }}{{ if !for.last }},{{ end }}
+{{~ end ~}}
+            ) =>
+            {{ entity.name }}.CreateValid(Guid.CreateVersion7(){{ for attr in entity.attributes }}, {{ attr.name | camel_case }}{{ end }}{{ for rel in entity.relationships }}, {{ rel | to_arg_name }}{{ end }});
+{{~ end ~}}
+
+        public static {{ entity.name }}? CreateValid(
+            Guid publicId{{ for attr in entity.attributes }},
+            {{ attr | to_csharp_factory_param }}{{ end }}{{ for rel in entity.relationships }},
+            {{ rel | to_csharp_rel_param }}{{ end }}) =>
+            publicId.Version != 7 ? null
+{{~ for attr in entity.attributes ~}}
+{{~ if attr | needs_validation ~}}
+            : {{ attr | to_validation_check }} ? null
+{{~ end ~}}
+{{~ end ~}}
+            : new {{ entity.name }}(publicId{{ for attr in entity.attributes }}, {{ attr.name | camel_case }}{{ end }}{{ for rel in entity.relationships }}, {{ rel | to_arg_name }}{{ end }});
+    }
+}
+

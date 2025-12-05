@@ -1,0 +1,21 @@
+# SyncProgress Projection
+# Progress update for sync operations
+
+projection SyncProgress
+  "Progress update model for sync operations"
+  
+  JobId: guid, optional "Sync job ID for tracking background operations"
+  Status: SyncJobStatus "Job status for background operations"
+  CurrentStep: text(200) "Current step being processed"
+  OverallProgress: integer "Overall progress percentage (0-100)"
+  CurrentEntityType: text(50) "Current entity type being processed"
+  ItemsProcessed: integer "Number of items processed in current step"
+  TotalItems: integer "Total number of items in current step"
+  StatusMessage: text(500) "Any status message"
+  ErrorMessage: text(2000), optional "Error message if the sync failed"
+  StartedAt: datetimeoffset, optional "When the sync started"
+  CompletedAt: datetimeoffset, optional "When the sync completed"
+  IsComplete: boolean "Whether the sync is complete"
+  Results: SyncResponse, optional "Final sync results (available when complete)"
+end
+

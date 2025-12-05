@@ -1,0 +1,238 @@
+@inject UnitApiService UnitApiService
+@inject ISnackbar Snackbar
+
+@using JJs.UnitsManagement.Sdk.Unit
+@using JJs.UnitsManagement.Ui.Components.Pages.Units.ViewModels
+
+<MudDialog>
+    <DialogContent>
+        @if (_loading)
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            <MudText Typo="Typo.body1" Class="mt-4">Loading unit details...</MudText>
+        }
+        else
+        {
+            <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+                <MudGrid>
+                    <!-- Basic Information Section -->
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h6" Class="mb-4">Basic Information</MudText>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.TruckNumber" For="@(() => _model.TruckNumber)"
+                            Label="Truck Number" Required="true" RequiredError="Truck number is required" MaxLength="50"
+                            Placeholder="Enter truck number" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.RegistrationNumber" For="@(() => _model.RegistrationNumber)"
+                            Label="Registration Number" MaxLength="20" Placeholder="Enter registration number" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="_model.Description" For="@(() => _model.Description)" Label="Description"
+                            MaxLength="200" Lines="3" Placeholder="Enter unit description" />
+                    </MudItem>
+
+                    <!-- Vehicle Information Section -->
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h6" Class="mb-4 mt-4">Vehicle Information</MudText>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.Make" For="@(() => _model.Make)" Label="Make" MaxLength="50"
+                            Placeholder="e.g., Volvo, Mercedes" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.Model" For="@(() => _model.Model)" Label="Model" MaxLength="100"
+                            Placeholder="e.g., FE 280, Econic" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudSelect @bind-Value="_model.TruckType" For="@(() => _model.TruckType)" Label="Truck Type"
+                            Clearable="true">
+                            @foreach (var type in Enum.GetValues<TruckType>())
+                            {
+                                <MudSelectItem Value="@type">@type.ToString()</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.EuroType" For="@(() => _model.EuroType)" Label="Euro Type"
+                            MaxLength="20" Placeholder="e.g., Euro 6" />
+                    </MudItem>
+
+                    <!-- Technical Information Section -->
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h6" Class="mb-4 mt-4">Technical Information</MudText>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.EngineNumber" For="@(() => _model.EngineNumber)"
+                            Label="Engine Number" MaxLength="50" Placeholder="Enter engine number" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.ChassisNumber" For="@(() => _model.ChassisNumber)"
+                            Label="Chassis Number" MaxLength="50" Placeholder="Enter chassis number" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker @bind-Date="_model.WarrantyDate" For="@(() => _model.WarrantyDate)"
+                            Label="Warranty Date" Placeholder="Select warranty expiration date" />
+                    </MudItem>
+
+                    <!-- Operational Information Section -->
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h6" Class="mb-4 mt-4">Operational Information</MudText>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.Company" For="@(() => _model.Company)" Label="Company"
+                            MaxLength="20" Placeholder="Enter company code" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.State" For="@(() => _model.State)" Label="State" MaxLength="10"
+                            Placeholder="e.g., NSW, VIC" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.Department" For="@(() => _model.Department)" Label="Department"
+                            MaxLength="50" Placeholder="Enter department" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.Activity" For="@(() => _model.Activity)" Label="Activity"
+                            MaxLength="50" Placeholder="Enter activity" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.CountryCode" For="@(() => _model.CountryCode)"
+                            Label="Country Code" MaxLength="5" Placeholder="e.g., AU" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_model.DCN" For="@(() => _model.DCN)" Label="DCN" MaxLength="50"
+                            Placeholder="Enter DCN identifier" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="_model.Extra" For="@(() => _model.Extra)" Label="Additional Information"
+                            MaxLength="500" Lines="3" Placeholder="Enter any additional information" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudSwitch @bind-Value="_model.Active" For="@(() => _model.Active)" Label="Active"
+                            Color="Color.Primary" />
+                    </MudItem>
+                </MudGrid>
+            </MudForm>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="_loading">
+            @if (_loading)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">Updating...</MudText>
+            }
+            else
+            {
+                <MudText>Update Unit</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public Guid UnitId { get; set; }
+
+    private UnitFormModel _model = new();
+
+    MudForm _form = null!;
+    bool _success;
+    string[] _errors = [];
+    bool _loading = true;
+
+    /// <summary>
+    /// Loads the unit data for editing
+    /// </summary>
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUnit();
+        _loading = false;
+    }
+
+    /// <summary>
+    /// Loads the unit data for editing
+    /// </summary>
+    private async Task LoadUnit()
+    {
+        try
+        {
+            var result = await UnitApiService.GetByIdAsync(UnitId);
+            if (result is { IsSuccess: true, Data: not null })
+            {
+                // Map response to form model
+                _model = UnitFormModel.FromUnitResponse(result.Data);
+            }
+            else
+            {
+                Snackbar.Add($"Failed to load unit: {result.ErrorMessage}", Severity.Error);
+                MudDialog.Cancel();
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading unit: {ex.Message}", Severity.Error);
+            MudDialog.Cancel();
+        }
+    }
+
+    /// <summary>
+    /// Submits the form data to the API for updating the unit
+    /// </summary>
+    async Task Submit()
+    {
+        await _form.Validate();
+
+        if (_form.IsValid)
+        {
+            _loading = true;
+            try
+            {
+                var request = _model.ToUpdateRequest();
+                var result = await UnitApiService.UpdateAsync(UnitId, request);
+                if (result.IsSuccess)
+                {
+                    Snackbar.Add("Unit updated successfully", Severity.Success);
+                    MudDialog.Close(DialogResult.Ok(true));
+                }
+                else
+                {
+                    Snackbar.Add($"Failed to update unit: {result.ErrorMessage}", Severity.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error updating unit: {ex.Message}", Severity.Error);
+            }
+            finally
+            {
+                _loading = false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Cancels the dialog without saving changes
+    /// </summary>
+    void Cancel() => MudDialog.Cancel();
+}

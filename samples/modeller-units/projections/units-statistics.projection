@@ -1,0 +1,15 @@
+# UnitsStatistics Projection
+# Comprehensive statistics about units for dashboard display
+
+projection UnitsStatistics
+  "Comprehensive statistics about units for dashboard display"
+  
+  TotalUnits: integer "Total number of units"
+  ActiveUnits: integer "Number of active units"
+  InactiveUnits: integer "Number of inactive units"
+  CommercialUnits: integer "Number of commercial trucks"
+  GarbageUnits: integer "Number of garbage trucks"
+  RecyclingUnits: integer "Number of recycling trucks"
+  RecentUnits: integer "Number of units created in last 30 days"
+end
+

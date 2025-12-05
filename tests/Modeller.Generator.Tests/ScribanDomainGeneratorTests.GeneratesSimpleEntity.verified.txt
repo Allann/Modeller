@@ -1,0 +1,32 @@
+﻿namespace TestDomain;
+
+/// <summary>
+/// Represents a customer in the system
+/// </summary>
+public sealed record Customer
+{
+    internal Customer(
+        Guid publicId) =>
+        (PublicId) =
+        (publicId);
+
+    public Guid PublicId { get; }
+}
+
+/// <summary>
+/// Extension methods for Customer
+/// </summary>
+public static class CustomerExtensions
+{
+    extension(Customer)
+    {
+        public static Customer? New() =>
+            Customer.CreateValid(Guid.CreateVersion7());
+
+        public static Customer? CreateValid(
+            Guid publicId) =>
+            publicId.Version != 7 ? null
+            : new Customer(publicId);
+    }
+}
+

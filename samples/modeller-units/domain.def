@@ -1,0 +1,15 @@
+# Units Management Domain
+# A fleet management system for tracking trucks and physical units
+
+domain UnitsManagement
+  "Fleet management system for tracking trucks and physical units used in garbage collection and recycling operations"
+  
+  company "JJs"
+  version "1.0.0"
+  
+  services
+    Units
+    Sync
+  end
+end
+

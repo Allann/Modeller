@@ -1,0 +1,32 @@
+﻿namespace TestDomain;
+
+/// <summary>
+/// Retrieves all orders for a customer
+/// </summary>
+public sealed record GetOrdersByCustomer
+{
+    internal GetOrdersByCustomer(
+        Guid publicId) =>
+        (PublicId) =
+        (publicId);
+
+    public Guid PublicId { get; }
+}
+
+/// <summary>
+/// Extension methods for GetOrdersByCustomer
+/// </summary>
+public static class GetOrdersByCustomerExtensions
+{
+    extension(GetOrdersByCustomer)
+    {
+        public static GetOrdersByCustomer? New() =>
+            GetOrdersByCustomer.CreateValid(Guid.CreateVersion7());
+
+        public static GetOrdersByCustomer? CreateValid(
+            Guid publicId) =>
+            publicId.Version != 7 ? null
+            : new GetOrdersByCustomer(publicId);
+    }
+}
+

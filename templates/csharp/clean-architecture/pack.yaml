@@ -1,0 +1,23 @@
+# Pack manifest for Clean Architecture templates
+name: clean-architecture
+version: 1.0.0
+description: |
+  Generates C# code following Clean Architecture patterns.
+  Includes domain entities, infrastructure, SDK, and API layers.
+author: Modeller
+language: csharp
+
+# Templates included in this pack
+templates:
+  - domain
+  - infrastructure
+  - sdk
+  - api
+
+# Default variables for this pack
+variables:
+  nullable: enable
+  use_records: true
+  use_extension_blocks: true
+  generate_factory_methods: true
+

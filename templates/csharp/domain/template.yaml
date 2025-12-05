@@ -1,0 +1,26 @@
+# templates/csharp/domain/template.yaml
+template: CSharpDomain
+version: 1.0.0
+description: Generates C# domain records with extension blocks following DDD patterns
+
+input:
+  requires:
+    - domain
+  optional:
+    - enterprise
+
+output:
+  type: files
+  extension: .cs
+
+options:
+  nullable: enable
+  use_records: true
+
+files:
+  - guid-extensions.scriban
+  - entity.scriban
+  - enumeration.scriban
+  - command.scriban
+  - query.scriban
+
