@@ -5,13 +5,9 @@ query GetSyncJobProgress
   "Retrieves the current progress of a background sync job"
 
   input
-    JobId: guid, required "The unique identifier for the sync job"
+    JobId: guid "The unique identifier for the sync job"
   end
 
-  returns SyncProgress
-
-  errors
-    NotFound "Sync job not found"
-  end
+  returns SyncJob
 end
 

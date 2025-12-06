@@ -145,8 +145,29 @@ public sealed record LoadedConfiguration(
     }
 
     /// <summary>
-    /// Get the templates folder path
+    /// Get the templates folder path.
+    /// Uses local .modeller/templates if it exists, otherwise falls back to template_source.
     /// </summary>
-    public string GetTemplatesPath() => Path.Combine(ModellerFolder, "templates");
+    public string GetTemplatesPath()
+    {
+        var localTemplates = Path.Combine(ModellerFolder, "templates");
+        if (Directory.Exists(localTemplates))
+            return localTemplates;
+
+        // Fall back to template_source
+        var source = ProjectConfig.TemplateSource;
+        if (string.IsNullOrEmpty(source))
+            return localTemplates;
+
+        // Handle file:// prefix
+        if (source.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
+            source = source[7..];
+
+        // Resolve relative paths
+        if (!Path.IsPathRooted(source))
+            return Path.GetFullPath(Path.Combine(ProjectRoot, source));
+
+        return source;
+    }
 }
 

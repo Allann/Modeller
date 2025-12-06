@@ -1,23 +1,15 @@
 # Default Generation Profile
-name: Full Stack
-description: Generates Infrastructure, SDK, and API layers
+name: Domain
+description: Generates Domain layer with entities, enums, commands, queries
 
 # Which template pack to use
 pack: csharp/clean-architecture
 
 # Layers to generate
 layers:
-  - name: Infrastructure
-    template: infrastructure
-    output: "{variables.company}.{variables.product}.Infrastructure"
-
-  - name: Sdk
-    template: sdk
-    output: "{variables.company}.{variables.product}.Sdk"
-
-  - name: Api
-    template: api
-    output: "{variables.company}.{variables.product}.Api"
+  - name: Domain
+    template: domain
+    output: "{variables.company}.{variables.product}.Domain"
 
 # What domain elements to include (default: all)
 include:
@@ -33,12 +25,6 @@ exclude:
 
 # Layer-specific variable overrides
 layer_variables:
-  Infrastructure:
+  Domain:
     use_audit_fields: true
-    generate_configurations: true
-  Sdk:
-    include_validation: true
-    include_fluent_validation: true
-  Api:
-    use_minimal_apis: true
 

@@ -3,15 +3,15 @@
 
 command DeleteUnit
   "Deletes a unit from the system"
-  
+
   input
-    UnitId: guid, required "The unique identifier for the unit to delete"
+    UnitId: guid "The unique identifier for the unit to delete"
   end
-  
+
   output
-    Success: boolean "Whether the deletion was successful"
+    Unit "The deleted unit"
   end
-  
+
   errors
     NotFound "Unit not found"
   end

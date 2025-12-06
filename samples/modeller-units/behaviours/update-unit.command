@@ -3,25 +3,18 @@
 
 command UpdateUnit
   "Updates an existing unit with new information"
-  
+
   input
-    # Required field
-    TruckNumber: text(50), required "The truck number (business key)"
-    
-    # Vehicle identification
+    TruckNumber: text(50) "The truck number (business key)"
     RegistrationNumber: text(20), optional "Vehicle registration number"
     Description: text(200), optional "Description of the unit"
     Make: text(50), optional "Vehicle make"
     Model: text(100), optional "Vehicle model"
     TruckType: TruckType, optional "Type of truck for operational classification"
-    
-    # Technical details
     EuroType: text(20), optional "Euro emission standard type"
     EngineNumber: text(50), optional "Engine number"
     ChassisNumber: text(50), optional "Chassis number"
     WarrantyDate: datetime, optional "Warranty expiration date"
-    
-    # Organization details
     State: text(10), optional "State or territory where unit operates"
     Company: text(20), optional "Company code for organisation linkage"
     Department: text(50), optional "Department within the company"
@@ -29,15 +22,13 @@ command UpdateUnit
     CountryCode: text(5), optional "Country code"
     DCN: text(50), optional "DCN identifier"
     Extra: text(500), optional "Additional information"
-    
-    # Status
-    Active: boolean, default(true) "Determines if the unit is active or not"
+    Active: boolean, optional "Determines if the unit is active or not"
   end
-  
+
   output
     Unit "The updated unit"
   end
-  
+
   errors
     NotFound "Unit not found"
     DuplicateTruckNumber "A unit with this truck number already exists"

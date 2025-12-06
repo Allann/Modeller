@@ -3,43 +3,43 @@
 
 entity SyncJob
   "Entity representing a background sync job for units"
-  
+
   # Job identification
   JobName: text(100), optional "Optional name for the job"
-  Status: SyncJobStatus, required "Current status of the job"
-  
+  Status: SyncJobStatus "Current status of the job"
+
   # Progress tracking
-  CurrentStep: text(200), required, default("Initializing") "Current step being processed"
-  OverallProgress: integer, required, default(0) "Overall progress percentage (0-100)"
-  CurrentEntityType: text(50), required "Current entity type being processed"
-  ItemsProcessed: integer, required, default(0) "Number of items processed in current step"
-  TotalItems: integer, required, default(0) "Total number of items in current step"
-  StatusMessage: text(500), required "Status message"
+  CurrentStep: text(200) "Current step being processed"
+  OverallProgress: integer "Overall progress percentage (0-100)"
+  CurrentEntityType: text(50) "Current entity type being processed"
+  ItemsProcessed: integer "Number of items processed in current step"
+  TotalItems: integer "Total number of items in current step"
+  StatusMessage: text(500) "Status message"
   ErrorMessage: text(2000), optional "Error message if the job failed"
-  
+
   # Timestamps
-  CreatedAt: datetimeoffset, required "When the job was created"
-  StartedAt: datetimeoffset, optional "When the job started processing"
-  CompletedAt: datetimeoffset, optional "When the job completed"
-  
+  CreatedAt: datetime "When the job was created"
+  StartedAt: datetime, optional "When the job started processing"
+  CompletedAt: datetime, optional "When the job completed"
+
   # Configuration
-  ConfigurationJson: text(1000), required "Sync configuration as JSON"
+  ConfigurationJson: text(1000) "Sync configuration as JSON"
   ResultsJson: text, optional "Final sync results as JSON (when completed)"
-  
+
   # Sync options
-  SyncUnits: boolean, required, default(true) "Whether to sync units"
-  CreateNew: boolean, required, default(true) "Whether to create new records"
-  UpdateExisting: boolean, required, default(true) "Whether to update existing records"
-  
+  SyncUnits: boolean "Whether to sync units"
+  CreateNew: boolean "Whether to create new records"
+  UpdateExisting: boolean "Whether to update existing records"
+
   # Audit
-  CreatedBy: text(100), required, default("System") "Who created the sync job"
-  UpdatedAt: datetimeoffset, required "When the sync job was last updated"
-  UpdatedBy: text(100), required, default("System") "Who last updated the sync job"
+  CreatedBy: text(100) "Who created the sync job"
+  UpdatedAt: datetime "When the sync job was last updated"
+  UpdatedBy: text(100) "Who last updated the sync job"
 end
 
 key SyncJob
-  JobId: guid, generated "The unique identifier for the sync job"
-  
+  JobId: guid, generated
+
   index [Status]
   index [CreatedAt]
   index [CompletedAt]

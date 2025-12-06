@@ -3,15 +3,11 @@
 
 query ReadUnit
   "Retrieves a specific unit by its unique identifier"
-  
+
   input
-    UnitId: guid, required "The unique identifier for the unit"
+    UnitId: guid "The unique identifier for the unit"
   end
-  
+
   returns Unit
-  
-  errors
-    NotFound "Unit not found"
-  end
 end
 

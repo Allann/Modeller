@@ -7,7 +7,7 @@ domain: .
 
 # Where templates were copied from (for updates)
 # Can be file:// path or https:// URL
-template_source: file://./templates
+template_source: ../../templates
 
 # Global variables available to all templates
 variables:

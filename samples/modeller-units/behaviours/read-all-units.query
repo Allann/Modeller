@@ -5,18 +5,15 @@ query ReadAllUnits
   "Retrieves all units with optional pagination and filtering"
 
   input
-    # Pagination
-    Page: integer, default(1), range(1, 1000) "Page number (1-based)"
-    PageSize: integer, default(20), range(1, 100) "Number of items per page"
-
-    # Filters
+    Page: integer, optional "Page number (1-based)"
+    PageSize: integer, optional "Number of items per page"
     ActiveOnly: boolean, optional "Filter by active status only"
-    SearchTerm: text(100), optional "Search term for filtering units by truck number, registration, or description"
+    SearchTerm: text(100), optional "Search term for filtering units"
     TruckType: TruckType, optional "Filter by truck type"
     Company: text(20), optional "Filter by company"
     State: text(10), optional "Filter by state"
   end
 
-  returns UnitList
+  returns many Unit
 end
 

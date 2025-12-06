@@ -1,5 +1,6 @@
 using System.CommandLine;
 using Modeller.Generator.Configuration;
+using Modeller.Generator.Generation;
 
 namespace Modeller.Cli.Commands;
 
@@ -114,33 +115,102 @@ public static class GenerateCommand
                 }
             }
 
-            Console.WriteLine($"\nLayers to generate ({layersToGenerate.Count}):");
+            // Load domain
+            Console.WriteLine("\nLoading domain definitions...");
+            var domainLoader = new DomainLoader();
+            var domain = domainLoader.LoadDomain(config.GetDomainPath());
+            var stats = domainLoader.GetStats(domain);
+            Console.WriteLine($"  Domain: {domain.Name}");
+            Console.WriteLine($"  Entities: {stats.Entities}, Enums: {stats.Enums}, Commands: {stats.Commands}, Queries: {stats.Queries}");
+
+            // Create planner and executor
+            var templatesPath = config.GetTemplatesPath();
+            var planner = new GenerationPlanner(templatesPath);
+            var executor = new GenerationExecutor(templatesPath, config.ProjectConfig.Files);
+
+            Console.WriteLine($"\nGenerating {layersToGenerate.Count} layer(s):");
+
+            var totalCreated = 0;
+            var totalOverwritten = 0;
+            var totalSkipped = 0;
+            var totalFailed = 0;
+
             foreach (var layerConfig in layersToGenerate)
             {
-                var layerVars = merger.MergeVariables(
-                    config.ProjectConfig,
+                Console.WriteLine($"\n  [{layerConfig.Name}]");
+
+                // Create plan for this layer
+                var plan = planner.CreatePlan(
+                    domain,
+                    layerConfig,
                     profileConfig,
-                    layerConfig.Name,
+                    config.ProjectConfig,
+                    config.GetOutputRoot(),
                     cliOverrides);
 
-                var outputPath = merger.ResolvePattern(layerConfig.Output, layerVars);
+                Console.WriteLine($"    Files to generate: {plan.Files.Count}");
 
-                Console.WriteLine($"  {layerConfig.Name}:");
-                Console.WriteLine($"    Template: {layerConfig.Template}");
-                Console.WriteLine($"    Output: {outputPath}");
+                // Execute the plan
+                var results = await executor.ExecuteAsync(plan, dryRun, result =>
+                {
+                    var symbol = result.Action switch
+                    {
+                        GenerationAction.Created => "+",
+                        GenerationAction.Overwritten => "~",
+                        GenerationAction.Skipped => ".",
+                        GenerationAction.Failed => "X",
+                        GenerationAction.DryRun => "?",
+                        _ => " "
+                    };
+
+                    var color = result.Action switch
+                    {
+                        GenerationAction.Created => ConsoleColor.Green,
+                        GenerationAction.Overwritten => ConsoleColor.Yellow,
+                        GenerationAction.Skipped => ConsoleColor.DarkGray,
+                        GenerationAction.Failed => ConsoleColor.Red,
+                        _ => ConsoleColor.Gray
+                    };
+
+                    Console.ForegroundColor = color;
+                    Console.WriteLine($"    [{symbol}] {result.File.RelativePath}");
+                    Console.ResetColor();
+
+                    if (result.Action == GenerationAction.Failed && result.Error != null)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"        Error: {result.Error}");
+                        Console.ResetColor();
+                    }
+                });
+
+                // Tally results
+                foreach (var result in results)
+                {
+                    switch (result.Action)
+                    {
+                        case GenerationAction.Created: totalCreated++; break;
+                        case GenerationAction.Overwritten: totalOverwritten++; break;
+                        case GenerationAction.Skipped: totalSkipped++; break;
+                        case GenerationAction.Failed: totalFailed++; break;
+                    }
+                }
             }
 
-            if (!dryRun)
+            // Summary
+            Console.WriteLine();
+            if (dryRun)
             {
-                // TODO: Phase 4 - Actual generation
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\n[Generation not yet implemented - Phase 4]");
-                Console.ResetColor();
+                Console.WriteLine("[DRY RUN COMPLETE - No files were written]");
             }
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nGeneration plan complete.");
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Generation complete!");
+            }
             Console.ResetColor();
+            Console.WriteLine($"  Created: {totalCreated}, Overwritten: {totalOverwritten}, Skipped: {totalSkipped}, Failed: {totalFailed}");
         }
         catch (Exception ex)
         {
