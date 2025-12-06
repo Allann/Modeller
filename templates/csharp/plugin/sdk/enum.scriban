@@ -1,0 +1,17 @@
+{{~ # enum.scriban - SDK enum type ~}}
+namespace {{ variables.company }}.{{ variables.product }}.Sdk.{{ enumeration.entity_name ?? 'Common' }};
+
+/// <summary>
+/// {{ enumeration.description }}
+/// </summary>
+public enum {{ enumeration.name }}
+{
+{{~ for value in enumeration.values ~}}
+    /// <summary>
+    /// {{ value.description }}
+    /// </summary>
+    {{ value.name | pascal_case }}{{ if value.value }} = {{ value.value }}{{ end }}{{ if !for.last }},{{ end }}
+
+{{~ end ~}}
+}
+

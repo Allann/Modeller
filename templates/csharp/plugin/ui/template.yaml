@@ -1,0 +1,32 @@
+# Template manifest for UI layer
+name: UI Layer
+description: |
+  Generates Blazor UI components for the plugin architecture.
+  Includes service registrar, imports, and project file.
+
+# Files this template generates
+generates:
+  # Service registrar - once per domain
+  - template: service-registrar.scriban
+    per: domain
+    output: "ServiceRegistrar.cs"
+    description: "Plugin service registrar"
+
+  # Imports razor - once per domain
+  - template: imports.scriban
+    per: domain
+    output: "_Imports.razor"
+    description: "Blazor imports file"
+
+  # UI csproj - once per domain
+  - template: ui-csproj.scriban
+    per: domain
+    output: "{variables.company}.{variables.product}.Ui.csproj"
+    description: "UI project file"
+
+  # Plugin config - once per domain
+  - template: plugin-config.scriban
+    per: domain
+    output: "plugin.json"
+    description: "Plugin configuration file"
+

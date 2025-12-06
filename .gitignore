@@ -6,3 +6,6 @@ obj/
 *.cache
 .idea/
 *.DotSettings.user
+
+# Generated output files
+output/

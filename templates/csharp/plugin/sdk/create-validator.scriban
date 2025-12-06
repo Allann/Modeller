@@ -1,0 +1,37 @@
+{{~ # create-validator.scriban - Create request validator ~}}
+namespace {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+
+/// <summary>
+/// Validator for create {{ entity.name | humanize | downcase }} requests
+/// </summary>
+public class Create{{ entity.name }}Validator : AbstractValidator<Create{{ entity.name }}Request>
+{
+    /// <summary>
+    /// Initializes a new instance of the Create{{ entity.name }}Validator class
+    /// </summary>
+    public Create{{ entity.name }}Validator()
+    {
+{{~ for attr in entity.attributes ~}}
+{{~ if attr.is_creatable ?? true ~}}
+{{~ if !attr.is_optional && attr.data_type == "text" ~}}
+        RuleFor(x => x.{{ attr.name | pascal_case }})
+            .NotEmpty().WithMessage("{{ attr.name | humanize }} is required"){{ if attr.max_length }}
+            .MaximumLength({{ attr.max_length }}).WithMessage("{{ attr.name | humanize }} must be {{ attr.max_length }} characters or less"){{ end }};
+
+{{~ else if attr.is_optional && attr.data_type == "text" && attr.max_length ~}}
+        RuleFor(x => x.{{ attr.name | pascal_case }})
+            .MaximumLength({{ attr.max_length }}).WithMessage("{{ attr.name | humanize }} must be {{ attr.max_length }} characters or less")
+            .When(x => !string.IsNullOrEmpty(x.{{ attr.name | pascal_case }}));
+
+{{~ else if attr.data_type == "datetime" && attr.is_optional ~}}
+        RuleFor(x => x.{{ attr.name | pascal_case }})
+            .GreaterThan(DateTime.Now.AddYears(-50)).WithMessage("{{ attr.name | humanize }} cannot be more than 50 years in the past")
+            .LessThan(DateTime.Now.AddYears(20)).WithMessage("{{ attr.name | humanize }} cannot be more than 20 years in the future")
+            .When(x => x.{{ attr.name | pascal_case }}.HasValue);
+
+{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}
+    }
+}
+

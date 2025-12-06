@@ -19,7 +19,7 @@ variables:
 # Output configuration
 output:
   # Root output directory (relative to project root)
-  root: ../../output/Units
+  root: ../../output/plugin/units
   # Pattern for project folders
   project_pattern: "{variables.company}.{variables.product}.{layer}"
 

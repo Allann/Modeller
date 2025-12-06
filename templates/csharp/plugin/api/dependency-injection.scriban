@@ -1,0 +1,147 @@
+{{~ # dependency-injection.scriban - Dependency injection configuration ~}}
+using System.Text.Json;
+using FluentValidation;
+using {{ variables.company }}.{{ variables.product }}.Api.Extensions;
+using {{ variables.company }}.{{ variables.product }}.Infrastructure;
+{{~ for entity in domain.entities ~}}
+using {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+{{~ end ~}}
+using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
+using Serilog;
+
+namespace {{ variables.company }}.{{ variables.product }}.Api;
+
+/// <summary>
+/// Provides extension methods for configuring dependency injection in an application.
+/// </summary>
+public static class DependencyInjectionExtensions
+{
+    /// <summary>
+    /// Adds application-specific dependencies to the specified <see cref="IHostApplicationBuilder"/>.
+    /// </summary>
+    /// <param name="builder">The <see cref="IHostApplicationBuilder"/> to which the dependencies will be added.</param>
+    /// <returns>The same <see cref="IHostApplicationBuilder"/> instance, allowing for method chaining.</returns>
+    public static IHostApplicationBuilder AddApplicationDependencies(this IHostApplicationBuilder builder)
+    {
+        _ = builder.AddOpenApi()
+            .IncludeProblemDetails()
+            .AddDatabase()
+            .AddSecurity()
+            .Services
+                .AddRequestTimeouts()
+                .AddOutputCache()
+{{~ first_entity = domain.entities | array.first ~}}
+                .AddValidatorsFromAssemblyContaining<Create{{ first_entity.name }}Request>()
+                .AddHttpContextAccessor()
+                .Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+                {
+                    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    options.SerializerOptions.PropertyNameCaseInsensitive = true;
+                })
+                .AddCors(options =>
+                {
+                    options.AddPolicy("Development", policy =>
+                    {
+                        policy.AllowAnyOrigin()
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+
+                    options.AddPolicy("default", policy =>
+                    {
+                        policy.WithOrigins("https://localhost:7001", "https://localhost:7002")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials();
+                    });
+                });
+
+        return builder;
+    }
+
+    public static WebApplication UsePipeline(this WebApplication app)
+    {
+        const string openApiDocument = "/openapi/v1.json";
+
+{{~ if variables.use_aspire == true ~}}
+        app.MapDefaultEndpoints();
+{{~ end ~}}
+        app.UseHttpsRedirection()
+            .UseAuthentication()
+            .UseCors(app.Environment.IsDevelopment() ? "Development" : "default")
+            .UseAuthorization()
+            .UseExceptionHandler()
+            .UseStatusCodePages()
+            .UseRequestTimeouts()
+            .UseOutputCache();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint(openApiDocument, "{{ variables.product }} API");
+            });
+            app.MapScalarApiReference(options =>
+                options.WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient));
+        }
+
+        app.UseSerilogRequestLogging();
+
+        app.MapApiEndpoints();
+
+        return app;
+    }
+
+    /// <summary>
+    /// Adds authentication and authorisation services
+    /// </summary>
+    public static IHostApplicationBuilder AddSecurity(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddAuthentication();
+        builder.Services.AddAuthorization();
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds database services
+    /// </summary>
+    public static IHostApplicationBuilder AddDatabase(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddDbContextPool<{{ variables.product }}DbContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("{{ variables.product }}"));
+        });
+
+        return builder;
+    }
+
+    private static IHostApplicationBuilder AddOpenApi(this IHostApplicationBuilder builder)
+    {
+        builder.Services
+            .AddOpenApi()
+            .AddHttpContextAccessor();
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Includes problem details in the application
+    /// </summary>
+    public static IHostApplicationBuilder IncludeProblemDetails(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Instance = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+                context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+            };
+        });
+
+        return builder;
+    }
+}
+

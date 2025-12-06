@@ -1,0 +1,128 @@
+{{~ # entity.scriban - Infrastructure entity class ~}}
+using System.ComponentModel.DataAnnotations;
+using {{ variables.company }}.{{ variables.product }}.Sdk.Common;
+using {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+
+namespace {{ variables.company }}.{{ variables.product }}.Infrastructure.Entities;
+
+/// <summary>
+/// {{ entity.description }}
+/// </summary>
+public class {{ entity.name }}
+{
+{{~ # Primary key from entity key definition ~}}
+{{~ if entity.key && entity.key.fields.size > 0 ~}}
+{{~ key_field = entity.key.fields[0] ~}}
+    /// <summary>
+    /// {{ key_field.description ?? ("Unique identifier for the " + entity.name | humanize | downcase) }}
+    /// </summary>
+    [Key]
+    public Guid {{ key_field.name }} { get; set; }
+{{~ end ~}}
+
+{{~ # Entity attributes ~}}
+{{~ for attr in entity.attributes ~}}
+    /// <summary>
+    /// {{ attr.description }}
+    /// </summary>
+{{~ if attr.remarks ~}}
+    /// <remarks>
+    /// {{ attr.remarks }}{{ if attr.max_length }}, max {{ attr.max_length }} characters{{ end }}
+    /// </remarks>
+{{~ end ~}}
+{{~ if !attr.is_optional && attr.data_type == "text" ~}}
+    [Required]
+{{~ end ~}}
+{{~ if attr.max_length ~}}
+    [MaxLength({{ attr.max_length }})]
+{{~ end ~}}
+    public {{ attr | to_csharp_type }}{{ if attr.is_optional }}?{{ end }} {{ attr.name | pascal_case }} { get; set; }{{ if !attr.is_optional && attr.data_type == "text" }} = string.Empty;{{ else if attr.default_value }} = {{ attr | to_csharp_default_value }};{{ end }}
+
+{{~ end ~}}
+{{~ # Audit fields if entity has them ~}}
+{{~ if entity.has_audit_fields ~}}
+    /// <summary>
+    /// When the {{ entity.name | humanize | downcase }} was created
+    /// </summary>
+    public DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// When the {{ entity.name | humanize | downcase }} was last updated
+    /// </summary>
+    public DateTime? UpdatedAt { get; set; }
+
+    /// <summary>
+    /// Who created the {{ entity.name | humanize | downcase }}
+    /// </summary>
+    [MaxLength(100)]
+    public string CreatedBy { get; set; } = "System";
+
+    /// <summary>
+    /// Who last updated the {{ entity.name | humanize | downcase }}
+    /// </summary>
+    [MaxLength(100)]
+    public string? UpdatedBy { get; set; }
+{{~ end ~}}
+
+    /// <summary>
+    /// Creates a new {{ entity.name }} entity with GUID v7
+    /// </summary>
+    /// <param name="request">The create request</param>
+    /// <returns>A new {{ entity.name }} entity</returns>
+    public static {{ entity.name }} Create(Create{{ entity.name }}Request request)
+    {
+        var now = DateTime.UtcNow;
+        return new {{ entity.name }}
+        {
+{{~ if entity.key && entity.key.fields.size > 0 ~}}
+            {{ entity.key.fields[0].name }} = Guid.CreateVersion7(),
+{{~ end ~}}
+{{~ for attr in entity.attributes ~}}
+            {{ attr.name | pascal_case }} = request.{{ attr.name | pascal_case }},
+{{~ end ~}}
+{{~ if entity.has_audit_fields ~}}
+            CreatedAt = now,
+            CreatedBy = "System"
+{{~ end ~}}
+        };
+    }
+
+    /// <summary>
+    /// Updates the {{ entity.name }} from a request
+    /// </summary>
+    /// <param name="request">The update request</param>
+    public void Update(Update{{ entity.name }}Request request)
+    {
+{{~ for attr in entity.attributes ~}}
+{{~ if attr.is_updatable ~}}
+        {{ attr.name | pascal_case }} = request.{{ attr.name | pascal_case }};
+{{~ end ~}}
+{{~ end ~}}
+{{~ if entity.has_audit_fields ~}}
+        UpdatedAt = DateTime.UtcNow;
+        UpdatedBy = "System";
+{{~ end ~}}
+    }
+
+    /// <summary>
+    /// Converts to response DTO
+    /// </summary>
+    /// <returns>The response DTO</returns>
+    public {{ entity.name }}Response ToResponse()
+    {
+        return new {{ entity.name }}Response
+        {
+{{~ if entity.key && entity.key.fields.size > 0 ~}}
+            {{ entity.key.fields[0].name }} = {{ entity.key.fields[0].name }},
+{{~ end ~}}
+{{~ for attr in entity.attributes ~}}
+            {{ attr.name | pascal_case }} = {{ attr.name | pascal_case }},
+{{~ end ~}}
+{{~ if entity.has_audit_fields ~}}
+            CreatedAt = CreatedAt,
+            UpdatedAt = UpdatedAt
+{{~ end ~}}
+        };
+    }
+}
+

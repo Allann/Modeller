@@ -1,0 +1,35 @@
+{{~ # ui-csproj.scriban - UI project file ~}}
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>{{ variables.target_framework ?? "net9.0" }}</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>{{ variables.nullable ?? "enable" }}</Nullable>
+  </PropertyGroup>
+
+  <!-- Debug builds output to Shell's plugin folder for local development -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <OutputPath>..\..\..\Shell\bin\$(Configuration)\{{ variables.target_framework ?? "net9.0" }}\Plugin\{{ variables.product }}</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.*" />
+    <PackageReference Include="MudBlazor.Extensions" Version="8.*" />
+    <!-- Shell.Plugin is an internal package - uncomment when available -->
+    <!-- <PackageReference Include="Shell.Plugin" Version="1.*" /> -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\{{ variables.company }}.{{ variables.product }}.Sdk\{{ variables.company }}.{{ variables.product }}.Sdk.csproj" />
+  </ItemGroup>
+
+  <!-- Plugin configuration files - copied to Shell output directory -->
+  <ItemGroup>
+    <None Update="{{ variables.product | downcase }}.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="{{ variables.product | downcase }}.*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
+

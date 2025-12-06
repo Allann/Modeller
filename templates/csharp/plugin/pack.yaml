@@ -1,0 +1,26 @@
+# Pack manifest for Plugin Architecture templates
+name: plugin
+version: 1.0.0
+description: |
+  Generates C# code following Plugin Architecture patterns.
+  Includes Infrastructure (EF Core entities, configurations, DbContext),
+  SDK (DTOs, validators, responses), API (Minimal API endpoints),
+  and UI (Blazor components) layers.
+author: Modeller
+language: csharp
+
+# Templates included in this pack
+templates:
+  - infrastructure
+  - sdk
+  - api
+  - ui
+
+# Default variables for this pack
+variables:
+  nullable: enable
+  use_records: true
+  target_framework: net9.0
+  use_aspire: true
+  use_fluent_validation: true
+

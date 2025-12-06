@@ -1,0 +1,49 @@
+{{~ # program.scriban - API entry point ~}}
+using System.Diagnostics;
+using {{ variables.company }}.{{ variables.product }}.Api;
+using {{ variables.company }}.{{ variables.product }}.Api.Extensions;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+    .CreateLogger();
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, loggerConfiguration) =>
+    loggerConfiguration.ReadFrom.Configuration(context.Configuration)
+        .Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName));
+
+{{~ if variables.use_aspire == true ~}}
+builder.AddServiceDefaults();
+{{~ end ~}}
+
+builder.Services.AddSingleton(new ActivitySource("{{ variables.product }}"));
+
+builder.AddApplicationDependencies();
+
+var app = builder.Build();
+
+try
+{
+    Log.Information("Starting {AppName}", builder.Environment.ApplicationName);
+
+    app.UsePipeline();
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application start-up failed");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+
+// used for integration tests startup
+public partial class Program
+{
+}
+

@@ -1,0 +1,90 @@
+{{~ # mapping-extensions.scriban - Entity to DTO mapping extensions ~}}
+using {{ variables.company }}.{{ variables.product }}.Infrastructure.Entities;
+using {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+
+namespace {{ variables.company }}.{{ variables.product }}.Infrastructure.Extensions;
+
+/// <summary>
+/// Extension methods for mapping {{ entity.name }} entities to DTOs and vice versa
+/// </summary>
+public static class {{ entity.name }}MappingExtensions
+{
+    /// <summary>
+    /// Converts a {{ entity.name }} entity to a response DTO
+    /// </summary>
+    /// <param name="entity">The entity to convert</param>
+    /// <returns>The response DTO</returns>
+    public static {{ entity.name }}Response ToResponse(this {{ entity.name }} entity)
+    {
+        return new {{ entity.name }}Response
+        {
+{{~ if entity.key && entity.key.fields.size > 0 ~}}
+            {{ entity.key.fields[0].name }} = entity.{{ entity.key.fields[0].name }},
+{{~ end ~}}
+{{~ for attr in entity.attributes ~}}
+            {{ attr.name | pascal_case }} = entity.{{ attr.name | pascal_case }},
+{{~ end ~}}
+{{~ if entity.has_audit_fields ~}}
+            CreatedAt = entity.CreatedAt,
+            UpdatedAt = entity.UpdatedAt
+{{~ end ~}}
+        };
+    }
+
+    /// <summary>
+    /// Converts a collection of {{ entity.name }} entities to a list response DTO
+    /// </summary>
+    /// <param name="entities">The entities to convert</param>
+    /// <param name="totalCount">The total count for pagination</param>
+    /// <returns>The list response DTO</returns>
+    public static {{ entity.name }}ListResponse ToListResponse(this IEnumerable<{{ entity.name }}> entities, int totalCount)
+    {
+        return new {{ entity.name }}ListResponse
+        {
+            {{ entity.name | pluralize }} = entities.Select(e => e.ToResponse()).ToList(),
+            TotalCount = totalCount
+        };
+    }
+
+    /// <summary>
+    /// Creates a new {{ entity.name }} entity from a create request
+    /// </summary>
+    /// <param name="request">The create request</param>
+    /// <returns>A new {{ entity.name }} entity</returns>
+    public static {{ entity.name }} ToEntity(this Create{{ entity.name }}Request request)
+    {
+        var now = DateTime.UtcNow;
+        return new {{ entity.name }}
+        {
+{{~ if entity.key && entity.key.fields.size > 0 ~}}
+            {{ entity.key.fields[0].name }} = Guid.CreateVersion7(),
+{{~ end ~}}
+{{~ for attr in entity.attributes ~}}
+            {{ attr.name | pascal_case }} = request.{{ attr.name | pascal_case }},
+{{~ end ~}}
+{{~ if entity.has_audit_fields ~}}
+            CreatedAt = now,
+            CreatedBy = "System"
+{{~ end ~}}
+        };
+    }
+
+    /// <summary>
+    /// Updates a {{ entity.name }} entity from an update request
+    /// </summary>
+    /// <param name="entity">The entity to update</param>
+    /// <param name="request">The update request</param>
+    public static void UpdateFromRequest(this {{ entity.name }} entity, Update{{ entity.name }}Request request)
+    {
+{{~ for attr in entity.attributes ~}}
+{{~ if attr.is_updatable ~}}
+        entity.{{ attr.name | pascal_case }} = request.{{ attr.name | pascal_case }};
+{{~ end ~}}
+{{~ end ~}}
+{{~ if entity.has_audit_fields ~}}
+        entity.UpdatedAt = DateTime.UtcNow;
+        entity.UpdatedBy = "System";
+{{~ end ~}}
+    }
+}
+

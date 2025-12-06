@@ -1,0 +1,34 @@
+{{~ # update-request.scriban - Update request DTO ~}}
+namespace {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+
+/// <summary>
+/// Request to update an existing {{ entity.name | humanize | downcase }}
+/// </summary>
+public record Update{{ entity.name }}Request
+{
+{{~ if entity.key && entity.key.fields.size > 0 ~}}
+{{~ key_field = entity.key.fields[0] ~}}
+    /// <summary>
+    /// {{ key_field.description ?? ("Unique identifier for the " + entity.name | humanize | downcase) }}
+    /// </summary>
+    [Required]
+    public required Guid {{ key_field.name }} { get; init; }
+{{~ end ~}}
+
+{{~ for attr in entity.attributes ~}}
+{{~ if attr.is_updatable ?? true ~}}
+    /// <summary>
+    /// {{ attr.description }}
+    /// </summary>
+{{~ if attr.remarks ~}}
+    /// <remarks>{{ attr.remarks }}</remarks>
+{{~ end ~}}
+{{~ if attr.max_length && attr.data_type == "text" ~}}
+    [StringLength({{ attr.max_length }}, ErrorMessage = "{{ attr.name | humanize }} must be {{ attr.max_length }} characters or less")]
+{{~ end ~}}
+    public {{ if !attr.is_optional }}required {{ end }}{{ attr | to_csharp_type }}{{ if attr.is_optional }}?{{ end }} {{ attr.name | pascal_case }} { get; init; }{{ if attr.default_value }} = {{ attr | to_csharp_default_value }};{{ end }}
+
+{{~ end ~}}
+{{~ end ~}}
+}
+

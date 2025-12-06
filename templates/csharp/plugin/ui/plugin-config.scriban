@@ -1,0 +1,14 @@
+{
+  "{{ variables.product }}": {
+    "ApiBaseUrl": "https://localhost:7001/api",
+    "EnableCaching": true,
+    "CacheExpirationMinutes": 5
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "{{ variables.company }}.{{ variables.product }}": "Debug"
+    }
+  }
+}
+

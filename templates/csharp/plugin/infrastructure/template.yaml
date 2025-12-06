@@ -1,0 +1,38 @@
+# Template manifest for Infrastructure layer
+name: Infrastructure Layer
+description: |
+  Generates EF Core entities, configurations, DbContext, 
+  and mapping extensions for the plugin architecture.
+
+# Files this template generates
+generates:
+  # DbContext - once per domain
+  - template: dbcontext.scriban
+    per: domain
+    output: "{variables.product}DbContext.cs"
+    description: "EF Core DbContext"
+
+  # Entity classes - one per entity
+  - template: entity.scriban
+    per: entity
+    output: "Entities/{{ entity.name | pascal_case }}.cs"
+    description: "Infrastructure entity class"
+
+  # Entity configurations - one per entity
+  - template: entity-configuration.scriban
+    per: entity
+    output: "Configurations/{{ entity.name | pascal_case }}Configuration.cs"
+    description: "EF Core entity configuration"
+
+  # Mapping extensions - one per entity
+  - template: mapping-extensions.scriban
+    per: entity
+    output: "Extensions/{{ entity.name | pascal_case }}MappingExtensions.cs"
+    description: "Entity to DTO mapping extensions"
+
+  # Infrastructure csproj - once per domain
+  - template: infrastructure-csproj.scriban
+    per: domain
+    output: "{variables.company}.{variables.product}.Infrastructure.csproj"
+    description: "Infrastructure project file"
+

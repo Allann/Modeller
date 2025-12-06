@@ -1,0 +1,47 @@
+{{~ # read-all-request.scriban - Read all request DTO with pagination ~}}
+namespace {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+
+/// <summary>
+/// Request to read all {{ entity.name | humanize | downcase | pluralize }}
+/// </summary>
+public record ReadAll{{ entity.name | pluralize }}Request
+{
+    /// <summary>
+    /// Page number (1-based)
+    /// </summary>
+    [Range(1, int.MaxValue, ErrorMessage = "Page number must be greater than 0")]
+    public int Page { get; init; } = 1;
+
+    /// <summary>
+    /// Number of items per page
+    /// </summary>
+    [Range(1, 100, ErrorMessage = "Page size must be between 1 and 100")]
+    public int PageSize { get; init; } = 10;
+
+    /// <summary>
+    /// Search term to filter {{ entity.name | humanize | downcase | pluralize }}
+    /// </summary>
+    public string? SearchTerm { get; init; }
+
+{{~ # Add filter properties for enum attributes ~}}
+{{~ for attr in entity.attributes ~}}
+{{~ if attr.is_enum ~}}
+    /// <summary>
+    /// Filter by {{ attr.name | humanize | downcase }}
+    /// </summary>
+    public {{ attr.enum_type }}? {{ attr.name | pascal_case }} { get; init; }
+
+{{~ end ~}}
+{{~ end ~}}
+{{~ # Add filter for boolean attributes ~}}
+{{~ for attr in entity.attributes ~}}
+{{~ if attr.data_type == "boolean" ~}}
+    /// <summary>
+    /// Filter by {{ attr.name | humanize | downcase }}
+    /// </summary>
+    public bool? {{ attr.name | pascal_case }}Only { get; init; }
+
+{{~ end ~}}
+{{~ end ~}}
+}
+

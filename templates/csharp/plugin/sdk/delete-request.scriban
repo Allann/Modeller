@@ -1,0 +1,18 @@
+{{~ # delete-request.scriban - Delete request DTO ~}}
+namespace {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+
+/// <summary>
+/// Request to delete a {{ entity.name | humanize | downcase }}
+/// </summary>
+public record Delete{{ entity.name }}Request
+{
+{{~ if entity.key && entity.key.fields.size > 0 ~}}
+{{~ key_field = entity.key.fields[0] ~}}
+    /// <summary>
+    /// {{ key_field.description ?? ("Unique identifier for the " + entity.name | humanize | downcase + " to delete") }}
+    /// </summary>
+    [Required]
+    public required Guid {{ key_field.name }} { get; init; }
+{{~ end ~}}
+}
+

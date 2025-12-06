@@ -1,0 +1,240 @@
+{{~ # endpoints.scriban - Minimal API endpoints for entity ~}}
+{{~ key_field = entity.key.fields[0] ~}}
+using FluentValidation;
+using {{ variables.company }}.{{ variables.product }}.Infrastructure;
+using {{ variables.company }}.{{ variables.product }}.Infrastructure.Extensions;
+using {{ variables.company }}.{{ variables.product }}.Sdk.Common;
+using {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace {{ variables.company }}.{{ variables.product }}.Api.Features.{{ entity.name | pluralize }};
+
+/// <summary>
+/// {{ entity.name | pluralize }} endpoints for the {{ variables.product }} API
+/// </summary>
+public static class {{ entity.name | pluralize }}Endpoints
+{
+    /// <summary>
+    /// Maps {{ entity.name | pluralize }} endpoints to the route builder
+    /// </summary>
+    /// <param name="app">The endpoint route builder</param>
+    /// <returns>The endpoint route builder for chaining</returns>
+    public static IEndpointRouteBuilder Map{{ entity.name | pluralize }}Endpoints(this IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("/{{ entity.name | pluralize | downcase }}")
+            .WithTags("{{ entity.name | pluralize }}")
+            .WithOpenApi()
+            .RequireAuthorization();
+
+        group.MapPost("/", Create{{ entity.name }})
+            .WithName("Create{{ entity.name }}")
+            .WithSummary("Create new {{ entity.name | humanize | downcase }}")
+            .WithDescription("Creates a new {{ entity.name | humanize | downcase }}")
+            .Produces<ApiResult<{{ entity.name }}Response>>(StatusCodes.Status201Created)
+            .ProducesValidationProblem()
+            .Produces(StatusCodes.Status400BadRequest);
+
+        group.MapGet("/{id:guid}", Get{{ entity.name }})
+            .WithName("Get{{ entity.name }}")
+            .WithSummary("Get {{ entity.name | humanize | downcase }} by ID")
+            .WithDescription("Retrieves a specific {{ entity.name | humanize | downcase }} by its ID")
+            .Produces<ApiResult<{{ entity.name }}Response>>()
+            .Produces(StatusCodes.Status404NotFound);
+
+        group.MapGet("/", GetAll{{ entity.name | pluralize }})
+            .WithName("GetAll{{ entity.name | pluralize }}")
+            .WithSummary("Get all {{ entity.name | humanize | downcase | pluralize }}")
+            .WithDescription("Retrieves all {{ entity.name | humanize | downcase | pluralize }} with optional pagination and filtering")
+            .Produces<ApiResult<{{ entity.name }}ListResponse>>();
+
+        group.MapPut("/{id:guid}", Update{{ entity.name }})
+            .WithName("Update{{ entity.name }}")
+            .WithSummary("Update {{ entity.name | humanize | downcase }}")
+            .WithDescription("Updates an existing {{ entity.name | humanize | downcase }}")
+            .Produces<ApiResult<{{ entity.name }}Response>>()
+            .ProducesValidationProblem()
+            .Produces(StatusCodes.Status404NotFound);
+
+        group.MapDelete("/{id:guid}", Delete{{ entity.name }})
+            .WithName("Delete{{ entity.name }}")
+            .WithSummary("Delete {{ entity.name | humanize | downcase }}")
+            .WithDescription("Deletes a {{ entity.name | humanize | downcase }} by its ID")
+            .Produces<ApiResult<bool>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
+
+        return app;
+    }
+
+    private static async Task<IResult> Create{{ entity.name }}(
+        [FromBody] Create{{ entity.name }}Request request,
+        [FromServices] {{ variables.product }}DbContext context,
+        [FromServices] IValidator<Create{{ entity.name }}Request> validator,
+        CancellationToken cancellationToken = default)
+    {
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
+        try
+        {
+            var entity = request.ToEntity();
+            context.{{ entity.name | pluralize }}.Add(entity);
+            await context.SaveChangesAsync(cancellationToken);
+
+            var response = entity.ToResponse();
+            var result = ApiResult<{{ entity.name }}Response>.Success(response);
+            return Results.Created($"/{{ entity.name | pluralize | downcase }}/{entity.{{ key_field.name }}}", result);
+        }
+        catch (Exception ex)
+        {
+            var result = ApiResult<{{ entity.name }}Response>.Failure($"Failed to create {{ entity.name | humanize | downcase }}: {ex.Message}");
+            return Results.BadRequest(result);
+        }
+    }
+
+    private static async Task<IResult> Get{{ entity.name }}(
+        [FromRoute] Guid id,
+        [FromServices] {{ variables.product }}DbContext context,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var entity = await context.{{ entity.name | pluralize }}
+                .FirstOrDefaultAsync(e => e.{{ key_field.name }} == id, cancellationToken);
+
+            if (entity == null)
+            {
+                var notFoundResult = ApiResult<{{ entity.name }}Response>.Failure("{{ entity.name }} not found");
+                return Results.NotFound(notFoundResult);
+            }
+
+            var response = entity.ToResponse();
+            var result = ApiResult<{{ entity.name }}Response>.Success(response);
+            return Results.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            var result = ApiResult<{{ entity.name }}Response>.Failure($"Failed to get {{ entity.name | humanize | downcase }}: {ex.Message}");
+            return Results.BadRequest(result);
+        }
+    }
+
+    private static async Task<IResult> GetAll{{ entity.name | pluralize }}(
+        [FromServices] {{ variables.product }}DbContext context,
+        [FromServices] IValidator<ReadAll{{ entity.name | pluralize }}Request> validator,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? searchTerm = null,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new ReadAll{{ entity.name | pluralize }}Request
+        {
+            Page = page,
+            PageSize = pageSize,
+            SearchTerm = searchTerm
+        };
+
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
+        try
+        {
+            var query = context.{{ entity.name | pluralize }}.AsQueryable();
+
+            // Apply search filter if provided
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(e => EF.Functions.Like(e.{{ key_field.name }}.ToString(), $"%{searchTerm}%"));
+            }
+
+            var totalCount = await query.CountAsync(cancellationToken);
+            var entities = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            var response = entities.ToListResponse(totalCount);
+            var result = ApiResult<{{ entity.name }}ListResponse>.Success(response);
+            return Results.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            var result = ApiResult<{{ entity.name }}ListResponse>.Failure($"Failed to get {{ entity.name | humanize | downcase | pluralize }}: {ex.Message}");
+            return Results.BadRequest(result);
+        }
+    }
+
+    private static async Task<IResult> Update{{ entity.name }}(
+        [FromRoute] Guid id,
+        [FromBody] Update{{ entity.name }}Request request,
+        [FromServices] {{ variables.product }}DbContext context,
+        [FromServices] IValidator<Update{{ entity.name }}Request> validator,
+        CancellationToken cancellationToken = default)
+    {
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
+        try
+        {
+            var entity = await context.{{ entity.name | pluralize }}
+                .FirstOrDefaultAsync(e => e.{{ key_field.name }} == id, cancellationToken);
+
+            if (entity == null)
+            {
+                var notFoundResult = ApiResult<{{ entity.name }}Response>.Failure("{{ entity.name }} not found");
+                return Results.NotFound(notFoundResult);
+            }
+
+            entity.UpdateFromRequest(request);
+            await context.SaveChangesAsync(cancellationToken);
+
+            var response = entity.ToResponse();
+            var result = ApiResult<{{ entity.name }}Response>.Success(response);
+            return Results.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            var result = ApiResult<{{ entity.name }}Response>.Failure($"Failed to update {{ entity.name | humanize | downcase }}: {ex.Message}");
+            return Results.BadRequest(result);
+        }
+    }
+
+    private static async Task<IResult> Delete{{ entity.name }}(
+        [FromRoute] Guid id,
+        [FromServices] {{ variables.product }}DbContext context,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var entity = await context.{{ entity.name | pluralize }}
+                .FirstOrDefaultAsync(e => e.{{ key_field.name }} == id, cancellationToken);
+
+            if (entity == null)
+            {
+                var notFoundResult = ApiResult<bool>.Failure("{{ entity.name }} not found");
+                return Results.NotFound(notFoundResult);
+            }
+
+            context.{{ entity.name | pluralize }}.Remove(entity);
+            await context.SaveChangesAsync(cancellationToken);
+
+            var result = ApiResult<bool>.Success(true);
+            return Results.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            var result = ApiResult<bool>.Failure($"Failed to delete {{ entity.name | humanize | downcase }}: {ex.Message}");
+            return Results.BadRequest(result);
+        }
+    }
+}
+

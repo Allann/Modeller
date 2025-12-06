@@ -1,0 +1,73 @@
+{{~ # entity-configuration.scriban - EF Core entity configuration ~}}
+using {{ variables.company }}.{{ variables.product }}.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace {{ variables.company }}.{{ variables.product }}.Infrastructure.Configurations;
+
+/// <summary>
+/// Entity Framework configuration for {{ entity.name }} entity
+/// </summary>
+public class {{ entity.name }}Configuration : IEntityTypeConfiguration<{{ entity.name }}>
+{
+    /// <summary>
+    /// Configures the {{ entity.name }} entity
+    /// </summary>
+    /// <param name="builder">The entity type builder</param>
+    public void Configure(EntityTypeBuilder<{{ entity.name }}> builder)
+    {
+        // Table configuration
+        builder.ToTable("{{ entity.name | pluralize }}");
+{{~ if entity.key && entity.key.fields.size > 0 ~}}
+{{~ key_field = entity.key.fields[0] ~}}
+        builder.HasKey(e => e.{{ key_field.name }});
+
+        // Primary key configuration
+        builder.Property(e => e.{{ key_field.name }})
+            .IsRequired()
+            .ValueGeneratedNever() // Using GUID v7
+            .HasComment("{{ key_field.description ?? ("Unique identifier for the " + entity.name | humanize | downcase) }}");
+{{~ end ~}}
+
+{{~ # Property configurations ~}}
+{{~ for attr in entity.attributes ~}}
+        builder.Property(e => e.{{ attr.name | pascal_case }})
+{{~ if !attr.is_optional ~}}
+            .IsRequired()
+{{~ end ~}}
+{{~ if attr.max_length ~}}
+            .HasMaxLength({{ attr.max_length }})
+{{~ end ~}}
+            .HasComment("{{ attr.description }}{{ if attr.remarks }} ({{ attr.remarks }}){{ end }}");
+
+{{~ end ~}}
+{{~ # Audit field configurations ~}}
+{{~ if entity.has_audit_fields ~}}
+        builder.Property(e => e.CreatedAt)
+            .IsRequired()
+            .HasComment("When the {{ entity.name | humanize | downcase }} was created");
+
+        builder.Property(e => e.UpdatedAt)
+            .HasComment("When the {{ entity.name | humanize | downcase }} was last updated");
+
+        builder.Property(e => e.CreatedBy)
+            .IsRequired()
+            .HasMaxLength(100)
+            .HasComment("Who created the {{ entity.name | humanize | downcase }}");
+
+        builder.Property(e => e.UpdatedBy)
+            .HasMaxLength(100)
+            .HasComment("Who last updated the {{ entity.name | humanize | downcase }}");
+{{~ end ~}}
+
+{{~ # Index configurations from entity key ~}}
+{{~ if entity.key.indexes ~}}
+        // Index configurations
+{{~ for index in entity.key.indexes ~}}
+        builder.HasIndex(e => new { {{ for col in index.columns }}e.{{ col | pascal_case }}{{ if !for.last }}, {{ end }}{{ end }} }){{ if index.is_unique }}
+            .IsUnique(){{ end }};
+{{~ end ~}}
+{{~ end ~}}
+    }
+}
+

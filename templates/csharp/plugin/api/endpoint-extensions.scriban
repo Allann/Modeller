@@ -1,0 +1,27 @@
+{{~ # endpoint-extensions.scriban - Endpoint mapping extensions ~}}
+{{~ for entity in domain.entities ~}}
+using {{ variables.company }}.{{ variables.product }}.Api.Features.{{ entity.name | pluralize }};
+{{~ end ~}}
+
+namespace {{ variables.company }}.{{ variables.product }}.Api.Extensions;
+
+/// <summary>
+/// Extension methods for mapping API endpoints
+/// </summary>
+public static class EndpointExtensions
+{
+    /// <summary>
+    /// Maps all API endpoints to the web application
+    /// </summary>
+    /// <param name="app">The web application instance</param>
+    /// <returns>The web application instance for chaining</returns>
+    public static IEndpointRouteBuilder MapApiEndpoints(this IEndpointRouteBuilder app)
+    {
+        // Map API endpoints
+        app{{ for entity in domain.entities }}
+           .Map{{ entity.name | pluralize }}Endpoints(){{ end }};
+
+        return app;
+    }
+}
+

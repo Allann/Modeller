@@ -27,6 +27,237 @@ public static class DomainTemplateFunctions
     }
 
     /// <summary>
+    /// Converts a string to lowercase
+    /// </summary>
+    public static string Downcase(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+        return input.ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// Converts a string to uppercase
+    /// </summary>
+    public static string Upcase(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+        return input.ToUpperInvariant();
+    }
+
+    /// <summary>
+    /// Converts a string to snake_case
+    /// </summary>
+    public static string SnakeCase(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+
+        var result = new System.Text.StringBuilder();
+        for (int i = 0; i < input.Length; i++)
+        {
+            var c = input[i];
+            if (char.IsUpper(c))
+            {
+                if (i > 0) result.Append('_');
+                result.Append(char.ToLowerInvariant(c));
+            }
+            else
+            {
+                result.Append(c);
+            }
+        }
+        return result.ToString();
+    }
+
+    /// <summary>
+    /// Converts a PascalCase or camelCase string to human-readable format
+    /// </summary>
+    public static string Humanize(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+
+        var result = new System.Text.StringBuilder();
+        for (int i = 0; i < input.Length; i++)
+        {
+            var c = input[i];
+            if (char.IsUpper(c) && i > 0)
+            {
+                result.Append(' ');
+            }
+            result.Append(i == 0 ? char.ToUpperInvariant(c) : c);
+        }
+        return result.ToString();
+    }
+
+    /// <summary>
+    /// Pluralizes a word (simple English rules)
+    /// </summary>
+    public static string Pluralize(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+
+        // Handle common irregular plurals
+        var irregulars = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "person", "people" },
+            { "child", "children" },
+            { "man", "men" },
+            { "woman", "women" },
+            { "tooth", "teeth" },
+            { "foot", "feet" },
+            { "mouse", "mice" },
+            { "goose", "geese" },
+            { "ox", "oxen" },
+            { "status", "statuses" },
+            { "index", "indices" },
+            { "matrix", "matrices" },
+            { "vertex", "vertices" },
+            { "axis", "axes" },
+            { "crisis", "crises" },
+            { "analysis", "analyses" },
+            { "basis", "bases" },
+            { "diagnosis", "diagnoses" },
+            { "thesis", "theses" },
+            { "hypothesis", "hypotheses" },
+            { "parenthesis", "parentheses" },
+            { "synopsis", "synopses" },
+            { "datum", "data" },
+            { "medium", "media" },
+            { "criterion", "criteria" },
+            { "phenomenon", "phenomena" },
+            { "curriculum", "curricula" },
+            { "memorandum", "memoranda" },
+            { "appendix", "appendices" },
+            { "quiz", "quizzes" }
+        };
+
+        if (irregulars.TryGetValue(input, out var irregular))
+        {
+            // Preserve original casing
+            if (char.IsUpper(input[0]))
+                return char.ToUpperInvariant(irregular[0]) + irregular[1..];
+            return irregular;
+        }
+
+        // Words ending in 'y' preceded by a consonant
+        if (input.EndsWith("y", StringComparison.OrdinalIgnoreCase) && input.Length > 1)
+        {
+            var beforeY = input[^2];
+            if (!"aeiouAEIOU".Contains(beforeY))
+            {
+                return input[..^1] + "ies";
+            }
+        }
+
+        // Words ending in 's', 'x', 'z', 'ch', 'sh'
+        if (input.EndsWith("s", StringComparison.OrdinalIgnoreCase) ||
+            input.EndsWith("x", StringComparison.OrdinalIgnoreCase) ||
+            input.EndsWith("z", StringComparison.OrdinalIgnoreCase) ||
+            input.EndsWith("ch", StringComparison.OrdinalIgnoreCase) ||
+            input.EndsWith("sh", StringComparison.OrdinalIgnoreCase))
+        {
+            return input + "es";
+        }
+
+        // Words ending in 'f' or 'fe'
+        if (input.EndsWith("fe", StringComparison.OrdinalIgnoreCase))
+        {
+            return input[..^2] + "ves";
+        }
+        if (input.EndsWith("f", StringComparison.OrdinalIgnoreCase))
+        {
+            return input[..^1] + "ves";
+        }
+
+        // Default: just add 's'
+        return input + "s";
+    }
+
+    /// <summary>
+    /// Singularizes a word (simple English rules)
+    /// </summary>
+    public static string Singularize(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+
+        // Handle common irregular plurals (reverse lookup)
+        var irregulars = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "people", "person" },
+            { "children", "child" },
+            { "men", "man" },
+            { "women", "woman" },
+            { "teeth", "tooth" },
+            { "feet", "foot" },
+            { "mice", "mouse" },
+            { "geese", "goose" },
+            { "oxen", "ox" },
+            { "statuses", "status" },
+            { "indices", "index" },
+            { "matrices", "matrix" },
+            { "vertices", "vertex" },
+            { "axes", "axis" },
+            { "crises", "crisis" },
+            { "analyses", "analysis" },
+            { "bases", "basis" },
+            { "diagnoses", "diagnosis" },
+            { "theses", "thesis" },
+            { "hypotheses", "hypothesis" },
+            { "parentheses", "parenthesis" },
+            { "synopses", "synopsis" },
+            { "data", "datum" },
+            { "media", "medium" },
+            { "criteria", "criterion" },
+            { "phenomena", "phenomenon" },
+            { "curricula", "curriculum" },
+            { "memoranda", "memorandum" },
+            { "appendices", "appendix" },
+            { "quizzes", "quiz" }
+        };
+
+        if (irregulars.TryGetValue(input, out var irregular))
+        {
+            // Preserve original casing
+            if (char.IsUpper(input[0]))
+                return char.ToUpperInvariant(irregular[0]) + irregular[1..];
+            return irregular;
+        }
+
+        // Words ending in 'ies'
+        if (input.EndsWith("ies", StringComparison.OrdinalIgnoreCase) && input.Length > 3)
+        {
+            return input[..^3] + "y";
+        }
+
+        // Words ending in 'ves'
+        if (input.EndsWith("ves", StringComparison.OrdinalIgnoreCase) && input.Length > 3)
+        {
+            return input[..^3] + "f";
+        }
+
+        // Words ending in 'es' (for s, x, z, ch, sh)
+        if (input.EndsWith("es", StringComparison.OrdinalIgnoreCase) && input.Length > 2)
+        {
+            var stem = input[..^2];
+            if (stem.EndsWith("s", StringComparison.OrdinalIgnoreCase) ||
+                stem.EndsWith("x", StringComparison.OrdinalIgnoreCase) ||
+                stem.EndsWith("z", StringComparison.OrdinalIgnoreCase) ||
+                stem.EndsWith("ch", StringComparison.OrdinalIgnoreCase) ||
+                stem.EndsWith("sh", StringComparison.OrdinalIgnoreCase))
+            {
+                return stem;
+            }
+        }
+
+        // Default: remove trailing 's'
+        if (input.EndsWith("s", StringComparison.OrdinalIgnoreCase) && input.Length > 1)
+        {
+            return input[..^1];
+        }
+
+        return input;
+    }
+
+    /// <summary>
     /// Converts a domain DataType to C# type string
     /// </summary>
     public static string ToCsharpType(DomainAttribute attr)
@@ -185,6 +416,28 @@ public static class DomainTemplateFunctions
         return rel.Type == RelationshipType.HasMany 
             ? $"{name} ?? []"
             : name;
+    }
+
+    /// <summary>
+    /// Formats a default value for C# code output
+    /// </summary>
+    public static string ToCsharpDefaultValue(DomainAttribute attr)
+    {
+        if (attr.DefaultValue == null) return "";
+
+        var baseType = MapTypeToCSharp(attr.DataType.TypeName);
+        var value = attr.DefaultValue;
+
+        // String types need quotes
+        if (baseType == "string")
+            return $"\"{value}\"";
+
+        // Boolean values need lowercase
+        if (baseType == "bool")
+            return value.ToLowerInvariant();
+
+        // Numeric types are used as-is
+        return value;
     }
 
     private static string MapTypeToCSharp(string typeName) => typeName.ToLowerInvariant() switch

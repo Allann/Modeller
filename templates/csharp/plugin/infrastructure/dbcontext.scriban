@@ -1,0 +1,37 @@
+{{~ # dbcontext.scriban - EF Core DbContext ~}}
+using {{ variables.company }}.{{ variables.product }}.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace {{ variables.company }}.{{ variables.product }}.Infrastructure;
+
+/// <summary>
+/// Entity Framework DbContext for the {{ variables.product | humanize }} system
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the {{ variables.product }}DbContext
+/// </remarks>
+/// <param name="options">The DbContext options</param>
+public class {{ variables.product }}DbContext(DbContextOptions<{{ variables.product }}DbContext> options) : DbContext(options)
+{
+{{~ for entity in domain.entities ~}}
+    /// <summary>
+    /// {{ entity.description }}
+    /// </summary>
+    public DbSet<{{ entity.name }}> {{ entity.name | pluralize }} { get; set; } = null!;
+
+{{~ end ~}}
+    /// <summary>
+    /// Configures the model using entity type configurations
+    /// </summary>
+    /// <param name="modelBuilder">The builder being used to construct the model for this context</param>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.HasDefaultSchema("{{ domain.default_schema ?? variables.product | downcase }}");
+
+        // Apply all entity configurations from the assembly
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof({{ variables.product }}DbContext).Assembly);
+    }
+}
+

@@ -1,0 +1,28 @@
+{{~ # create-request.scriban - Create request DTO ~}}
+namespace {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+
+/// <summary>
+/// Request to create a new {{ entity.name | humanize | downcase }}
+/// </summary>
+public record Create{{ entity.name }}Request
+{
+{{~ for attr in entity.attributes ~}}
+{{~ if attr.is_creatable ?? true ~}}
+    /// <summary>
+    /// {{ attr.description }}
+    /// </summary>
+{{~ if attr.remarks ~}}
+    /// <remarks>{{ attr.remarks }}</remarks>
+{{~ end ~}}
+{{~ if !attr.is_optional ~}}
+    [Required]
+{{~ end ~}}
+{{~ if attr.max_length && attr.data_type == "text" ~}}
+    [StringLength({{ attr.max_length }}, ErrorMessage = "{{ attr.name | humanize }} must be {{ attr.max_length }} characters or less")]
+{{~ end ~}}
+    public {{ if !attr.is_optional }}required {{ end }}{{ attr | to_csharp_type }}{{ if attr.is_optional }}?{{ end }} {{ attr.name | pascal_case }} { get; {{ if attr.is_optional }}init{{ else }}set{{ end }}; }{{ if attr.default_value }} = {{ attr | to_csharp_default_value }};{{ end }}
+
+{{~ end ~}}
+{{~ end ~}}
+}
+

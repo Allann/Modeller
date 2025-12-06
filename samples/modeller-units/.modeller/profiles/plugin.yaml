@@ -1,0 +1,48 @@
+# Plugin Architecture Generation Profile
+name: Plugin
+description: Generates Plugin Architecture layers (Infrastructure, SDK, API, UI)
+
+# Which template pack to use
+pack: csharp/plugin
+
+# Layers to generate
+layers:
+  - name: Infrastructure
+    template: infrastructure
+    output: "{variables.company}.{variables.product}.Infrastructure"
+
+  - name: SDK
+    template: sdk
+    output: "{variables.company}.{variables.product}.Sdk"
+
+  - name: API
+    template: api
+    output: "{variables.company}.{variables.product}.Api"
+
+  - name: UI
+    template: ui
+    output: "{variables.company}.{variables.product}.Ui"
+
+# What domain elements to include (default: all)
+include:
+  entities: all
+  enums: all
+  commands: all
+  queries: all
+  projections: all
+
+# What domain elements to exclude
+exclude:
+  entities: []
+
+# Layer-specific variable overrides
+layer_variables:
+  Infrastructure:
+    use_audit_fields: true
+  SDK:
+    use_fluent_validation: true
+  API:
+    use_aspire: false
+  UI:
+    use_mudblazor: true
+

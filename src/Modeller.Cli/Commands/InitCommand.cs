@@ -173,9 +173,21 @@ public static class InitCommand
 
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("\nInitialization complete!");
-        Console.WriteLine("Edit .modeller/config.yaml to configure your project.");
-        Console.WriteLine("See .modeller/README.md for DSL syntax reference.");
         Console.ResetColor();
+
+        Console.WriteLine("\nNext steps:");
+        Console.WriteLine("  1. Edit .modeller/config.yaml to configure your project");
+        Console.WriteLine("  2. See .modeller/README.md for DSL syntax reference");
+
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("VS Code Extension:");
+        Console.ResetColor();
+        Console.WriteLine("  For syntax highlighting and file icons, install the Modeller DSL extension:");
+        Console.WriteLine("  - Open VS Code Extensions (Ctrl+Shift+X)");
+        Console.WriteLine("  - Search for 'Modeller DSL'");
+        Console.WriteLine("  - Or install from: editors/vscode-modeller/");
+        Console.WriteLine("  - After install, enable icons: File > Preferences > File Icon Theme > Modeller DSL Icons");
     }
 
     private static void CopyDirectory(string sourceDir, string destDir)

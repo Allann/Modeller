@@ -1,0 +1,19 @@
+{{~ # list-response.scriban - List response DTO ~}}
+namespace {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+
+/// <summary>
+/// Response containing a list of {{ entity.name | humanize | downcase | pluralize }}
+/// </summary>
+public record {{ entity.name }}ListResponse
+{
+    /// <summary>
+    /// The list of {{ entity.name | humanize | downcase | pluralize }}
+    /// </summary>
+    public required List<{{ entity.name }}Response> {{ entity.name | pluralize }} { get; init; }
+
+    /// <summary>
+    /// Total count of {{ entity.name | humanize | downcase | pluralize }} (for pagination)
+    /// </summary>
+    public required int TotalCount { get; init; }
+}
+

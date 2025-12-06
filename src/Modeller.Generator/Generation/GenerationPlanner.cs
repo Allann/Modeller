@@ -121,7 +121,7 @@ public sealed class GenerationPlanner
         foreach (var entity in domain.Entities)
         {
             if (!profile.Include.ShouldInclude("entities", entity.Name)) continue;
-            if (profile.Exclude.ShouldInclude("entities", entity.Name) == false) continue;
+            if (profile.Exclude.ShouldExclude("entities", entity.Name)) continue;
 
             var context = _variableMerger.CreateTemplateContext(variables, entity: entity, domain: domain);
             context["entity"] = entity;
@@ -228,6 +228,16 @@ public sealed class GenerationPlanner
     private static string ResolveOutputPath(string pattern, Dictionary<string, object> context)
     {
         var result = pattern;
+
+        // Replace {variables.xxx} patterns
+        if (context.TryGetValue("variables", out var variablesObj) && variablesObj is Dictionary<string, object> variables)
+        {
+            foreach (var kvp in variables)
+            {
+                result = result.Replace($"{{variables.{kvp.Key}}}", kvp.Value?.ToString() ?? "");
+                result = result.Replace($"{{{{ variables.{kvp.Key} }}}}", kvp.Value?.ToString() ?? "");
+            }
+        }
 
         // Replace {{ entity.name | pascal_case }} style patterns
         if (context.TryGetValue("entity", out var entity) && entity is Domain.Entity e)

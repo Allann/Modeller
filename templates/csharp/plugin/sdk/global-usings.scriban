@@ -1,0 +1,6 @@
+{{~ # global-usings.scriban - Global using statements for SDK ~}}
+global using System.ComponentModel.DataAnnotations;
+global using System.Text.Json.Serialization;
+global using FluentValidation;
+global using {{ variables.company }}.{{ variables.product }}.Sdk.Common;
+

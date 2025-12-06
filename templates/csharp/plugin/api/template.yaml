@@ -1,0 +1,38 @@
+# Template manifest for API layer
+name: API Layer
+description: |
+  Generates Minimal API endpoints, dependency injection extensions,
+  and Program.cs for the plugin architecture.
+
+# Files this template generates
+generates:
+  # Program.cs - once per domain
+  - template: program.scriban
+    per: domain
+    output: "Program.cs"
+    description: "API entry point"
+
+  # DependencyInjectionExtensions - once per domain
+  - template: dependency-injection.scriban
+    per: domain
+    output: "DependencyInjectionExtensions.cs"
+    description: "Dependency injection configuration"
+
+  # EndpointExtensions - once per domain
+  - template: endpoint-extensions.scriban
+    per: domain
+    output: "Extensions/EndpointExtensions.cs"
+    description: "Endpoint mapping extensions"
+
+  # Entity endpoints - one per entity
+  - template: endpoints.scriban
+    per: entity
+    output: "Features/{{ entity.name | pascal_case }}s/{{ entity.name | pascal_case }}sEndpoints.cs"
+    description: "Minimal API endpoints for entity"
+
+  # API csproj - once per domain
+  - template: api-csproj.scriban
+    per: domain
+    output: "{variables.company}.{variables.product}.Api.csproj"
+    description: "API project file"
+

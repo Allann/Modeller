@@ -114,15 +114,7 @@ public sealed class IncludeExcludeConfig
     /// </summary>
     public bool ShouldInclude(string category, string name)
     {
-        var value = category.ToLowerInvariant() switch
-        {
-            "entities" => Entities,
-            "enums" => Enums,
-            "commands" => Commands,
-            "queries" => Queries,
-            "projections" => Projections,
-            _ => "all"
-        };
+        var value = GetCategoryValue(category);
 
         if (value is string s && s.Equals("all", StringComparison.OrdinalIgnoreCase))
             return true;
@@ -131,6 +123,37 @@ public sealed class IncludeExcludeConfig
             return list.Any(item => item?.ToString()?.Equals(name, StringComparison.OrdinalIgnoreCase) == true);
 
         return true;
+    }
+
+    /// <summary>
+    /// Check if a specific entity should be excluded
+    /// </summary>
+    public bool ShouldExclude(string category, string name)
+    {
+        var value = GetCategoryValue(category);
+
+        // "all" means exclude everything
+        if (value is string s && s.Equals("all", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        // Empty list or null means exclude nothing
+        if (value is List<object> list)
+            return list.Any(item => item?.ToString()?.Equals(name, StringComparison.OrdinalIgnoreCase) == true);
+
+        return false;
+    }
+
+    private object GetCategoryValue(string category)
+    {
+        return category.ToLowerInvariant() switch
+        {
+            "entities" => Entities,
+            "enums" => Enums,
+            "commands" => Commands,
+            "queries" => Queries,
+            "projections" => Projections,
+            _ => "all"
+        };
     }
 }
 

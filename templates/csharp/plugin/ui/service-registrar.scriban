@@ -1,0 +1,42 @@
+{{~ # service-registrar.scriban - Plugin service registrar ~}}
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+namespace {{ variables.company }}.{{ variables.product }}.Ui;
+
+/// <summary>
+/// Service registrar for the {{ variables.product }} UI module.
+/// </summary>
+public static class ServiceRegistrar
+{
+    /// <summary>
+    /// Registers server-side services for the {{ variables.product }} UI module
+    /// </summary>
+    /// <param name="builder">The host application builder</param>
+    public static IHostApplicationBuilder Add{{ variables.product }}UiServices(this IHostApplicationBuilder builder)
+    {
+        // Get the directory where this plugin assembly is located
+        var assemblyLocation = typeof(ServiceRegistrar).Assembly.Location;
+        var pluginDirectory = Path.GetDirectoryName(assemblyLocation) ?? AppContext.BaseDirectory;
+
+        var configPath = Path.Combine(pluginDirectory, "{{ variables.product | downcase }}.json");
+
+        if (File.Exists(configPath))
+        {
+            builder.Configuration.AddJsonFile(configPath, optional: true, reloadOnChange: true);
+
+            var envConfigPath = Path.Combine(pluginDirectory, $"{{ variables.product | downcase }}.{builder.Environment.EnvironmentName}.json");
+            if (File.Exists(envConfigPath))
+            {
+                builder.Configuration.AddJsonFile(envConfigPath, optional: true, reloadOnChange: true);
+            }
+        }
+
+        // Register UI-specific services here
+        // builder.Services.AddScoped<IMyService, MyService>();
+
+        return builder;
+    }
+}
+

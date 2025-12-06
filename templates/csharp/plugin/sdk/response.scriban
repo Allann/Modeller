@@ -1,0 +1,39 @@
+{{~ # response.scriban - Response DTO ~}}
+namespace {{ variables.company }}.{{ variables.product }}.Sdk.{{ entity.name }};
+
+/// <summary>
+/// Response containing {{ entity.name | humanize | downcase }} details
+/// </summary>
+public record {{ entity.name }}Response
+{
+{{~ if entity.key && entity.key.fields.size > 0 ~}}
+{{~ key_field = entity.key.fields[0] ~}}
+    /// <summary>
+    /// {{ key_field.description ?? ("Unique identifier for the " + entity.name | humanize | downcase) }}
+    /// </summary>
+    public required Guid {{ key_field.name }} { get; init; }
+{{~ end ~}}
+
+{{~ for attr in entity.attributes ~}}
+    /// <summary>
+    /// {{ attr.description }}
+    /// </summary>
+{{~ if attr.remarks ~}}
+    /// <remarks>{{ attr.remarks }}</remarks>
+{{~ end ~}}
+    public {{ if !attr.is_optional }}required {{ end }}{{ attr | to_csharp_type }}{{ if attr.is_optional }}?{{ end }} {{ attr.name | pascal_case }} { get; init; }{{ if attr.default_value }} = {{ attr | to_csharp_default_value }};{{ end }}
+
+{{~ end ~}}
+{{~ if entity.has_audit_fields ~}}
+    /// <summary>
+    /// When the {{ entity.name | humanize | downcase }} was created
+    /// </summary>
+    public DateTime CreatedAt { get; init; }
+
+    /// <summary>
+    /// When the {{ entity.name | humanize | downcase }} was last updated
+    /// </summary>
+    public DateTime? UpdatedAt { get; init; }
+{{~ end ~}}
+}
+
