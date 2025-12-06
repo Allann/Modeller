@@ -130,5 +130,46 @@ public sealed class SnippetLoader : ITemplateLoader
     /// Gets the number of cached templates.
     /// </summary>
     public int CacheCount => _cache.Count;
+
+    /// <summary>
+    /// Discovers all available snippets in the _snippets folder.
+    /// </summary>
+    /// <returns>List of discovered snippets</returns>
+    public IReadOnlyList<SnippetInfo> DiscoverSnippets()
+    {
+        var snippetsFolder = Path.Combine(_templatesRoot, "_snippets");
+        if (!Directory.Exists(snippetsFolder))
+            return [];
+
+        var snippets = new List<SnippetInfo>();
+
+        foreach (var file in Directory.EnumerateFiles(snippetsFolder, "*.scriban", SearchOption.AllDirectories))
+        {
+            var relativePath = Path.GetRelativePath(_templatesRoot, file);
+            var name = Path.GetFileNameWithoutExtension(file);
+            var language = GetLanguageFromPath(file, snippetsFolder);
+            var content = File.ReadAllText(file);
+
+            snippets.Add(new SnippetInfo(name, language, relativePath, content));
+        }
+
+        return snippets;
+    }
+
+    private static string GetLanguageFromPath(string filePath, string snippetsFolder)
+    {
+        var relativePath = Path.GetRelativePath(snippetsFolder, filePath);
+        var parts = relativePath.Split(Path.DirectorySeparatorChar);
+        return parts.Length > 1 ? parts[0] : "general";
+    }
 }
+
+/// <summary>
+/// Information about a discovered snippet
+/// </summary>
+public sealed record SnippetInfo(
+    string Name,
+    string Language,
+    string RelativePath,
+    string Content);
 
