@@ -1,0 +1,37 @@
+# Modeller Configuration
+# Schema version
+version: 1
+
+# Where domain definitions live (relative to this project root)
+domain: .
+
+# Where templates were copied from (for updates)
+# Can be file:// path or https:// URL
+template_source: file://./templates
+
+# Global variables available to all templates
+variables:
+  company: JJs
+  product: UnitsManagement
+  copyright: "© 2024 JJs Waste Management"
+  root_namespace: JJs.UnitsManagement
+
+# Output configuration
+output:
+  # Root output directory (relative to project root)
+  root: ../../output/Units
+  # Pattern for project folders
+  project_pattern: "{variables.company}.{variables.product}.{layer}"
+
+# Default profile to use when none specified
+default_profile: default
+
+# File handling configuration
+files:
+  # Suffix for generated files that can be overwritten
+  generated_suffix: ".g"
+  # Line ending style: lf, crlf, or auto
+  line_ending: auto
+  # File encoding
+  encoding: utf-8
+
