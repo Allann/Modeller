@@ -8,6 +8,17 @@
     <AssemblyName>modeller</AssemblyName>
     <RootNamespace>Modeller.Cli</RootNamespace>
     <Description>Modeller code generation CLI tool</Description>
+
+    <!-- Global Tool Configuration -->
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>modeller</ToolCommandName>
+    <PackageId>Modeller.Cli</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Modeller Team</Authors>
+    <PackageDescription>Code generation CLI for transforming domain definitions into C# code using Scriban templates</PackageDescription>
+    <PackageTags>codegen;generator;templates;cli</PackageTags>
+    <RepositoryUrl>https://github.com/CSharp-Catalyst/Modeller</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
