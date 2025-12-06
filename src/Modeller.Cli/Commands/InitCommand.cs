@@ -167,6 +167,10 @@ public static class InitCommand
             Console.WriteLine("  Created sample domain files");
         }
 
+        // Create Augment rules for AI assistant context
+        await CreateAugmentRules(projectRoot, llmInstructionsContent);
+        Console.WriteLine("  Created .augment/rules for AI assistants");
+
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("\nInitialization complete!");
         Console.WriteLine("Edit .modeller/config.yaml to configure your project.");
@@ -686,6 +690,68 @@ public static class InitCommand
               HasNextPage: boolean, computed "More pages available"
             end
             """);
+    }
+
+    private static async Task CreateAugmentRules(string projectRoot, string dslReference)
+    {
+        var rulesPath = Path.Combine(projectRoot, ".augment", "rules");
+        Directory.CreateDirectory(rulesPath);
+
+        // Create the DSL reference rule (Auto type - detected when working with domain files)
+        var dslRuleContent = $"""
+            ---
+            description: Reference for Modeller DSL syntax when creating or modifying domain definition files (.entity, .enum, .command, .query, .projection)
+            globs:
+              - "**/*.entity"
+              - "**/*.enum"
+              - "**/*.command"
+              - "**/*.query"
+              - "**/*.projection"
+              - "**/domain/**"
+              - "**/.modeller/**"
+            ---
+
+            {dslReference}
+            """;
+
+        await File.WriteAllTextAsync(Path.Combine(rulesPath, "modeller-dsl.md"), dslRuleContent);
+
+        // Create the project conventions rule (Always type - always included)
+        var conventionsContent = """
+            ---
+            description: Modeller project conventions and generated code patterns
+            alwaysApply: true
+            ---
+
+            # Modeller Project Conventions
+
+            This project uses Modeller for code generation from domain definitions.
+
+            ## Key Conventions
+
+            1. **Domain definitions** are in the `domain/` folder using a custom text-based DSL (NOT YAML)
+            2. **File extensions**: `.entity`, `.enum`, `.command`, `.query`, `.projection`
+            3. **Generated files** have `.g.` in the name (e.g., `Customer.g.cs`) and are always overwritten
+            4. **Your customizations** go in files without `.g.` - these are never touched by the generator
+            5. **Use partial classes** to extend generated code
+
+            ## Commands
+
+            ```bash
+            modeller generate          # Generate code from domain definitions
+            modeller generate --dry-run # Preview what will be generated
+            modeller validate          # Validate configuration and domain files
+            modeller --help            # Show all commands
+            ```
+
+            ## When Modifying Domain Definitions
+
+            - Check `.modeller/llm-instructions.md` for complete DSL syntax reference
+            - Domain files use a custom text format, not YAML or JSON
+            - Each definition type has its own syntax (entity, enum, command, query, projection)
+            """;
+
+        await File.WriteAllTextAsync(Path.Combine(rulesPath, "modeller-conventions.md"), conventionsContent);
     }
 }
 
