@@ -800,7 +800,7 @@ public static class InitCommand
             var layerName = ToPascalCase(template);
             layersBuilder.AppendLine($"  - name: {layerName}");
             layersBuilder.AppendLine($"    template: {template}");
-            layersBuilder.AppendLine($"    output: \"{{{{variables.company}}}}.{{{{variables.product}}}}.{layerName}\"");
+            layersBuilder.AppendLine($"    output: \"{{variables.company}}.{{variables.product}}.{layerName}\"");
             layersBuilder.AppendLine();
         }
 
