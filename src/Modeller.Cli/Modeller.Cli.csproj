@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>modeller</AssemblyName>
+    <RootNamespace>Modeller.Cli</RootNamespace>
+    <Description>Modeller code generation CLI tool</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modeller.Generator\Modeller.Generator.csproj" />
+    <ProjectReference Include="..\Modeller.Parser\Modeller.Parser.csproj" />
+    <ProjectReference Include="..\Modeller.Domain\Modeller.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
