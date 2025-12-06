@@ -13,7 +13,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>modeller</ToolCommandName>
     <PackageId>Modeller.Cli</PackageId>
-    <Version>1.3.0</Version>
+    <Version>1.4.0</Version>
     <Authors>Modeller Team</Authors>
     <PackageDescription>Code generation CLI for transforming domain definitions into C# code using Scriban templates</PackageDescription>
     <PackageTags>codegen;generator;templates;cli</PackageTags>

@@ -125,24 +125,8 @@ public static class InitCommand
         await File.WriteAllTextAsync(Path.Combine(modellerFolder, "config.yaml"), configContent);
         Console.WriteLine("  Created config.yaml");
 
-        // Create default profile
-        var profileContent = $$"""
-            name: Default
-            description: Default generation profile
-            pack: {{pack}}
-
-            layers:
-              - name: Domain
-                template: domain
-                output: "{variables.company}.{variables.product}.Domain"
-
-            include:
-              entities: all
-              enums: all
-              commands: all
-              queries: all
-              projections: all
-            """;
+        // Create default profile by reading pack.yaml to get available templates
+        var profileContent = await CreateDefaultProfileAsync(packDestPath, pack);
 
         await File.WriteAllTextAsync(
             Path.Combine(modellerFolder, "profiles", "default.yaml"),
@@ -764,6 +748,88 @@ public static class InitCommand
             """;
 
         await File.WriteAllTextAsync(Path.Combine(rulesPath, "modeller-conventions.md"), conventionsContent);
+    }
+
+    private static async Task<string> CreateDefaultProfileAsync(string packPath, string pack)
+    {
+        // Try to read pack.yaml to get available templates
+        var packYamlPath = Path.Combine(packPath, "pack.yaml");
+        var templates = new List<string>();
+
+        if (File.Exists(packYamlPath))
+        {
+            var packContent = await File.ReadAllTextAsync(packYamlPath);
+            // Simple parsing - look for templates section
+            var lines = packContent.Split('\n');
+            var inTemplatesSection = false;
+
+            foreach (var line in lines)
+            {
+                var trimmed = line.Trim();
+                if (trimmed.StartsWith("templates:"))
+                {
+                    inTemplatesSection = true;
+                    continue;
+                }
+
+                if (inTemplatesSection)
+                {
+                    if (trimmed.StartsWith("- "))
+                    {
+                        templates.Add(trimmed[2..].Trim());
+                    }
+                    else if (!string.IsNullOrWhiteSpace(trimmed) && !trimmed.StartsWith("#"))
+                    {
+                        // End of templates section
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If no templates found, use a generic fallback
+        if (templates.Count == 0)
+        {
+            templates.Add("domain");
+        }
+
+        // Build layers section
+        var layersBuilder = new System.Text.StringBuilder();
+        foreach (var template in templates)
+        {
+            var layerName = ToPascalCase(template);
+            layersBuilder.AppendLine($"  - name: {layerName}");
+            layersBuilder.AppendLine($"    template: {template}");
+            layersBuilder.AppendLine($"    output: \"{{{{variables.company}}}}.{{{{variables.product}}}}.{layerName}\"");
+            layersBuilder.AppendLine();
+        }
+
+        return $"""
+            name: Default
+            description: Default generation profile
+            pack: {pack}
+
+            layers:
+            {layersBuilder.ToString().TrimEnd()}
+
+            include:
+              entities: all
+              enums: all
+              commands: all
+              queries: all
+              projections: all
+            """;
+    }
+
+    private static string ToPascalCase(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return input;
+
+        // Handle hyphenated or underscored names
+        var parts = input.Split(['-', '_'], StringSplitOptions.RemoveEmptyEntries);
+        return string.Concat(parts.Select(p =>
+            char.ToUpperInvariant(p[0]) + (p.Length > 1 ? p[1..] : "")));
     }
 }
 
