@@ -10,28 +10,31 @@ public static class InitCommand
 {
     public static Command Create()
     {
-        var templateSourceOption = new Option<string>(
-            aliases: ["--template-source", "-t"],
-            description: "Source path/URL for templates (e.g., file://C:/templates)")
+        var templateSourceOption = new Option<string>("--template-source")
         {
-            IsRequired = true
+            Description = "Source path/URL for templates (e.g., file://C:/templates)",
+            Required = true
         };
+        templateSourceOption.Aliases.Add("-t");
 
-        var domainOption = new Option<string>(
-            aliases: ["--domain", "-d"],
-            description: "Path to domain definitions folder",
-            getDefaultValue: () => ".");
-
-        var packOption = new Option<string>(
-            aliases: ["--pack", "-p"],
-            description: "Template pack to use (e.g., csharp/clean-architecture)")
+        var domainOption = new Option<string>("--domain")
         {
-            IsRequired = true
+            Description = "Path to domain definitions folder"
         };
+        domainOption.Aliases.Add("-d");
 
-        var forceOption = new Option<bool>(
-            aliases: ["--force", "-f"],
-            description: "Overwrite existing configuration");
+        var packOption = new Option<string>("--pack")
+        {
+            Description = "Template pack to use (e.g., csharp/clean-architecture)",
+            Required = true
+        };
+        packOption.Aliases.Add("-p");
+
+        var forceOption = new Option<bool>("--force")
+        {
+            Description = "Overwrite existing configuration"
+        };
+        forceOption.Aliases.Add("-f");
 
         var command = new Command("init", "Initialize a new .modeller configuration")
         {
@@ -41,7 +44,11 @@ public static class InitCommand
             forceOption
         };
 
-        command.SetHandler(ExecuteAsync, templateSourceOption, domainOption, packOption, forceOption);
+        command.SetAction(async (parseResult, ct) => await ExecuteAsync(
+            parseResult.GetValue(templateSourceOption)!,
+            parseResult.GetValue(domainOption) ?? ".",
+            parseResult.GetValue(packOption)!,
+            parseResult.GetValue(forceOption)));
 
         return command;
     }
@@ -832,4 +839,3 @@ public static class InitCommand
             char.ToUpperInvariant(p[0]) + (p.Length > 1 ? p[1..] : "")));
     }
 }
-

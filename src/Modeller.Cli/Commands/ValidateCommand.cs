@@ -14,7 +14,7 @@ public static class ValidateCommand
     {
         var command = new Command("validate", "Validate domain definitions and configuration");
 
-        command.SetHandler(ExecuteAsync);
+        command.SetAction(_ => ExecuteAsync());
 
         return command;
     }
@@ -102,7 +102,7 @@ public static class ValidateCommand
                 {
                     try
                     {
-                        var profile = loader.LoadProfile(config.ModellerFolder, profileName);
+                        var profile = loader.LoadProfile(config.ModellerFolder, profileName!);
                         Console.WriteLine($"    - {profileName}: {profile.Layers.Count} layer(s), pack: {profile.Pack}");
                     }
                     catch (Exception ex)
@@ -167,4 +167,3 @@ public static class ValidateCommand
         Console.ResetColor();
     }
 }
-

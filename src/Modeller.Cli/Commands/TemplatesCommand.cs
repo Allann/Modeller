@@ -13,24 +13,27 @@ public static class TemplatesCommand
     {
         var command = new Command("templates", "Manage and view templates");
 
-        command.AddCommand(CreateListCommand());
-        command.AddCommand(CreateInfoCommand());
+        command.Subcommands.Add(CreateListCommand());
+        command.Subcommands.Add(CreateInfoCommand());
 
         return command;
     }
 
     private static Command CreateListCommand()
     {
-        var sourceOption = new Option<string?>(
-            aliases: ["--source", "-s"],
-            description: "Template source path (default: from .modeller/config.yaml or ./templates)");
+        var sourceOption = new Option<string?>("--source")
+        {
+            Description = "Template source path (default: from .modeller/config.yaml or ./templates)"
+        };
+        sourceOption.Aliases.Add("-s");
 
         var command = new Command("list", "List available template packs")
         {
             sourceOption
         };
 
-        command.SetHandler(ExecuteListAsync, sourceOption);
+        command.SetAction(async (parseResult, ct) =>
+            await ExecuteListAsync(parseResult.GetValue(sourceOption)));
 
         return command;
     }
@@ -76,13 +79,16 @@ public static class TemplatesCommand
 
     private static Command CreateInfoCommand()
     {
-        var packArgument = new Argument<string>(
-            name: "pack",
-            description: "Pack name (e.g., csharp/clean-architecture)");
+        var packArgument = new Argument<string>("pack")
+        {
+            Description = "Pack name (e.g., csharp/clean-architecture)"
+        };
 
-        var sourceOption = new Option<string?>(
-            aliases: ["--source", "-s"],
-            description: "Template source path");
+        var sourceOption = new Option<string?>("--source")
+        {
+            Description = "Template source path"
+        };
+        sourceOption.Aliases.Add("-s");
 
         var command = new Command("info", "Show detailed information about a template pack")
         {
@@ -90,7 +96,10 @@ public static class TemplatesCommand
             sourceOption
         };
 
-        command.SetHandler(ExecuteInfoAsync, packArgument, sourceOption);
+        command.SetAction(async (parseResult, ct) =>
+            await ExecuteInfoAsync(
+                parseResult.GetValue(packArgument)!,
+                parseResult.GetValue(sourceOption)));
 
         return command;
     }
@@ -183,4 +192,3 @@ public static class TemplatesCommand
         return Path.Combine(projectRoot, "templates");
     }
 }
-

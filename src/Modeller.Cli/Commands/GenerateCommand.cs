@@ -11,24 +11,30 @@ public static class GenerateCommand
 {
     public static Command Create()
     {
-        var profileOption = new Option<string?>(
-            aliases: ["--profile", "-p"],
-            description: "Profile to use (default: from config.yaml)");
-
-        var dryRunOption = new Option<bool>(
-            aliases: ["--dry-run", "-n"],
-            description: "Preview what would be generated without writing files");
-
-        var layerOption = new Option<string?>(
-            aliases: ["--layer", "-l"],
-            description: "Generate only a specific layer");
-
-        var variablesOption = new Option<string[]>(
-            aliases: ["--var", "-v"],
-            description: "Override variables (format: key=value)")
+        var profileOption = new Option<string?>("--profile")
         {
+            Description = "Profile to use (default: from config.yaml)"
+        };
+        profileOption.Aliases.Add("-p");
+
+        var dryRunOption = new Option<bool>("--dry-run")
+        {
+            Description = "Preview what would be generated without writing files"
+        };
+        dryRunOption.Aliases.Add("-n");
+
+        var layerOption = new Option<string?>("--layer")
+        {
+            Description = "Generate only a specific layer"
+        };
+        layerOption.Aliases.Add("-l");
+
+        var variablesOption = new Option<string[]>("--var")
+        {
+            Description = "Override variables (format: key=value)",
             AllowMultipleArgumentsPerToken = true
         };
+        variablesOption.Aliases.Add("-v");
 
         var command = new Command("generate", "Generate code from domain definitions")
         {
@@ -38,7 +44,11 @@ public static class GenerateCommand
             variablesOption
         };
 
-        command.SetHandler(ExecuteAsync, profileOption, dryRunOption, layerOption, variablesOption);
+        command.SetAction(async (parseResult, ct) => await ExecuteAsync(
+            parseResult.GetValue(profileOption),
+            parseResult.GetValue(dryRunOption),
+            parseResult.GetValue(layerOption),
+            parseResult.GetValue(variablesOption) ?? []));
 
         return command;
     }
@@ -236,4 +246,3 @@ public static class GenerateCommand
         return result;
     }
 }
-

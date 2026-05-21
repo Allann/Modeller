@@ -11,43 +11,45 @@ public static class SnippetCommand
 {
     public static Command Create()
     {
-        var listCommand = CreateListCommand();
-        var showCommand = CreateShowCommand();
+        var command = new Command("snippet", "Manage template snippets");
 
-        var command = new Command("snippet", "Manage template snippets")
-        {
-            listCommand,
-            showCommand
-        };
+        command.Subcommands.Add(CreateListCommand());
+        command.Subcommands.Add(CreateShowCommand());
 
         return command;
     }
 
     private static Command CreateListCommand()
     {
-        var sourceOption = new Option<string?>(
-            aliases: ["--source", "-s"],
-            description: "Template source path (defaults to project templates)");
+        var sourceOption = new Option<string?>("--source")
+        {
+            Description = "Template source path (defaults to project templates)"
+        };
+        sourceOption.Aliases.Add("-s");
 
         var command = new Command("list", "List available snippets")
         {
             sourceOption
         };
 
-        command.SetHandler(ExecuteListAsync, sourceOption);
+        command.SetAction((parseResult, ct) =>
+            ExecuteListAsync(parseResult.GetValue(sourceOption)));
 
         return command;
     }
 
     private static Command CreateShowCommand()
     {
-        var nameArgument = new Argument<string>(
-            name: "name",
-            description: "Snippet name to show");
+        var nameArgument = new Argument<string>("name")
+        {
+            Description = "Snippet name to show"
+        };
 
-        var sourceOption = new Option<string?>(
-            aliases: ["--source", "-s"],
-            description: "Template source path (defaults to project templates)");
+        var sourceOption = new Option<string?>("--source")
+        {
+            Description = "Template source path (defaults to project templates)"
+        };
+        sourceOption.Aliases.Add("-s");
 
         var command = new Command("show", "Show snippet content")
         {
@@ -55,7 +57,10 @@ public static class SnippetCommand
             sourceOption
         };
 
-        command.SetHandler(ExecuteShowAsync, nameArgument, sourceOption);
+        command.SetAction((parseResult, ct) =>
+            ExecuteShowAsync(
+                parseResult.GetValue(nameArgument)!,
+                parseResult.GetValue(sourceOption)));
 
         return command;
     }
@@ -156,4 +161,3 @@ public static class SnippetCommand
         return null;
     }
 }
-

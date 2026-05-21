@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pidgin" Version="3.5.1" />
+    <PackageReference Include="Pidgin" />
   </ItemGroup>
 
 </Project>
