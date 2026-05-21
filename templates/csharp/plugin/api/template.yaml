@@ -9,30 +9,30 @@ generates:
   # Program.cs - once per domain
   - template: program.scriban
     per: domain
-    output: "Program.cs"
+    output: "Program.g.cs"
     description: "API entry point"
 
   # DependencyInjectionExtensions - once per domain
   - template: dependency-injection.scriban
     per: domain
-    output: "DependencyInjectionExtensions.cs"
+    output: "DependencyInjectionExtensions.g.cs"
     description: "Dependency injection configuration"
 
   # EndpointExtensions - once per domain
   - template: endpoint-extensions.scriban
     per: domain
-    output: "Extensions/EndpointExtensions.cs"
+    output: "Extensions/EndpointExtensions.g.cs"
     description: "Endpoint mapping extensions"
 
   # Entity endpoints - one per entity
   - template: endpoints.scriban
     per: entity
-    output: "Features/{{ entity.name | pascal_case }}s/{{ entity.name | pascal_case }}sEndpoints.cs"
+    output: "Features/{{ entity.name | pascal_case }}s/{{ entity.name | pascal_case }}sEndpoints.g.cs"
     description: "Minimal API endpoints for entity"
 
   # API csproj - once per domain
   - template: api-csproj.scriban
     per: domain
-    output: "{variables.company}.{variables.product}.Api.csproj"
+    output: "{variables.company}.{variables.product}.Api.g.csproj"
     description: "API project file"
 

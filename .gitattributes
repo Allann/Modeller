@@ -1,0 +1,13 @@
+# Normalise line endings to CRLF on checkout (Windows repo)
+* text=auto eol=crlf
+
+# Keep shell scripts and Scriban templates as LF
+*.sh text eol=lf
+*.scriban text eol=lf
+
+# Binary files — no line-ending conversion
+*.png binary
+*.svg binary
+*.ico binary
+*.vsix binary
+*.nupkg binary

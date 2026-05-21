@@ -9,24 +9,24 @@ generates:
   # Service registrar - once per domain
   - template: service-registrar.scriban
     per: domain
-    output: "ServiceRegistrar.cs"
+    output: "ServiceRegistrar.g.cs"
     description: "Plugin service registrar"
 
   # Imports razor - once per domain
   - template: imports.scriban
     per: domain
-    output: "_Imports.razor"
+    output: "_Imports.g.razor"
     description: "Blazor imports file"
 
   # UI csproj - once per domain
   - template: ui-csproj.scriban
     per: domain
-    output: "{variables.company}.{variables.product}.Ui.csproj"
+    output: "{variables.company}.{variables.product}.Ui.g.csproj"
     description: "UI project file"
 
   # Plugin config - once per domain
   - template: plugin-config.scriban
     per: domain
-    output: "plugin.json"
+    output: "plugin.g.json"
     description: "Plugin configuration file"
 

@@ -9,72 +9,72 @@ generates:
   # Global usings - once per domain
   - template: global-usings.scriban
     per: domain
-    output: "GlobalUsings.cs"
+    output: "GlobalUsings.g.cs"
     description: "Global using statements"
 
   # SDK csproj - once per domain
   - template: sdk-csproj.scriban
     per: domain
-    output: "{variables.company}.{variables.product}.Sdk.csproj"
+    output: "{variables.company}.{variables.product}.Sdk.g.csproj"
     description: "SDK project file"
 
   # ApiResult - once per domain
   - template: api-result.scriban
     per: domain
-    output: "Common/ApiResult.cs"
+    output: "Common/ApiResult.g.cs"
     description: "API result wrapper type"
 
   # Enum types - one per enum
   - template: enum.scriban
     per: enum
-    output: "{{ enumeration.name | pascal_case }}/{{ enumeration.name | pascal_case }}.cs"
+    output: "{{ enumeration.name | pascal_case }}/{{ enumeration.name | pascal_case }}.g.cs"
     description: "Enum type"
 
   # Response DTOs - one per entity
   - template: response.scriban
     per: entity
-    output: "{{ entity.name | pascal_case }}/{{ entity.name | pascal_case }}Response.cs"
+    output: "{{ entity.name | pascal_case }}/{{ entity.name | pascal_case }}Response.g.cs"
     description: "Response DTO"
 
   # List response DTOs - one per entity
   - template: list-response.scriban
     per: entity
-    output: "{{ entity.name | pascal_case }}/{{ entity.name | pascal_case }}ListResponse.cs"
+    output: "{{ entity.name | pascal_case }}/{{ entity.name | pascal_case }}ListResponse.g.cs"
     description: "List response DTO"
 
   # Create request DTOs - one per entity (or command)
   - template: create-request.scriban
     per: entity
-    output: "{{ entity.name | pascal_case }}/Create{{ entity.name | pascal_case }}Request.cs"
+    output: "{{ entity.name | pascal_case }}/Create{{ entity.name | pascal_case }}Request.g.cs"
     description: "Create request DTO"
 
   # Update request DTOs - one per entity
   - template: update-request.scriban
     per: entity
-    output: "{{ entity.name | pascal_case }}/Update{{ entity.name | pascal_case }}Request.cs"
+    output: "{{ entity.name | pascal_case }}/Update{{ entity.name | pascal_case }}Request.g.cs"
     description: "Update request DTO"
 
   # Delete request DTOs - one per entity
   - template: delete-request.scriban
     per: entity
-    output: "{{ entity.name | pascal_case }}/Delete{{ entity.name | pascal_case }}Request.cs"
+    output: "{{ entity.name | pascal_case }}/Delete{{ entity.name | pascal_case }}Request.g.cs"
     description: "Delete request DTO"
 
   # Read all request DTOs - one per entity
   - template: read-all-request.scriban
     per: entity
-    output: "{{ entity.name | pascal_case }}/ReadAll{{ entity.name | pascal_case }}sRequest.cs"
+    output: "{{ entity.name | pascal_case }}/ReadAll{{ entity.name | pascal_case }}sRequest.g.cs"
     description: "Read all request DTO with pagination"
 
   # Create validators - one per entity
   - template: create-validator.scriban
     per: entity
-    output: "{{ entity.name | pascal_case }}/Create{{ entity.name | pascal_case }}Validator.cs"
+    output: "{{ entity.name | pascal_case }}/Create{{ entity.name | pascal_case }}Validator.g.cs"
     description: "Create request validator"
 
   # Update validators - one per entity
   - template: update-validator.scriban
     per: entity
-    output: "{{ entity.name | pascal_case }}/Update{{ entity.name | pascal_case }}Validator.cs"
+    output: "{{ entity.name | pascal_case }}/Update{{ entity.name | pascal_case }}Validator.g.cs"
     description: "Update request validator"
 

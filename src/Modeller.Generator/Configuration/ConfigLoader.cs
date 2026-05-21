@@ -38,7 +38,7 @@ public sealed class ConfigLoader
     /// </summary>
     public ProjectConfig LoadProjectConfigFromString(string yaml)
     {
-        return _deserializer.Deserialize<ProjectConfig>(yaml) ?? new ProjectConfig();
+        return _deserializer.Deserialize<ProjectConfig>(yaml);
     }
 
     /// <summary>
@@ -61,13 +61,13 @@ public sealed class ConfigLoader
     /// </summary>
     public ProfileConfig LoadProfileFromString(string yaml)
     {
-        return _deserializer.Deserialize<ProfileConfig>(yaml) ?? new ProfileConfig();
+        return _deserializer.Deserialize<ProfileConfig>(yaml);
     }
 
     /// <summary>
     /// List available profiles in the profiles folder
     /// </summary>
-    public IEnumerable<string> ListProfiles(string modellerFolder)
+    public IEnumerable<string?> ListProfiles(string modellerFolder)
     {
         var profilesFolder = Path.Combine(modellerFolder, "profiles");
         if (!Directory.Exists(profilesFolder))
@@ -76,7 +76,7 @@ public sealed class ConfigLoader
         }
 
         return Directory.GetFiles(profilesFolder, "*.yaml")
-            .Select(f => Path.GetFileNameWithoutExtension(f));
+            .Select(Path.GetFileNameWithoutExtension);
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public sealed class ConfigLoader
         var projectConfig = LoadProjectConfig(modellerFolder);
         var defaultProfile = LoadProfile(modellerFolder, projectConfig.DefaultProfile);
 
-        return new LoadedConfiguration(
+        return new(
             ProjectRoot: projectRoot,
             ModellerFolder: modellerFolder,
             ProjectConfig: projectConfig,
