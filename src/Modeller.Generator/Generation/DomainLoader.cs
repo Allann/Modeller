@@ -21,7 +21,7 @@ public sealed class DomainLoader
         var builder = new DomainBuilder();
 
         // Load domain definition (.domain file)
-        var domainFiles = Directory.GetFiles(domainPath, "*.domain", SearchOption.AllDirectories);
+        var domainFiles = Directory.GetFiles(domainPath, "*.def", SearchOption.AllDirectories);
         foreach (var file in domainFiles)
         {
             var content = File.ReadAllText(file);
