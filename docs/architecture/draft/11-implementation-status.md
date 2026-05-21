@@ -2,7 +2,7 @@
 
 This document tracks the current implementation status of the Modeller domain definition system.
 
-_Last updated: 21 May 2026_
+_Last updated: 22 May 2026_
 
 ---
 
@@ -18,10 +18,10 @@ _Last updated: 21 May 2026_
 | **Template Packs (C#)** | ✅ Complete | `templates/csharp/` |
 | **VS Code Extension** | ✅ Complete | `editors/vscode-modeller/` |
 | **Sample Definitions** | ✅ Complete | `samples/` |
-| **Integration Tests** | 🔄 Partial | `tests/Modeller.Integration.Tests/` |
-| **CI Pipeline** | ⏳ Not Started | `.github/workflows/` |
-| **NuGet Publish** | ⏳ Not Started | — |
-| **VS Code Marketplace Publish** | ⏳ Not Started | — |
+| **Integration Tests** | ✅ Complete | `tests/Modeller.Integration.Tests/` |
+| **CI Pipeline** | ✅ Complete | `.github/workflows/` |
+| **NuGet Publish** | ⏳ Not Started | Package configured; not yet published |
+| **VS Code Marketplace Publish** | ⏳ Not Started | Extension packaged; publisher account needed |
 | **Workflow DSL Support** | ⏳ Not Started | — |
 
 ---
@@ -78,7 +78,7 @@ _Last updated: 21 May 2026_
 
 ## Configuration System
 
-**Technology**: YamlDotNet v16.2.0
+**Technology**: YamlDotNet v17.1.0
 
 **Structure**:
 ```
@@ -100,7 +100,7 @@ _Last updated: 21 May 2026_
 
 ## Code Generation Engine
 
-**Technology**: Scriban v6.5.2
+**Technology**: Scriban v7.2.0
 
 **Generation Cardinality** (set in `template.yaml`):
 - `per: domain` — one output file for the entire domain
@@ -117,8 +117,8 @@ _Last updated: 21 May 2026_
 
 ## CLI Tool
 
-**Technology**: System.CommandLine v2.0.0-beta  
-**Distribution**: .NET global tool (`dotnet tool install --global modeller`)
+**Technology**: System.CommandLine v2.0.8  
+**Distribution**: .NET global tool (`dotnet tool install --global Modeller.Cli`)
 
 | Command | Description |
 |---------|-------------|
@@ -178,19 +178,17 @@ Newest pack — generates a full plugin-architecture application:
 
 ## Tests
 
-| Project | Coverage |
-|---------|----------|
-| `Modeller.Parser.Tests` | Unit tests for all 12 DSL parsers |
-| `Modeller.Generator.Tests` | Unit tests for config loading, manifest loading, variable merging, template discovery, snippet loading |
-| `Modeller.Integration.Tests` | End-to-end code generation, domain assembly, and DSL parsing tests — coverage is partial |
+| Project | Tests | Coverage |
+|---------|-------|----------|
+| `Modeller.Parser.Tests` | 43 | Unit tests for all 12 DSL parsers |
+| `Modeller.Generator.Tests` | 42 | Unit tests for config loading, manifest loading, variable merging, template discovery, snippet loading |
+| `Modeller.Integration.Tests` | 84 | End-to-end generation (all plugin layers), domain assembly, DSL parsing for both sample domains |
 
 ---
 
 ## Known Gaps
 
-1. **Integration test coverage** — the `csharp/plugin` template pack lacks end-to-end test scenarios.
-2. **Workflow DSL** — `workflow` is described in architecture docs but has no parser or generator support.
-3. **CI pipeline** — no automated build/test/publish workflow is configured.
-4. **NuGet publish** — the global tool package is not yet published to NuGet.org.
-5. **VS Code Marketplace** — the extension is not yet published.
-6. **Non-C# templates** — only C# template packs exist; the engine is language-agnostic.
+1. **Workflow DSL** — `workflow` is described in architecture docs but has no parser or generator support.
+2. **NuGet publish** — the global tool package is not yet published to NuGet.org.
+3. **VS Code Marketplace** — the extension is packaged and ready; a publisher account (`catalyst`) is needed to publish.
+4. **Non-C# templates** — only C# template packs exist; the engine is language-agnostic.

@@ -12,9 +12,9 @@ Templates define **how** domain definitions are transformed into output code. Th
 | **Separation** | Templates separate from definitions |
 | **Traceability** | Generated code includes generation metadata |
 
-## Current Approach (Problems)
+## Previous Approach (Replaced)
 
-Templates are currently C# classes using `StringBuilder` to build output:
+The original implementation used C# classes with `StringBuilder` to build output:
 
 ```csharp
 public IOutput Create()
@@ -33,7 +33,7 @@ public IOutput Create()
 }
 ```
 
-### Pain Points
+This approach was replaced with Scriban because:
 
 | Issue | Impact |
 |-------|--------|
@@ -46,7 +46,7 @@ public IOutput Create()
 
 ---
 
-## Recommended Approach: Scriban
+## Current Approach: Scriban
 
 [Scriban](https://github.com/scriban/scriban) is a fast, powerful, and safe text templating engine for .NET.
 

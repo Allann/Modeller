@@ -287,18 +287,19 @@ DSL compiles to YAML/JSON for:
 
 ## Implementation Status ✅
 
-We implemented the **Custom DSL with Hybrid Approach**:
+We implemented the **Custom DSL** approach. The "hybrid" YAML/JSON processing layer described earlier in this document was considered but not built — the DSL feeds directly into the Scriban generation pipeline without an intermediate serialisation step.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| **Pidgin Parser** | ✅ Complete | All file types supported |
+| **Pidgin Parser** | ✅ Complete | All 12 file types supported |
 | **Domain Models** | ✅ Complete | Immutable records with factory validation |
+| **Scriban Templates** | ✅ Complete | External `.scriban` files; no recompilation needed |
 | **VS Code Extension** | ✅ Complete | Syntax highlighting + custom icons |
-| **Sample Definitions** | ✅ Complete | Full example in `samples/modeller/` |
+| **Sample Definitions** | ✅ Complete | Examples in `samples/modeller/` and `samples/modeller-units/` |
 
 ### Decisions Made
 
 1. **Primary audience**: Developers author definitions; business stakeholders review them
 2. **AI interaction**: AI works with the DSL directly (structured grammar is AI-friendly)
-3. **Existing format**: Clean break - new DSL designed for domain modelling
+3. **Existing format**: Clean break — new DSL designed for domain modelling
 4. **IDE support**: VS Code extension with syntax highlighting and file icons

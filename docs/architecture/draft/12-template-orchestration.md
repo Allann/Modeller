@@ -624,37 +624,37 @@ src/
 
 ## Implementation Phases
 
-### Phase 1: Foundation
-- [ ] Define `PackManifest` and `TemplateManifest` models
-- [ ] Create YAML parsing for manifests
-- [ ] Create `SnippetLoader` for loading snippets
-- [ ] Enhance `TemplateEngine` with include support
-- [ ] Create `TemplateDiscovery` to scan template folder
+### Phase 1: Foundation ✅
+- [x] Define `PackManifest` and `TemplateManifest` models
+- [x] Create YAML parsing for manifests
+- [x] Create `SnippetLoader` for loading snippets
+- [x] Enhance `TemplateEngine` with include support
+- [x] Create `TemplateDiscovery` to scan template folder
 
-### Phase 2: Configuration
-- [ ] Define `ProjectConfig` and `ProfileConfig` models
-- [ ] Create `ConfigLoader` to read `.modeller/` folder
-- [ ] Implement variable merging (config → profile → layer → CLI)
-- [ ] Create sample configuration files
+### Phase 2: Configuration ✅
+- [x] Define `ProjectConfig` and `ProfileConfig` models
+- [x] Create `ConfigLoader` to read `.modeller/` folder
+- [x] Implement variable merging (config → profile → layer → CLI)
+- [x] Create sample configuration files
 
-### Phase 3: CLI Commands
-- [ ] Create CLI project structure with System.CommandLine
-- [ ] Implement `modeller init` command
-- [ ] Implement `modeller generate` command
-- [ ] Implement `modeller templates list/info` commands
-- [ ] Implement `modeller generate --dry-run`
+### Phase 3: CLI Commands ✅
+- [x] Create CLI project structure with System.CommandLine
+- [x] Implement `modeller init` command
+- [x] Implement `modeller generate` command
+- [x] Implement `modeller templates list/info` commands
+- [x] Implement `modeller generate --dry-run`
 
-### Phase 4: Generation
-- [ ] Create `GenerationPlanner` - builds list of files to generate
-- [ ] Create `GenerationExecutor` - renders and writes files
-- [ ] Implement `.g.*` file handling logic
-- [ ] Add progress reporting and error handling
+### Phase 4: Generation ✅
+- [x] Create `GenerationPlanner` - builds list of files to generate
+- [x] Create `GenerationExecutor` - renders and writes files
+- [x] Implement `.g.*` file handling logic
+- [x] Add progress reporting and error handling
 
-### Phase 5: Polish
-- [ ] Comprehensive error messages
-- [ ] `modeller validate` command
-- [ ] `modeller snippet` command
-- [ ] Documentation and examples
+### Phase 5: Polish ✅
+- [x] Comprehensive error messages
+- [x] `modeller validate` command
+- [x] `modeller snippet` command
+- [x] Documentation and examples
 
 ## VS Code Extension (Future)
 
