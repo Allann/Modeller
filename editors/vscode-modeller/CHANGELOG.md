@@ -2,6 +2,16 @@
 
 All notable changes to the Modeller DSL extension will be documented in this file.
 
+## [1.4.0] - 2026-05-22
+
+### Changed
+
+- Minimum VS Code engine version raised to 1.95.0
+- Updated devDependencies: `@types/vscode` ^1.95.0, `@types/node` ^22.0.0
+- Added `@vscode/vsce` to devDependencies for local packaging
+- Added `package` and `publish` npm scripts
+- Added MIT LICENSE file
+
 ## [1.3.0] - 2024-12-04
 
 ### Added
