@@ -97,7 +97,7 @@ public sealed class SnippetLoader : ITemplateLoader
     /// <param name="callerSpan">The source span of the include statement</param>
     /// <param name="templatePath">The absolute path returned by GetPath</param>
     /// <returns>The template content</returns>
-    public async ValueTask<string> LoadAsync(TemplateContext context, SourceSpan callerSpan, string templatePath)
+    public async ValueTask<string?> LoadAsync(TemplateContext context, SourceSpan callerSpan, string templatePath)
     {
         // Check cache first
         if (_cache.TryGetValue(templatePath, out var cached))
