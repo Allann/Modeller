@@ -1,0 +1,8 @@
+# Percentage Standard Value Type
+# A proportion expressed as a percentage with 4 decimal places of precision
+
+value Percentage
+  "A percentage value with up to 4 decimal places (e.g. 33.3333 for 33.3333%)"
+
+  Value: decimal(7,4) "The percentage value in the range 0.0000 to 100.0000"
+end

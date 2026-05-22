@@ -10,48 +10,31 @@ namespace Modeller.Parser.Parsers;
 /// </summary>
 public static class ServiceParsers
 {
-    /// <summary>
-    /// Parses an entities block like: entities\n  Entity1\n  Entity2\nend
-    /// </summary>
-    private static Parser<char, IReadOnlyList<string>> EntitiesBlock { get; } =
+    private static Parser<char, IReadOnlyList<string>> NameListBlock(string keyword) =>
         Map(
-            (_, __, entities) => (IReadOnlyList<string>)entities.ToList(),
-            TokenParsers.Keyword("entities"),
+            (_, __, items) => (IReadOnlyList<string>)items.ToList(),
+            TokenParsers.Keyword(keyword),
             TokenParsers.SkipWhitespaceAndComments,
             TokenParsers.Identifier.Before(TokenParsers.SkipWhitespaceAndComments).Until(TokenParsers.End_)
         );
 
-    /// <summary>
-    /// Parses an enums block like: enums\n  Enum1\n  Enum2\nend
-    /// </summary>
-    private static Parser<char, IReadOnlyList<string>> EnumsBlock { get; } =
-        Map(
-            (_, __, enums) => (IReadOnlyList<string>)enums.ToList(),
-            TokenParsers.Keyword("enums"),
-            TokenParsers.SkipWhitespaceAndComments,
-            TokenParsers.Identifier.Before(TokenParsers.SkipWhitespaceAndComments).Until(TokenParsers.End_)
-        );
+    private static Parser<char, IReadOnlyList<string>> EntitiesBlock { get; } = NameListBlock("entities");
+    private static Parser<char, IReadOnlyList<string>> EnumsBlock { get; } = NameListBlock("enums");
 
     /// <summary>
-    /// Parses a reference like: Definition: [Domain, Entity, Enum]
+    /// Parses a references block — per-consumer shared type names this service reads from other contexts
     /// </summary>
-    private static Parser<char, ReferenceNode> Reference { get; } =
-        Map(
-            (service, entities) => new ReferenceNode(service, entities),
-            TokenParsers.Identifier.Before(TokenParsers.Colon),
-            TokenParsers.IdentifierList
-        );
+    private static Parser<char, IReadOnlyList<string>> ReferencesBlock { get; } = NameListBlock("references");
 
     /// <summary>
-    /// Parses a references block
+    /// Parses a calls block — RPC command names this service invokes on other services
     /// </summary>
-    private static Parser<char, IReadOnlyList<ReferenceNode>> ReferencesBlock { get; } =
-        Map(
-            (_, __, refs) => (IReadOnlyList<ReferenceNode>)refs.ToList(),
-            TokenParsers.Keyword("references"),
-            TokenParsers.SkipWhitespaceAndComments,
-            Reference.Before(TokenParsers.SkipWhitespaceAndComments).Until(TokenParsers.End_)
-        );
+    private static Parser<char, IReadOnlyList<string>> CallsBlock { get; } = NameListBlock("calls");
+
+    /// <summary>
+    /// Parses an implements block — RPC command names this service handles (is the provider for)
+    /// </summary>
+    private static Parser<char, IReadOnlyList<string>> ImplementsBlock { get; } = NameListBlock("implements");
 
     /// <summary>
     /// Parses a service body element
@@ -59,7 +42,9 @@ public static class ServiceParsers
     private static Parser<char, object> ServiceBodyElement { get; } =
         Try(EntitiesBlock.Select(e => (object)("entities", e)))
             .Or(Try(EnumsBlock.Select(e => (object)("enums", e))))
-            .Or(ReferencesBlock.Select(r => (object)("references", r)));
+            .Or(Try(ReferencesBlock.Select(r => (object)("references", r))))
+            .Or(Try(CallsBlock.Select(c => (object)("calls", c))))
+            .Or(Try(ImplementsBlock.Select(i => (object)("implements", i))));
 
     /// <summary>
     /// Parses a complete service definition
@@ -68,15 +53,20 @@ public static class ServiceParsers
         Map(
             (_, __, name, ___, desc, ____, elements) =>
             {
-                var entities = elements.OfType<(string, IReadOnlyList<string>)>().FirstOrDefault(e => e.Item1 == "entities").Item2;
-                var enums = elements.OfType<(string, IReadOnlyList<string>)>().FirstOrDefault(e => e.Item1 == "enums").Item2;
-                var refs = elements.OfType<(string, IReadOnlyList<ReferenceNode>)>().FirstOrDefault(e => e.Item1 == "references").Item2;
+                var lists = elements.OfType<(string, IReadOnlyList<string>)>().ToList();
+                var entities   = lists.FirstOrDefault(e => e.Item1 == "entities").Item2;
+                var enums      = lists.FirstOrDefault(e => e.Item1 == "enums").Item2;
+                var refs       = lists.FirstOrDefault(e => e.Item1 == "references").Item2;
+                var calls      = lists.FirstOrDefault(e => e.Item1 == "calls").Item2;
+                var implements = lists.FirstOrDefault(e => e.Item1 == "implements").Item2;
                 return new ServiceNode(
                     name,
                     desc.GetValueOrDefault(),
                     entities,
                     enums,
-                    refs);
+                    refs,
+                    calls,
+                    implements);
             },
             TokenParsers.Keyword("service"),
             TokenParsers.SkipWhitespaceAndComments,

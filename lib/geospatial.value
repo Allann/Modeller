@@ -1,0 +1,9 @@
+# Geospatial Standard Value Type
+# A geographic coordinate using the WGS84 datum
+
+value Geospatial
+  "A geographic coordinate pair (latitude and longitude) using WGS84"
+
+  Latitude: decimal(10,7) "Latitude in decimal degrees (-90.0000000 to +90.0000000)"
+  Longitude: decimal(10,7) "Longitude in decimal degrees (-180.0000000 to +180.0000000)"
+end

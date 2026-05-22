@@ -101,6 +101,12 @@ public static class DslParser
         Parse(input, ProjectionParsers.Projection);
 
     /// <summary>
+    /// Parses a union type definition file
+    /// </summary>
+    public static ParseResult<UnionNode> ParseUnion(string input) =>
+        Parse(input, UnionParsers.Union);
+
+    /// <summary>
     /// Core parse function
     /// </summary>
     private static ParseResult<T> Parse<T>(string input, Parser<char, T> parser) where T : AstNode

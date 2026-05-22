@@ -9,6 +9,8 @@ namespace Modeller.Parser.Ast;
 /// <param name="Output">Output type</param>
 /// <param name="Errors">Possible error types</param>
 /// <param name="Events">Events published</param>
+/// <param name="Transport">Wire protocol (default: Http)</param>
+/// <param name="Streaming">Streaming mode (default: None)</param>
 /// <param name="Span">Source location</param>
 public sealed record CommandNode(
     string Name,
@@ -17,6 +19,8 @@ public sealed record CommandNode(
     string? Output = null,
     IReadOnlyList<ErrorNode>? Errors = null,
     IReadOnlyList<string>? Events = null,
+    TransportType Transport = TransportType.Http,
+    StreamingMode Streaming = StreamingMode.None,
     SourceSpan Span = default) : AstNode(Span);
 
 /// <summary>
@@ -27,6 +31,8 @@ public sealed record CommandNode(
 /// <param name="Inputs">Input parameters</param>
 /// <param name="Returns">Return type</param>
 /// <param name="ReturnsMany">Whether returns a collection</param>
+/// <param name="Transport">Wire protocol (default: Http)</param>
+/// <param name="Streaming">Streaming mode (default: None)</param>
 /// <param name="Span">Source location</param>
 public sealed record QueryNode(
     string Name,
@@ -34,6 +40,8 @@ public sealed record QueryNode(
     IReadOnlyList<AttributeNode>? Inputs = null,
     string? Returns = null,
     bool ReturnsMany = false,
+    TransportType Transport = TransportType.Http,
+    StreamingMode Streaming = StreamingMode.None,
     SourceSpan Span = default) : AstNode(Span);
 
 /// <summary>

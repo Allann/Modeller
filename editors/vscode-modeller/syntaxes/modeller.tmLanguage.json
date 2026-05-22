@@ -51,7 +51,7 @@
       "patterns": [
         {
           "name": "keyword.declaration.modeller",
-          "match": "\\b(domain|entity|key|enum|flags|service|command|query|value|shared|event|projection)\\b"
+          "match": "\\b(domain|entity|key|enum|flags|service|command|query|value|shared|event|projection|union)\\b"
         }
       ]
     },
@@ -59,7 +59,7 @@
       "patterns": [
         {
           "name": "keyword.control.modeller",
-          "match": "\\b(end|input|output|errors|publishes|entities|enums|services|references|returns|index|attributes|identity|ownership|data|fields|owned)\\b"
+          "match": "\\b(end|input|output|errors|publishes|entities|enums|services|references|returns|index|attributes|identity|ownership|data|fields|owned|variant|calls|implements)\\b"
         }
       ]
     },
@@ -67,7 +67,11 @@
       "patterns": [
         {
           "name": "keyword.other.modifier.modeller",
-          "match": "\\b(optional|default|generated|unique|many|as|max|immutable|on_create|through|parent)\\b"
+          "match": "\\b(optional|default|generated|unique|many|as|max|immutable|on_create|through|parent|transport|streaming)\\b"
+        },
+        {
+          "name": "constant.language.transport.modeller",
+          "match": "\\b(http|grpc|server|client|bidirectional|none)\\b"
         }
       ]
     },
@@ -75,7 +79,7 @@
       "patterns": [
         {
           "name": "support.type.primitive.modeller",
-          "match": "\\b(text|integer|long|decimal|boolean|date|time|datetime|guid|name|image|email|url)\\b"
+          "match": "\\b(text|integer|long|decimal|boolean|date|time|datetime|guid|name|binary|id|email|url|money|percentage|geospatial|image|document)\\b"
         }
       ]
     },
@@ -83,7 +87,7 @@
       "patterns": [
         {
           "name": "keyword.other.relationship.modeller",
-          "match": "\\b(has_one|has_many|belongs_to|many_to_many)\\b"
+          "match": "\\b(has_one|has_many|belongs_to|many_to_many|references)\\b"
         }
       ]
     },

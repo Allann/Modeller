@@ -17,7 +17,9 @@ service Generation
   end
   
   references
-    Definition: [Domain, Entity, Enum]
+    DomainForGeneration
+    EntityForGeneration
+    EnumForGeneration
   end
 end
 

@@ -19,12 +19,16 @@ public static class KeyParsers
             .Select(opt => opt.HasValue);
 
     /// <summary>
-    /// Parses a key field like: EntityId: guid, generated
+    /// Parses a key field like: EntityId: guid, generated  or  EntityId: id
+    /// The 'id' type is shorthand for 'guid, generated'
     /// </summary>
     public static Parser<char, KeyFieldNode> KeyField { get; } =
         Try(
             Map(
-                (name, dataType, generated) => new KeyFieldNode(name, dataType.TypeName, generated),
+                (name, dataType, generated) =>
+                    dataType.TypeName == "id"
+                        ? new KeyFieldNode(name, "guid", IsGenerated: true)
+                        : new KeyFieldNode(name, dataType.TypeName, generated),
                 TokenParsers.Identifier.Before(TokenParsers.Colon),
                 DataTypeParsers.DataType,
                 GeneratedModifier

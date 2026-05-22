@@ -1,0 +1,24 @@
+# Document Standard Union Type
+# A binary document stored either inline (for infrastructure that supports it)
+# or as an external reference (for large files or infrastructure without blob support).
+# The generator selects the appropriate variant based on target infrastructure configuration.
+
+union Document
+  "A binary document — stored inline or referenced externally depending on infrastructure"
+
+  variant Embedded
+    "Document bytes stored directly in the data store (e.g. SQL Server varbinary)"
+    Data: binary "Raw document bytes"
+    MimeType: text(100) "MIME content type (e.g. application/pdf)"
+    FileName: text(255) "Original filename"
+    SizeBytes: long "File size in bytes"
+  end
+
+  variant Reference
+    "Document stored in external storage (e.g. blob store, S3, Azure Storage)"
+    StorageKey: text(500) "Storage key, path, or URI identifying the document"
+    MimeType: text(100) "MIME content type (e.g. application/pdf)"
+    FileName: text(255) "Original filename"
+    SizeBytes: long "File size in bytes"
+  end
+end

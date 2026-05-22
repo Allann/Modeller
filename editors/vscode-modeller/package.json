@@ -1,7 +1,7 @@
 {
   "name": "modeller-dsl",
   "displayName": "Modeller DSL",
-  "description": "Syntax highlighting and file icons for Modeller domain definition language",
+  "description": "Syntax highlighting for Modeller domain definition language",
   "version": "1.4.0",
   "publisher": "catalyst",
   "engines": {
@@ -12,8 +12,7 @@
     "onStartupFinished"
   ],
   "categories": [
-    "Programming Languages",
-    "Themes"
+    "Programming Languages"
   ],
   "keywords": [
     "modeller",
@@ -99,6 +98,12 @@
         "aliases": ["Modeller Projection", "projection"],
         "extensions": [".projection"],
         "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "modeller-union",
+        "aliases": ["Modeller Union", "union"],
+        "extensions": [".union"],
+        "configuration": "./language-configuration.json"
       }
     ],
     "grammars": [
@@ -161,15 +166,13 @@
         "language": "modeller-projection",
         "scopeName": "source.modeller",
         "path": "./syntaxes/modeller.tmLanguage.json"
+      },
+      {
+        "language": "modeller-union",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
       }
     ],
-    "iconThemes": [
-      {
-        "id": "modeller-icons",
-        "label": "Modeller DSL Icons",
-        "path": "./modeller-icon-theme.json"
-      }
-    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

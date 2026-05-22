@@ -116,5 +116,40 @@ public class SampleFileTests
 
         Assert.True(result.Success, $"Failed to parse {relativePath}: {result.Error}");
     }
+
+    [Theory]
+    [InlineData("unions/storage-location.union")]
+    public void ParsesUnionFiles(string relativePath)
+    {
+        var path = Path.Combine(SamplesPath, relativePath);
+        if (!File.Exists(path))
+        {
+            return;
+        }
+
+        var input = File.ReadAllText(path);
+        var result = DslParser.ParseUnion(input);
+
+        Assert.True(result.Success, $"Failed to parse {relativePath}: {result.Error}");
+        Assert.NotNull(result.Value);
+        Assert.False(string.IsNullOrEmpty(result.Value.Name), $"Union name should not be empty in {relativePath}");
+    }
+
+    [Theory]
+    [InlineData("keys/entity.key")]
+    public void ParsesKeyFiles(string relativePath)
+    {
+        var path = Path.Combine(SamplesPath, relativePath);
+        if (!File.Exists(path))
+        {
+            return;
+        }
+
+        var input = File.ReadAllText(path);
+        var result = DslParser.ParseKey(input);
+
+        Assert.True(result.Success, $"Failed to parse {relativePath}: {result.Error}");
+        Assert.NotNull(result.Value);
+    }
 }
 

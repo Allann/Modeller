@@ -44,25 +44,18 @@ public sealed record DomainNode(
 /// <param name="Description">Optional description</param>
 /// <param name="Entities">List of entity names owned by this service</param>
 /// <param name="Enums">List of enum names owned by this service</param>
-/// <param name="References">External references</param>
+/// <param name="References">Per-consumer shared type names this service reads from other contexts</param>
+/// <param name="Calls">RPC command names this service invokes on other services</param>
+/// <param name="Implements">RPC command names this service handles (is the provider for)</param>
 /// <param name="Span">Source location</param>
 public sealed record ServiceNode(
     string Name,
     string? Description = null,
     IReadOnlyList<string>? Entities = null,
     IReadOnlyList<string>? Enums = null,
-    IReadOnlyList<ReferenceNode>? References = null,
-    SourceSpan Span = default) : AstNode(Span);
-
-/// <summary>
-/// An external reference to another service's entities
-/// </summary>
-/// <param name="ServiceName">The referenced service name</param>
-/// <param name="EntityNames">List of referenced entity names</param>
-/// <param name="Span">Source location</param>
-public sealed record ReferenceNode(
-    string ServiceName,
-    IReadOnlyList<string> EntityNames,
+    IReadOnlyList<string>? References = null,
+    IReadOnlyList<string>? Calls = null,
+    IReadOnlyList<string>? Implements = null,
     SourceSpan Span = default) : AstNode(Span);
 
 /// <summary>
@@ -122,7 +115,35 @@ public enum RelationshipType
     HasOne,
     HasMany,
     BelongsTo,
-    ManyToMany
+    ManyToMany,
+    /// <summary>Cross-service reference — reads from another bounded context's shared type</summary>
+    References
+}
+
+/// <summary>
+/// Transport protocol for commands and queries
+/// </summary>
+public enum TransportType
+{
+    /// <summary>HTTP/REST (default)</summary>
+    Http,
+    /// <summary>gRPC — binary protocol, typically service-to-service</summary>
+    Grpc
+}
+
+/// <summary>
+/// Streaming mode for commands and queries
+/// </summary>
+public enum StreamingMode
+{
+    /// <summary>Request/response — no streaming (default)</summary>
+    None,
+    /// <summary>Server streams multiple responses to a single request</summary>
+    Server,
+    /// <summary>Client streams multiple requests, server replies once</summary>
+    Client,
+    /// <summary>Both sides stream independently</summary>
+    Bidirectional
 }
 
 /// <summary>
@@ -238,4 +259,30 @@ public sealed record ProjectionNode(
     string Name,
     string? Description = null,
     IReadOnlyList<AttributeNode>? Attributes = null,
+    SourceSpan Span = default) : AstNode(Span);
+
+/// <summary>
+/// A single variant within a union type
+/// </summary>
+/// <param name="Name">The variant name</param>
+/// <param name="Description">Optional description</param>
+/// <param name="Attributes">Attributes present in this variant</param>
+/// <param name="Span">Source location</param>
+public sealed record UnionVariantNode(
+    string Name,
+    string? Description = null,
+    IReadOnlyList<AttributeNode>? Attributes = null,
+    SourceSpan Span = default) : AstNode(Span);
+
+/// <summary>
+/// A discriminated union type - a value that has one of several mutually exclusive shapes
+/// </summary>
+/// <param name="Name">The union type name</param>
+/// <param name="Description">Optional description</param>
+/// <param name="Variants">The possible variants</param>
+/// <param name="Span">Source location</param>
+public sealed record UnionNode(
+    string Name,
+    string? Description = null,
+    IReadOnlyList<UnionVariantNode>? Variants = null,
     SourceSpan Span = default) : AstNode(Span);

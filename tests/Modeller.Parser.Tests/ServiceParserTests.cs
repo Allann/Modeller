@@ -57,14 +57,16 @@ public class ServiceParserTests
         var input = """
             service Generation
               "Code generation service"
-              
+
               entities
                 Template
                 Generator
               end
-              
+
               references
-                Definition: [Domain, Entity, Enum]
+                DomainForGeneration
+                EntityForGeneration
+                EnumForGeneration
               end
             end
             """;
@@ -72,9 +74,40 @@ public class ServiceParserTests
         var result = DslParser.ParseService(input);
 
         Assert.True(result.Success, result.Error);
-        Assert.Single(result.Value!.References!);
-        Assert.Equal("Definition", result.Value.References![0].ServiceName);
-        Assert.Equal(3, result.Value.References[0].EntityNames.Count);
+        Assert.Equal(3, result.Value!.References!.Count);
+        Assert.Contains("DomainForGeneration", result.Value.References);
+        Assert.Contains("EntityForGeneration", result.Value.References);
+    }
+
+    [Fact]
+    public void ParsesServiceWithCallsAndImplements()
+    {
+        var input = """
+            service Scheduling
+              "Manages bookings"
+
+              entities
+                Booking
+              end
+
+              calls
+                FileStorageRPC
+                CreateUserNotification
+              end
+
+              implements
+                GovSubmitSessionReport
+              end
+            end
+            """;
+
+        var result = DslParser.ParseService(input);
+
+        Assert.True(result.Success, result.Error);
+        Assert.Equal(2, result.Value!.Calls!.Count);
+        Assert.Contains("FileStorageRPC", result.Value.Calls);
+        Assert.Single(result.Value.Implements!);
+        Assert.Equal("GovSubmitSessionReport", result.Value.Implements![0]);
     }
 }
 

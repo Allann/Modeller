@@ -18,13 +18,13 @@
   ],
   "folding": {
     "markers": {
-      "start": "^\\s*(domain|entity|key|enum|flags|service|command|query|value|shared|event|projection|input|output|errors|publishes|entities|enums|services|references|attributes|identity|ownership|data|fields)\\b",
+      "start": "^\\s*(domain|entity|key|enum|flags|service|command|query|value|shared|event|projection|union|variant|input|output|errors|publishes|entities|enums|services|references|calls|implements|attributes|identity|ownership|data|fields)\\b",
       "end": "^\\s*end\\b"
     }
   },
   "wordPattern": "[a-zA-Z_][a-zA-Z0-9_]*",
   "indentationRules": {
-    "increaseIndentPattern": "^\\s*(domain|entity|key|enum|flags|service|command|query|value|shared|event|projection|input|output|errors|publishes|entities|enums|services|references|attributes|identity|ownership|data|fields)\\b.*$",
+    "increaseIndentPattern": "^\\s*(domain|entity|key|enum|flags|service|command|query|value|shared|event|projection|union|variant|input|output|errors|publishes|entities|enums|services|references|calls|implements|attributes|identity|ownership|data|fields)\\b.*$",
     "decreaseIndentPattern": "^\\s*end\\b"
   }
 }

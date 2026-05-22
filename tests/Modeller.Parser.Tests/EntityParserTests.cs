@@ -112,7 +112,7 @@ public class EntityParserTests
             # This is a comment
             entity Domain
               "Root container"
-              
+
               # Another comment
               Name: name
             end
@@ -122,6 +122,78 @@ public class EntityParserTests
 
         Assert.True(result.Success, result.Error);
         Assert.Equal("Domain", result.Value!.Name);
+    }
+
+    [Fact]
+    public void ParsesEntityWithReferencesRelationship()
+    {
+        var input = """
+            entity Booking
+              "A booking"
+
+              Date: date "The booking date"
+
+              belongs_to Child
+              references CentreForScheduling
+              references SessionForScheduling
+            end
+            """;
+
+        var result = DslParser.ParseEntity(input);
+
+        Assert.True(result.Success, result.Error);
+        var rels = result.Value!.Relationships!;
+        Assert.Equal(3, rels.Count);
+        Assert.Equal(RelationshipType.BelongsTo, rels[0].Type);
+        Assert.Equal(RelationshipType.References, rels[1].Type);
+        Assert.Equal("CentreForScheduling", rels[1].TargetEntity);
+        Assert.Equal(RelationshipType.References, rels[2].Type);
+    }
+
+    [Fact]
+    public void ParsesEntityWithStandardLibraryTypes()
+    {
+        var input = """
+            entity RoomSessionFee
+              "Fee schedule for a room session"
+
+              Amount: money "The scheduled fee"
+              CCSRate: percentage "The CCS subsidy rate"
+              Photo: image, optional "Room photo"
+              Contract: document, optional "Fee contract"
+            end
+            """;
+
+        var result = DslParser.ParseEntity(input);
+
+        Assert.True(result.Success, result.Error);
+        var attrs = result.Value!.Attributes!;
+        Assert.Equal(4, attrs.Count);
+        Assert.Equal("money", attrs[0].DataType);
+        Assert.Equal("percentage", attrs[1].DataType);
+        Assert.Equal("image", attrs[2].DataType);
+        Assert.True(attrs[2].IsOptional);
+        Assert.Equal("document", attrs[3].DataType);
+    }
+
+    [Fact]
+    public void ParsesEntityWithGeospatialType()
+    {
+        var input = """
+            entity Centre
+              "A childcare centre"
+
+              Name: name "Centre name"
+              Location: geospatial, optional "Geographic coordinates"
+            end
+            """;
+
+        var result = DslParser.ParseEntity(input);
+
+        Assert.True(result.Success, result.Error);
+        var locationAttr = result.Value!.Attributes![1];
+        Assert.Equal("geospatial", locationAttr.DataType);
+        Assert.True(locationAttr.IsOptional);
     }
 }
 

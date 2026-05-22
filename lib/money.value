@@ -1,0 +1,9 @@
+# Money Standard Value Type
+# ISO 4217 monetary amount stored in minor units
+
+value Money
+  "A monetary amount with currency, stored in the currency's minor units (e.g. cents for AUD)"
+
+  Amount: integer "Amount in minor units — interpret using the currency's decimal places"
+  Currency: text(3) "ISO 4217 currency code (e.g. AUD, USD, JPY)"
+end

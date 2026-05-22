@@ -1,0 +1,24 @@
+# Storage Location Union
+# Represents binary content stored either inline in the database
+# or as a reference to an external blob store.
+# Infrastructure configuration determines which variant is used at generation time.
+
+union StorageLocation
+  "Binary content stored inline or referenced externally depending on infrastructure"
+
+  variant Embedded
+    "Content bytes stored directly in the data store"
+    Data: binary "Raw content bytes"
+    MimeType: text(100) "MIME content type"
+    FileName: text(255) "Original filename"
+    SizeBytes: long "Content size in bytes"
+  end
+
+  variant Reference
+    "Content stored in external blob storage"
+    StorageKey: text(500) "Storage key, path, or URI"
+    MimeType: text(100) "MIME content type"
+    FileName: text(255) "Original filename"
+    SizeBytes: long "Content size in bytes"
+  end
+end

@@ -2,172 +2,186 @@
 
 This document defines the type system for domain definitions.
 
+---
+
 ## Primitive Types
 
 | Type | Description | Example |
 |------|-------------|---------|
-| `text` | Variable-length string | `text`, `text(100)` |
-| `int` | Whole number | `int`, `int(min=0)` |
-| `decimal` | Fixed-point number | `decimal(10,2)` |
-| `bool` | True/false | `bool` |
-| `date` | Date without time | `date` |
-| `time` | Time without date | `time` |
-| `datetime` | Date and time | `datetime` |
-| `guid` | Unique identifier | `guid` |
-| `binary` | Binary data | `binary` |
-
-## Type Modifiers
-
-### Text Options
-
-```
-attributes
-    Name: text(100)                    // Max 100 characters
-    Code: text(2..10)                  // Between 2 and 10 characters
-    Email: text format email           // Semantic format hint
-    Phone: text pattern "[0-9]{10}"    // Regex pattern
-```
-
-### Numeric Options
-
-```
-attributes
-    Age: int min 0 max 150
-    Price: decimal(10,2) min 0         // 10 digits, 2 decimal places
-    Percentage: decimal(5,2) min 0 max 100
-```
-
-### Common Formats
-
-| Format | Meaning |
-|--------|---------|
-| `email` | Email address |
-| `url` | Web URL |
-| `phone` | Phone number |
-| `currency` | Money amount |
-| `percentage` | 0-100 value |
+| `text` | Variable-length string | `Name: text` |
+| `text(N)` | String with max length | `Code: text(10)` |
+| `integer` | 32-bit whole number | `Count: integer` |
+| `long` | 64-bit whole number | `SizeBytes: long` |
+| `decimal` | Arbitrary-precision decimal | `Rate: decimal` |
+| `decimal(P,S)` | Decimal with precision and scale | `Rate: decimal(10,4)` |
+| `boolean` | True or false | `IsActive: boolean` |
+| `date` | Date without time | `StartDate: date` |
+| `time` | Time without date | `OpenTime: time` |
+| `datetime` | Date and time | `CreatedAt: datetime` |
+| `guid` | Globally unique identifier | `Token: guid` |
+| `name` | Smart name with casing variants | `FirstName: name` |
+| `binary` | Raw binary data | `Data: binary` |
+| `id` | Generated unique identifier (key fields only) | `ChildId: id` |
+| `email` | Email address | `ContactEmail: email` |
+| `url` | Web address | `WebsiteUrl: url` |
 
 ---
 
-## Complex Types
+## Standard Library Types
 
-### Enumeration Reference
+These types are defined in the `lib/` standard library. Use them by name — the code generator resolves their canonical definition.
 
-```
-attributes
-    Status: BookingStatus              // Reference to enum
-```
+### Value Types
 
-### Entity Reference
-
-attributes
-    Session: Session                   // Reference to entity
-```
-
-### Value Object Reference
+| Type | Description | Library file |
+|------|-------------|-------------|
+| `money` | ISO 4217 monetary amount — integer minor units + `text(3)` currency code | `lib/money.value` |
+| `percentage` | Percentage value stored as `decimal(7,4)` | `lib/percentage.value` |
+| `geospatial` | WGS84 coordinate pair — latitude and longitude as `decimal(10,7)` | `lib/geospatial.value` |
 
 ```
-attributes
-    HomeAddress: Address               // Reference to value object
-```
+# Using standard library value types in an entity
+entity RoomSessionFee
+  "Fee schedule for a room session"
 
----
+  Schedule1Amount: money "The schedule 1 fee amount"
+  CCSPercentage: percentage "The CCS entitlement percentage"
+end
 
-## Collections
+entity Centre
+  "A childcare centre"
 
-```
-// List of primitives
-attributes
-    Tags: list of text
-
-// List of entities (relationship)
-has_many Attendance as Attendances
-
-// List of value objects
-attributes
-    Addresses: list of Address
-```
-
----
-
-## Optional and Defaults
-
-```
-attributes
-    // Required (default)
-    Name: text
-
-    // Optional (use ? suffix)
-    MiddleName: text?
-
-    // Default value
-    Country: text = "Australia"
-
-    // Computed (read-only)
-    FullName: text computed "{FirstName} {LastName}"
-```
-
----
-
-## Domain-Specific Types
-
-Define reusable types for your domain:
-
-```
-// enums/australian-state.enum
-enum AustralianState
-    "Australian state or territory code"
-
-    NSW "New South Wales"
-    VIC "Victoria"
-    QLD "Queensland"
-    WA "Western Australia"
-    SA "South Australia"
-    TAS "Tasmania"
-    ACT "Australian Capital Territory"
-    NT "Northern Territory"
+  Name: name "Centre name"
+  Location: geospatial, optional "Geographic coordinates"
 end
 ```
 
-Usage:
+### Union Types
+
+Union types represent values with multiple possible shapes. The generator selects the appropriate variant based on infrastructure configuration.
+
+| Type | Description | Variants | Library file |
+|------|-------------|----------|-------------|
+| `image` | Binary image — inline or external reference | `Embedded`, `Reference` | `lib/image.union` |
+| `document` | Binary document — inline or external reference | `Embedded`, `Reference` | `lib/document.union` |
+
 ```
-attributes
-    State: AustralianState
+# Using union types in an entity
+entity Child
+  "A child enrolled at a centre"
+
+  FirstName: name "First name"
+  Image: image, optional "Child's photo"
+end
+
+entity CertificateSupportingEvidenceDocument
+  "A supporting document for an ACCS certificate"
+
+  Document: document "The attached evidence document"
+end
+```
+
+The `Embedded` variant stores binary data directly in the data store (supported by SQL Server). The `Reference` variant stores a storage key pointing to an external blob store. Infrastructure rules determine which variant is used at generation time.
+
+---
+
+## Defining Your Own Types
+
+### Value Objects (`.value`)
+
+User-defined immutable value objects composed of primitives:
+
+```
+value DateRange
+  "A period between two dates"
+
+  Start: date "Start of the range"
+  End: date "End of the range (inclusive)"
+end
+```
+
+### Union Types (`.union`)
+
+User-defined discriminated unions with two or more named variants:
+
+```
+union ContactMethod
+  "How to contact a person"
+
+  variant Email
+    Address: email "Email address"
+  end
+
+  variant Phone
+    Number: text(20) "Phone number"
+    Extension: text(10), optional "Extension"
+  end
+end
 ```
 
 ---
 
-## Type Inference
+## Field Modifiers
 
-For AI generation, types can often be inferred:
+| Modifier | Syntax | Meaning |
+|----------|--------|---------|
+| Optional | `, optional` | Field may be null/absent |
+| Default value | `, default(value)` | Value used when not supplied |
 
-| Field Name Pattern | Inferred Type |
-|-------------------|---------------|
-| `*Id` | guid or int |
-| `*Date`, `*At`, `*On` | date or datetime |
-| `*Time` | time |
-| `*Name`, `*Title` | text |
-| `*Email` | text (email format) |
-| `*Phone` | text (phone format) |
-| `*Amount`, `*Price`, `*Cost` | decimal |
-| `*Count`, `*Number`, `*Quantity` | int |
-| `Is*`, `Has*`, `Can*` | bool |
-| `*Status`, `*Type`, `*Category` | enum reference |
+```
+entity Booking
+  "A planned attendance"
+
+  Status: BookingStatus, default(Planned) "Current state"
+  Notes: text(500), optional "Free text notes"
+  IsActive: boolean, default(true) "Whether the booking is active"
+end
+```
 
 ---
 
-## Mapping to Implementation
+## The `id` Type
 
-| Domain Type | C# | SQL Server | PostgreSQL |
-|-------------|-----|------------|------------|
-| `text` | `string` | `nvarchar` | `varchar` |
-| `text(n)` | `string` | `nvarchar(n)` | `varchar(n)` |
-| `int` | `int` | `int` | `integer` |
-| `decimal(p,s)` | `decimal` | `decimal(p,s)` | `numeric(p,s)` |
-| `bool` | `bool` | `bit` | `boolean` |
-| `date` | `DateOnly` | `date` | `date` |
-| `time` | `TimeOnly` | `time` | `time` |
-| `datetime` | `DateTime` | `datetime2` | `timestamp` |
-| `guid` | `Guid` | `uniqueidentifier` | `uuid` |
+`id` is a shorthand for a generated unique identifier used exclusively in `.key` files. It implies `guid, generated` — the field is a GUID and is automatically assigned on creation.
 
-Mapping is handled by code generators, keeping domain definitions clean.
+```
+key Child
+  ChildId: id
+end
+```
+
+Both forms are equivalent; `id` is preferred in new files:
+
+```
+# equivalent (older style)
+key Child
+  ChildId: guid, generated
+end
+```
+
+---
+
+## Implementation Mapping
+
+| DSL Type | C# | SQL Server | SQLite |
+|----------|----|------------|--------|
+| `text` | `string` | `nvarchar(max)` | `TEXT` |
+| `text(N)` | `string` | `nvarchar(N)` | `TEXT` |
+| `integer` | `int` | `int` | `INTEGER` |
+| `long` | `long` | `bigint` | `INTEGER` |
+| `decimal(P,S)` | `decimal` | `decimal(P,S)` | `NUMERIC` |
+| `boolean` | `bool` | `bit` | `INTEGER` |
+| `date` | `DateOnly` | `date` | `TEXT` |
+| `time` | `TimeOnly` | `time` | `TEXT` |
+| `datetime` | `DateTime` | `datetime2` | `TEXT` |
+| `guid` | `Guid` | `uniqueidentifier` | `TEXT` |
+| `name` | `string` | `nvarchar(100)` | `TEXT` |
+| `binary` | `byte[]` | `varbinary(max)` | `BLOB` |
+| `id` | `Guid` | `uniqueidentifier` | `TEXT` |
+| `email` | `string` | `nvarchar(254)` | `TEXT` |
+| `url` | `string` | `nvarchar(2048)` | `TEXT` |
+| `money` | `Money` (value object) | two columns: `bigint` + `char(3)` | two columns |
+| `percentage` | `Percentage` (value object) | `decimal(7,4)` | `NUMERIC` |
+| `geospatial` | `Geospatial` (value object) | two columns: `decimal(10,7)` × 2 | two columns |
+| `image` | `Image` (union) | variant-dependent | variant-dependent |
+| `document` | `Document` (union) | variant-dependent | variant-dependent |

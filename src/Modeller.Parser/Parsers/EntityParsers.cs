@@ -68,7 +68,8 @@ public static class EntityParsers
         Try(TokenParsers.Keyword("has_one")).Select(_ => RelationshipType.HasOne)
             .Or(Try(TokenParsers.Keyword("has_many")).Select(_ => RelationshipType.HasMany))
             .Or(Try(TokenParsers.Keyword("belongs_to")).Select(_ => RelationshipType.BelongsTo))
-            .Or(Try(TokenParsers.Keyword("many_to_many")).Select(_ => RelationshipType.ManyToMany));
+            .Or(Try(TokenParsers.Keyword("many_to_many")).Select(_ => RelationshipType.ManyToMany))
+            .Or(Try(TokenParsers.Keyword("references")).Select(_ => RelationshipType.References));
 
     /// <summary>
     /// Parses an alias like: as Parameters

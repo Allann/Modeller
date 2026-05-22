@@ -23,7 +23,11 @@ public static class DataTypeParsers
     [
         "text", "integer", "long", "decimal", "boolean",
         "date", "time", "datetime", "guid", "name",
-        "image", "email", "url"
+        "binary", "id", "email", "url",
+        // standard library value types
+        "money", "percentage", "geospatial",
+        // standard library union types
+        "image", "document"
     ];
 
     /// <summary>

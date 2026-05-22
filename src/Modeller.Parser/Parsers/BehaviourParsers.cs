@@ -89,13 +89,43 @@ public static class BehaviourParsers
         );
 
     /// <summary>
+    /// Parses: transport http|grpc
+    /// </summary>
+    private static Parser<char, TransportType> TransportModifier { get; } =
+        Try(
+            TokenParsers.Keyword("transport")
+                .Then(TokenParsers.SkipWhitespaceAndComments)
+                .Then(
+                    Try(TokenParsers.Keyword("grpc").Select(_ => TransportType.Grpc))
+                        .Or(TokenParsers.Keyword("http").Select(_ => TransportType.Http))
+                )
+        );
+
+    /// <summary>
+    /// Parses: streaming none|server|client|bidirectional
+    /// </summary>
+    private static Parser<char, StreamingMode> StreamingModifier { get; } =
+        Try(
+            TokenParsers.Keyword("streaming")
+                .Then(TokenParsers.SkipWhitespaceAndComments)
+                .Then(
+                    Try(TokenParsers.Keyword("server").Select(_ => StreamingMode.Server))
+                        .Or(Try(TokenParsers.Keyword("client").Select(_ => StreamingMode.Client)))
+                        .Or(Try(TokenParsers.Keyword("bidirectional").Select(_ => StreamingMode.Bidirectional)))
+                        .Or(TokenParsers.Keyword("none").Select(_ => StreamingMode.None))
+                )
+        );
+
+    /// <summary>
     /// Parses a command body element
     /// </summary>
     private static Parser<char, object> CommandBodyElement { get; } =
         Try(InputBlock.Select(i => (object)("input", i)))
             .Or(Try(OutputDeclaration.Select(o => (object)("output", o))))
             .Or(Try(ErrorsBlock.Select(e => (object)("errors", e))))
-            .Or(PublishesBlock.Select(p => (object)("publishes", p)));
+            .Or(Try(PublishesBlock.Select(p => (object)("publishes", p))))
+            .Or(Try(TransportModifier.Select(t => (object)("transport", t))))
+            .Or(StreamingModifier.Select(s => (object)("streaming", s)));
 
     /// <summary>
     /// Parses a command definition
@@ -104,11 +134,13 @@ public static class BehaviourParsers
         Map(
             (_, __, name, ___, desc, ____, elements) =>
             {
-                var inputs = elements.OfType<(string, IReadOnlyList<AttributeNode>)>().FirstOrDefault(e => e.Item1 == "input").Item2;
+                var inputs      = elements.OfType<(string, IReadOnlyList<AttributeNode>)>().FirstOrDefault(e => e.Item1 == "input").Item2;
                 var outputBlock = elements.OfType<(string, (string Type, string? Description))>().FirstOrDefault(e => e.Item1 == "output").Item2;
-                var errors = elements.OfType<(string, IReadOnlyList<ErrorNode>)>().FirstOrDefault(e => e.Item1 == "errors").Item2;
-                var events = elements.OfType<(string, IReadOnlyList<string>)>().FirstOrDefault(e => e.Item1 == "publishes").Item2;
-                return new CommandNode(name, desc.GetValueOrDefault(), inputs, outputBlock.Type, errors, events);
+                var errors      = elements.OfType<(string, IReadOnlyList<ErrorNode>)>().FirstOrDefault(e => e.Item1 == "errors").Item2;
+                var events      = elements.OfType<(string, IReadOnlyList<string>)>().FirstOrDefault(e => e.Item1 == "publishes").Item2;
+                var transport   = elements.OfType<(string, TransportType)>().FirstOrDefault(e => e.Item1 == "transport").Item2;
+                var streaming   = elements.OfType<(string, StreamingMode)>().FirstOrDefault(e => e.Item1 == "streaming").Item2;
+                return new CommandNode(name, desc.GetValueOrDefault(), inputs, outputBlock.Type, errors, events, transport, streaming);
             },
             TokenParsers.Keyword("command"),
             TokenParsers.SkipWhitespaceAndComments,
@@ -136,7 +168,9 @@ public static class BehaviourParsers
     /// </summary>
     private static Parser<char, object> QueryBodyElement { get; } =
         Try(InputBlock.Select(i => (object)("input", i)))
-            .Or(ReturnsDeclaration.Select(r => (object)("returns", r)));
+            .Or(Try(ReturnsDeclaration.Select(r => (object)("returns", r))))
+            .Or(Try(TransportModifier.Select(t => (object)("transport", t))))
+            .Or(StreamingModifier.Select(s => (object)("streaming", s)));
 
     /// <summary>
     /// Parses a query definition
@@ -145,14 +179,18 @@ public static class BehaviourParsers
         Map(
             (_, __, name, ___, desc, ____, elements) =>
             {
-                var inputs = elements.OfType<(string, IReadOnlyList<AttributeNode>)>().FirstOrDefault(e => e.Item1 == "input").Item2;
-                var returns = elements.OfType<(string, (string Type, bool Many))>().FirstOrDefault(e => e.Item1 == "returns").Item2;
+                var inputs    = elements.OfType<(string, IReadOnlyList<AttributeNode>)>().FirstOrDefault(e => e.Item1 == "input").Item2;
+                var returns   = elements.OfType<(string, (string Type, bool Many))>().FirstOrDefault(e => e.Item1 == "returns").Item2;
+                var transport = elements.OfType<(string, TransportType)>().FirstOrDefault(e => e.Item1 == "transport").Item2;
+                var streaming = elements.OfType<(string, StreamingMode)>().FirstOrDefault(e => e.Item1 == "streaming").Item2;
                 return new QueryNode(
                     name,
                     desc.GetValueOrDefault(),
                     inputs,
                     returns.Type,
-                    returns.Many);
+                    returns.Many,
+                    transport,
+                    streaming);
             },
             TokenParsers.Keyword("query"),
             TokenParsers.SkipWhitespaceAndComments,

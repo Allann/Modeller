@@ -1,0 +1,24 @@
+# Image Standard Union Type
+# A binary image stored either inline (for infrastructure that supports it)
+# or as an external reference (for large files or infrastructure without blob support).
+# The generator selects the appropriate variant based on target infrastructure configuration.
+
+union Image
+  "A binary image — stored inline or referenced externally depending on infrastructure"
+
+  variant Embedded
+    "Image bytes stored directly in the data store (e.g. SQL Server varbinary)"
+    Data: binary "Raw image bytes"
+    MimeType: text(100) "MIME content type (e.g. image/jpeg)"
+    FileName: text(255) "Original filename"
+    SizeBytes: long "File size in bytes"
+  end
+
+  variant Reference
+    "Image stored in external storage (e.g. blob store, S3, Azure Storage)"
+    StorageKey: text(500) "Storage key, path, or URI identifying the image"
+    MimeType: text(100) "MIME content type (e.g. image/jpeg)"
+    FileName: text(255) "Original filename"
+    SizeBytes: long "File size in bytes"
+  end
+end
