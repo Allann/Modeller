@@ -2,8 +2,8 @@
   "name": "modeller-dsl",
   "displayName": "Modeller DSL",
   "description": "Syntax highlighting, completions, hover docs, and validation for Modeller DSL",
-  "version": "1.5.0",
-  "publisher": "catalyst",
+  "version": "1.5.2",
+  "publisher": "HybridSolutions",
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -23,10 +23,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/CSharp-Catalyst/Modeller"
+    "url": "https://github.com/Allann/Modeller"
   },
   "contributes": {
     "languages": [
+      {
+        "id": "modeller",
+        "aliases": ["Modeller", "modeller"],
+        "configuration": "./language-configuration.json"
+      },
       {
         "id": "modeller-def",
         "aliases": ["Modeller Domain", "def"],
@@ -107,6 +112,11 @@
       }
     ],
     "grammars": [
+      {
+        "language": "modeller",
+        "scopeName": "source.modeller",
+        "path": "./syntaxes/modeller.tmLanguage.json"
+      },
       {
         "language": "modeller-def",
         "scopeName": "source.modeller",

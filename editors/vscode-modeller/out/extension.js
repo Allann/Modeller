@@ -18118,6 +18118,7 @@ var import_node = __toESM(require_node3());
 var ICON_THEME_ID = "modeller-icons";
 var PROMPT_SHOWN_KEY = "modeller.iconThemePromptShown";
 var MODELLER_LANGUAGES = [
+  "modeller",
   "modeller-def",
   "modeller-entity",
   "modeller-key",

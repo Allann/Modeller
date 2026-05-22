@@ -12,6 +12,7 @@ const ICON_THEME_ID    = 'modeller-icons';
 const PROMPT_SHOWN_KEY = 'modeller.iconThemePromptShown';
 
 const MODELLER_LANGUAGES = [
+    'modeller',
     'modeller-def', 'modeller-entity', 'modeller-key', 'modeller-enum',
     'modeller-flags', 'modeller-service', 'modeller-command', 'modeller-query',
     'modeller-value', 'modeller-shared', 'modeller-event', 'modeller-projection',
