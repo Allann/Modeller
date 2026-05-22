@@ -172,7 +172,7 @@
         "scopeName": "source.modeller",
         "path": "./syntaxes/modeller.tmLanguage.json"
       }
-    ],
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
