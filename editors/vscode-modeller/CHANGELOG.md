@@ -2,6 +2,13 @@
 
 All notable changes to the Modeller DSL extension will be documented in this file.
 
+## [1.5.3] - 2026-05-22
+
+### Fixed
+
+- Removed the stale icon-theme enable prompt from activation
+- Clarified extension documentation to reflect current language support features
+
 ## [1.4.0] - 2026-05-22
 
 ### Changed

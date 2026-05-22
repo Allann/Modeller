@@ -8,9 +8,6 @@ import {
     TransportKind
 } from 'vscode-languageclient/node';
 
-const ICON_THEME_ID    = 'modeller-icons';
-const PROMPT_SHOWN_KEY = 'modeller.iconThemePromptShown';
-
 const MODELLER_LANGUAGES = [
     'modeller',
     'modeller-def', 'modeller-entity', 'modeller-key', 'modeller-enum',
@@ -22,7 +19,6 @@ const MODELLER_LANGUAGES = [
 let client: LanguageClient | undefined;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
-    promptForIconTheme(context);
     await startLanguageServer(context);
 }
 
@@ -31,38 +27,6 @@ export async function deactivate(): Promise<void> {
         await client.stop();
         client = undefined;
     }
-}
-
-// ── icon theme prompt ──────────────────────────────────────────────────────────
-
-function promptForIconTheme(context: vscode.ExtensionContext): void {
-    const promptShown = context.globalState.get<boolean>(PROMPT_SHOWN_KEY, false);
-    if (promptShown) return;
-
-    const currentTheme = vscode.workspace.getConfiguration('workbench').get<string>('iconTheme');
-    if (currentTheme === ICON_THEME_ID) {
-        context.globalState.update(PROMPT_SHOWN_KEY, true);
-        return;
-    }
-
-    vscode.window.showInformationMessage(
-        'Modeller DSL: Would you like to enable custom file icons for Modeller files?',
-        'Yes, enable icons',
-        'No thanks',
-        'Remind me later'
-    ).then(selection => {
-        if (selection === 'Yes, enable icons') {
-            vscode.workspace.getConfiguration('workbench').update(
-                'iconTheme',
-                ICON_THEME_ID,
-                vscode.ConfigurationTarget.Global
-            );
-            vscode.window.showInformationMessage('Modeller DSL Icons enabled!');
-            context.globalState.update(PROMPT_SHOWN_KEY, true);
-        } else if (selection === 'No thanks') {
-            context.globalState.update(PROMPT_SHOWN_KEY, true);
-        }
-    });
 }
 
 // ── language server ────────────────────────────────────────────────────────────

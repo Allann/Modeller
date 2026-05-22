@@ -2,8 +2,15 @@
   "name": "modeller-dsl",
   "displayName": "Modeller DSL",
   "description": "Syntax highlighting, completions, hover docs, and validation for Modeller DSL",
-  "version": "1.5.2",
+  "icon": "images/modeller-icon.png",
+  "version": "1.5.3",
   "publisher": "HybridSolutions",
+  "license": "MIT",
+  "homepage": "https://github.com/Allann/Modeller#readme",
+  "bugs": {
+    "url": "https://github.com/Allann/Modeller/issues"
+  },
+  "qna": "https://github.com/Allann/Modeller/discussions",
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -17,8 +24,13 @@
   "keywords": [
     "modeller",
     "dsl",
+    "language server",
+    "lsp",
     "domain",
     "entity",
+    "ddd",
+    "codegen",
+    "modeling",
     "code generation"
   ],
   "repository": {

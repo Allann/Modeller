@@ -1,14 +1,22 @@
 # Modeller DSL - VS Code Extension
 
-Syntax highlighting and language support for the Modeller domain definition language.
+[![Version](https://img.shields.io/visual-studio-marketplace/v/HybridSolutions.modeller-dsl?label=Marketplace)](https://marketplace.visualstudio.com/items?itemName=HybridSolutions.modeller-dsl)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/HybridSolutions.modeller-dsl)](https://marketplace.visualstudio.com/items?itemName=HybridSolutions.modeller-dsl)
+[![Rating](https://img.shields.io/visual-studio-marketplace/r/HybridSolutions.modeller-dsl)](https://marketplace.visualstudio.com/items?itemName=HybridSolutions.modeller-dsl)
+
+Language support for the Modeller domain definition language, including syntax highlighting and language-server-powered editor features.
+
+Links: [Marketplace](https://marketplace.visualstudio.com/items?itemName=HybridSolutions.modeller-dsl) | [Repository](https://github.com/Allann/Modeller) | [Issue Tracker](https://github.com/Allann/Modeller/issues)
 
 ## Features
 
 - ✅ Syntax highlighting for all Modeller DSL file types
+- ✅ Language Server integration for completions, hover information, and diagnostics (when `server/Modeller.LanguageServer.dll` is available)
 - ✅ Comment toggling with `Ctrl+/` (uses `#`)
 - ✅ Bracket matching and auto-closing for `[]`, `()`, and `""`
 - ✅ Code folding for blocks (domain...end, entity...end, etc.)
 - ✅ Proper indentation rules
+- ✅ No icon theme changes are made by this extension
 
 ## Supported File Extensions
 
@@ -26,6 +34,7 @@ Syntax highlighting and language support for the Modeller domain definition lang
 | `.shared` | Shared/lookup data |
 | `.event` | Domain events |
 | `.projection` | Projections/views |
+| `.union` | Union definitions |
 
 ---
 
@@ -80,7 +89,7 @@ cd editors/vscode-modeller
 vsce package
 ```
 
-This creates a file like `modeller-dsl-1.0.0.vsix`.
+This creates a file like `modeller-dsl-<version>.vsix`.
 
 #### Step 3: Install the VSIX in VS Code
 
@@ -237,6 +246,11 @@ end
 - Check the file has the correct extension (`.entity`, `.def`, etc.)
 - Look at the language mode in the bottom-right corner
 - Try clicking it and manually selecting "Modeller Entity", etc.
+
+### Completions/hover/diagnostics not working
+- Confirm `dotnet` is installed and available on PATH (`dotnet --version`)
+- Confirm `server/Modeller.LanguageServer.dll` exists inside the installed extension folder
+- Reload VS Code after updating the extension
 
 ### Colors look wrong
 - Syntax highlighting colors depend on your VS Code theme

@@ -1,10 +1,11 @@
 # Quick Installation Guide
 
-This guide will help you install the Modeller DSL syntax highlighting extension in VS Code.
+This guide will help you install the Modeller DSL extension in VS Code.
 
 ## Prerequisites
 
 - Visual Studio Code installed ([Download here](https://code.visualstudio.com/))
+- Optional but recommended for full editor features: .NET runtime on PATH (`dotnet --version`)
 
 ---
 
@@ -22,7 +23,7 @@ This guide will help you install the Modeller DSL syntax highlighting extension 
 
 3. **Restart VS Code** completely (close all windows and reopen)
 
-4. Done! Open any `.entity`, `.def`, `.enum`, `.service`, `.command`, or `.query` file to see syntax highlighting.
+4. Done! Open any `.entity`, `.def`, `.enum`, `.service`, `.command`, `.query`, or `.union` file to see language support.
 
 ### macOS / Linux
 
@@ -49,6 +50,7 @@ This guide will help you install the Modeller DSL syntax highlighting extension 
    - `samples/modeller/enums/data-type.enum`
 3. You should see colors applied to keywords, strings, comments, etc.
 4. Look at the bottom-right corner of VS Code - it should show "Modeller Domain" or similar (not "Plain Text")
+5. If .NET is installed, completions/hover/diagnostics should also be available in Modeller files
 
 ---
 
@@ -70,6 +72,10 @@ Inside that folder, you should see:
 ```
 modeller-dsl/
 ├── package.json
+├── out/
+│   └── extension.js
+├── server/
+│   └── Modeller.LanguageServer.dll
 ├── language-configuration.json
 ├── syntaxes/
 │   └── modeller.tmLanguage.json
