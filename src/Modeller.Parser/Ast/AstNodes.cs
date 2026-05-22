@@ -100,11 +100,13 @@ public sealed record AttributeNode(
 /// <param name="TargetEntity">The related entity name</param>
 /// <param name="Type">The relationship type (has_one, has_many, belongs_to)</param>
 /// <param name="Alias">Optional alias for the relationship</param>
+/// <param name="Description">Optional description</param>
 /// <param name="Span">Source location</param>
 public sealed record RelationshipNode(
     string TargetEntity,
     RelationshipType Type,
     string? Alias = null,
+    string? Description = null,
     SourceSpan Span = default) : AstNode(Span);
 
 /// <summary>

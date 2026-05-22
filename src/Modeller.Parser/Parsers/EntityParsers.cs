@@ -83,16 +83,39 @@ public static class EntityParsers
         );
 
     /// <summary>
+    /// Parses relationship target forms: Target, Target?, or Alias: Target?
+    /// </summary>
+    private static Parser<char, (string Target, string? Alias)> RelationshipTarget { get; } =
+        Try(
+            Map(
+                (alias, _, target, __) => (Target: target, Alias: (string?)alias),
+                TokenParsers.Identifier,
+                TokenParsers.Colon,
+                TokenParsers.Identifier,
+                Char('?').Optional()
+            )
+        ).Or(
+            Map(
+                (target, _) => (Target: target, Alias: (string?)null),
+                TokenParsers.Identifier,
+                Char('?').Optional()
+            )
+        );
+
+    /// <summary>
     /// Parses a relationship line like: has_many Attribute as Parameters
     /// </summary>
     public static Parser<char, RelationshipNode> Relationship { get; } =
         Try(
             Map(
-                (relType, _, target, alias) => new RelationshipNode(target, relType, alias.GetValueOrDefault()),
+                (relType, _, relTarget, asAlias, __, desc) =>
+                    new RelationshipNode(relTarget.Target, relType, asAlias.GetValueOrDefault() ?? relTarget.Alias, desc.GetValueOrDefault()),
                 RelationshipTypeParser,
                 TokenParsers.SkipWhitespaceAndComments,
-                TokenParsers.Identifier,
-                Alias.Optional()
+                RelationshipTarget,
+                Alias.Optional(),
+                TokenParsers.SkipWhitespaceAndComments,
+                TokenParsers.QuotedString.Optional()
             )
         );
 

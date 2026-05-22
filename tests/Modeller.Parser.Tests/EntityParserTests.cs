@@ -151,6 +151,41 @@ public class EntityParserTests
     }
 
     [Fact]
+    public void ParsesEntityRelationshipsWithDescriptionsAliasAndOptionalTarget()
+    {
+        var input = """
+            entity Booking
+              "A booking"
+
+              has_one Child? "Optional child relationship"
+              has_many Children: Child "Aliased collection relationship"
+              references CentreForScheduling "Cross-service relationship"
+              has_many Attendance as Attendances "Legacy alias form"
+            end
+            """;
+
+        var result = DslParser.ParseEntity(input);
+
+        Assert.True(result.Success, result.Error);
+        var rels = result.Value!.Relationships!;
+        Assert.Equal(4, rels.Count);
+
+        Assert.Equal("Child", rels[0].TargetEntity);
+        Assert.Equal("Optional child relationship", rels[0].Description);
+
+        Assert.Equal("Child", rels[1].TargetEntity);
+        Assert.Equal("Children", rels[1].Alias);
+        Assert.Equal("Aliased collection relationship", rels[1].Description);
+
+        Assert.Equal(RelationshipType.References, rels[2].Type);
+        Assert.Equal("Cross-service relationship", rels[2].Description);
+
+        Assert.Equal("Attendance", rels[3].TargetEntity);
+        Assert.Equal("Attendances", rels[3].Alias);
+        Assert.Equal("Legacy alias form", rels[3].Description);
+    }
+
+    [Fact]
     public void ParsesEntityWithStandardLibraryTypes()
     {
         var input = """
