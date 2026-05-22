@@ -88,6 +88,7 @@ Modeller/
 
 | Document | Description |
 |----------|-------------|
+| [Automatic Generation](automatic-generation.md) | Set up build-time automatic regeneration for changed DSL files |
 | **[Language Specification](architecture/draft/README.md)** | DSL design and core concepts |
 | [Domain Concepts](architecture/draft/02-domain-concepts.md) | Entities, Value Objects, Shared Data |
 | [Behaviours](architecture/draft/03-behaviours.md) | Commands, Queries, Workflows, Events |

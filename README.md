@@ -91,6 +91,8 @@ modeller generate
 
 Generated files appear in the output folder configured in `.modeller/config.yaml`.
 
+Want build-time auto-regeneration when domain files change? See [Automatic Code Generation](docs/automatic-generation.md).
+
 ---
 
 ## DSL File Types
