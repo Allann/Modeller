@@ -7,22 +7,33 @@ on:
       - "vscode-v*.*.*"
     paths:
       - "editors/vscode-modeller/**"
+      - "src/Modeller.LanguageServer/**"
+      - "src/Modeller.Parser/**"
   pull_request:
     branches: [main]
     paths:
       - "editors/vscode-modeller/**"
+      - "src/Modeller.LanguageServer/**"
+      - "src/Modeller.Parser/**"
 
 jobs:
   build:
     name: Build & Package
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: editors/vscode-modeller
-
     steps:
       - uses: actions/checkout@v6
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.x"
+
+      - name: Publish language server
+        run: >
+          dotnet publish src/Modeller.LanguageServer/Modeller.LanguageServer.csproj
+          -c Release
+          -o editors/vscode-modeller/server
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -32,12 +43,15 @@ jobs:
           cache-dependency-path: editors/vscode-modeller/package-lock.json
 
       - name: Install dependencies
+        working-directory: editors/vscode-modeller
         run: npm ci
 
-      - name: Compile
+      - name: Compile (type-check)
+        working-directory: editors/vscode-modeller
         run: npm run compile
 
       - name: Package
+        working-directory: editors/vscode-modeller
         run: npm run package -- --no-dependencies
 
       - name: Upload VSIX artefact
@@ -53,12 +67,19 @@ jobs:
     needs: build
     if: startsWith(github.ref, 'refs/tags/vscode-v')
 
-    defaults:
-      run:
-        working-directory: editors/vscode-modeller
-
     steps:
       - uses: actions/checkout@v6
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.x"
+
+      - name: Publish language server
+        run: >
+          dotnet publish src/Modeller.LanguageServer/Modeller.LanguageServer.csproj
+          -c Release
+          -o editors/vscode-modeller/server
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -68,7 +89,9 @@ jobs:
           cache-dependency-path: editors/vscode-modeller/package-lock.json
 
       - name: Install dependencies
+        working-directory: editors/vscode-modeller
         run: npm ci
 
       - name: Publish
+        working-directory: editors/vscode-modeller
         run: npm run publish -- --no-dependencies --pat ${{ secrets.VSCE_PAT }}

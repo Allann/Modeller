@@ -1,8 +1,8 @@
 {
   "name": "modeller-dsl",
   "displayName": "Modeller DSL",
-  "description": "Syntax highlighting for Modeller domain definition language",
-  "version": "1.4.0",
+  "description": "Syntax highlighting, completions, hover docs, and validation for Modeller DSL",
+  "version": "1.5.0",
   "publisher": "catalyst",
   "engines": {
     "vscode": "^1.95.0"
@@ -175,16 +175,21 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run bundle",
     "compile": "tsc -p ./",
+    "bundle": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
     "watch": "tsc -watch -p ./",
     "package": "vsce package",
     "publish": "vsce publish"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
     "@types/vscode": "^1.95.0",
     "@types/node": "^22.0.0",
     "@vscode/vsce": "^3.0.0",
+    "esbuild": "^0.24.0",
     "typescript": "^5.0.0"
   }
 }

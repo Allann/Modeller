@@ -13,6 +13,8 @@
 *.vsix
 node_modules/**
 
+# server/ and out/ are intentionally included in the package
+
 # Test files
 test/**
 tests/**

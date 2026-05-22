@@ -10,3 +10,7 @@ obj/
 # Generated output files
 output/
 samples/child*
+
+# VS Code extension build artifacts
+editors/vscode-modeller/server/
+editors/vscode-modeller/out/
