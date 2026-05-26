@@ -103,7 +103,11 @@ public sealed class DomainBuilder
 
     private static Attribute? BuildAttribute(AttributeNode node) => Attribute.New(
         name: node.Name,
-        dataType: DataType.New(typeName: node.DataType, length: node.MaxLength) ?? throw new InvalidOperationException($"Invalid data type: {node.DataType}"),
+        dataType: DataType.New(
+            typeName: node.DataType,
+            length: node.MaxLength,
+            precision: node.Precision,
+            scale: node.Scale) ?? throw new InvalidOperationException($"Invalid data type: {node.DataType}"),
         description: node.Description,
         isRequired: !node.IsOptional,
         defaultValue: node.DefaultValue);

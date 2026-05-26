@@ -1,0 +1,31 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="128" cy="128" r="120" fill="#2D5A8C"/>
+
+  <!-- Outer ring -->
+  <circle cx="128" cy="128" r="110" fill="none" stroke="#4A90E2" stroke-width="3"/>
+
+  <!-- Main geometric shapes forming an "M" -->
+  <!-- Left pillar -->
+  <rect x="58" y="80" width="22" height="96" fill="#FFFFFF" rx="2"/>
+
+  <!-- Left diagonal -->
+  <path d="M 80 80 L 110 130 L 120 130 L 90 80 Z" fill="#FFFFFF"/>
+
+  <!-- Center pillar -->
+  <rect x="117" y="110" width="22" height="66" fill="#FFFFFF" rx="2"/>
+
+  <!-- Right diagonal -->
+  <path d="M 139 130 L 169 80 L 179 80 L 149 130 Z" fill="#FFFFFF"/>
+
+  <!-- Right pillar -->
+  <rect x="176" y="80" width="22" height="96" fill="#FFFFFF" rx="2"/>
+
+  <!-- Terminal/CLI indicator - command prompt style dots at bottom -->
+  <circle cx="98" cy="200" r="5" fill="#4AE290"/>
+  <circle cx="118" cy="200" r="5" fill="#4AE290"/>
+  <circle cx="138" cy="200" r="5" fill="#4AE290"/>
+
+  <!-- Accent line at bottom -->
+  <rect x="70" y="210" width="116" height="3" fill="#4AE290" rx="1.5"/>
+</svg>

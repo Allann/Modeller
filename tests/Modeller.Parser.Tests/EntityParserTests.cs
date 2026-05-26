@@ -230,5 +230,42 @@ public class EntityParserTests
         Assert.Equal("geospatial", locationAttr.DataType);
         Assert.True(locationAttr.IsOptional);
     }
+
+    [Fact]
+    public void ParsesEntityWithDecimalPrecisionAndScale()
+    {
+        var input = """
+            entity BatchItem
+              "An item in a processing batch"
+
+              Quantity: decimal(18,2) "Quantity of material collected"
+            end
+            """;
+
+        var result = DslParser.ParseEntity(input);
+
+        Assert.True(result.Success, result.Error);
+        var quantity = result.Value!.Attributes!.Single();
+        Assert.Equal("decimal", quantity.DataType);
+        Assert.Equal(18, quantity.Precision);
+        Assert.Equal(2, quantity.Scale);
+        Assert.Null(quantity.MaxLength);
+    }
+
+    [Fact]
+    public void RejectsNonDecimalPrecisionAndScaleSyntax()
+    {
+        var input = """
+            entity InvalidEntity
+              "Invalid attribute type parameters"
+
+              Title: text(18,2) "Invalid text precision/scale"
+            end
+            """;
+
+        var result = DslParser.ParseEntity(input);
+
+        Assert.False(result.Success);
+    }
 }
 

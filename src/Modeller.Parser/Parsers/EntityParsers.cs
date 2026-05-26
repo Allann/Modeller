@@ -52,6 +52,8 @@ public static class EntityParsers
                 dataType.TypeName,
                 desc.GetValueOrDefault(),
                 dataType.MaxLength,
+                dataType.Precision,
+                dataType.Scale,
                 mods.HasValue && mods.Value.IsOptional,
                 mods.HasValue ? mods.Value.DefaultValue : null),
             TokenParsers.Identifier.Before(TokenParsers.Colon),

@@ -9,7 +9,13 @@ namespace Modeller.Parser.Parsers;
 /// </summary>
 /// <param name="TypeName">The type name</param>
 /// <param name="MaxLength">Optional max length for text</param>
-public sealed record ParsedDataType(string TypeName, int? MaxLength = null);
+/// <param name="Precision">Optional precision for decimal types</param>
+/// <param name="Scale">Optional scale for decimal types</param>
+public sealed record ParsedDataType(
+    string TypeName,
+    int? MaxLength = null,
+    int? Precision = null,
+    int? Scale = null);
 
 /// <summary>
 /// Parsers for data types
@@ -38,12 +44,37 @@ public static class DataTypeParsers
             .Or(TokenParsers.Integer.Select(i => (int?)i));
 
     /// <summary>
-    /// Parses a data type like: text, text(100), text(max), integer, CustomType
+    /// Parses decimal precision/scale like: decimal(18,2)
+    /// </summary>
+    private static Parser<char, (int Precision, int Scale)> DecimalPrecisionScale { get; } =
+        Map(
+            (precision, _, scale) => (precision, scale),
+            TokenParsers.Integer,
+            TokenParsers.Comma,
+            TokenParsers.Integer);
+
+    /// <summary>
+    /// Parses a data type like: text, text(100), text(max), decimal(18,2), integer, CustomType
     /// </summary>
     public static Parser<char, ParsedDataType> DataType { get; } =
-        TokenParsers.Identifier
-            .Then(
-                TokenParsers.InParens(MaxLength).Optional(),
-                (name, length) => new ParsedDataType(name, length.GetValueOrDefault()));
+        TokenParsers.Identifier.SelectMany(
+            name =>
+            {
+                var lengthParser = TokenParsers.InParens(MaxLength).Optional();
+
+                if (name.Equals("decimal", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Try(TokenParsers.InParens(DecimalPrecisionScale))
+                        .Select(ps => new ParsedDataType(
+                            name,
+                            MaxLength: null,
+                            Precision: ps.Precision,
+                            Scale: ps.Scale))
+                        .Or(lengthParser.Select(length => new ParsedDataType(name, MaxLength: length.GetValueOrDefault())));
+                }
+
+                return lengthParser.Select(length => new ParsedDataType(name, MaxLength: length.GetValueOrDefault()));
+            },
+            (_, parsed) => parsed);
 }
 

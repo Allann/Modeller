@@ -17,9 +17,19 @@
     <Authors>Modeller Team</Authors>
     <PackageDescription>Code generation CLI for transforming domain definitions into C# code using Scriban templates</PackageDescription>
     <PackageTags>codegen;generator;templates;cli</PackageTags>
-    <RepositoryUrl>https://github.com/CSharp-Catalyst/Modeller</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Allann/Modeller</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Title>Modeller CLI</Title>
+    <Copyright>Copyright © 2026  all rights reserved</Copyright>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" />

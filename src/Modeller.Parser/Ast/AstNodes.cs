@@ -82,6 +82,8 @@ public sealed record EntityNode(
 /// <param name="DataType">The data type</param>
 /// <param name="Description">Optional description</param>
 /// <param name="MaxLength">Optional max length for text types</param>
+/// <param name="Precision">Optional precision for decimal types</param>
+/// <param name="Scale">Optional scale for decimal types</param>
 /// <param name="IsOptional">Whether the attribute is optional</param>
 /// <param name="DefaultValue">Optional default value expression</param>
 /// <param name="Span">Source location</param>
@@ -90,6 +92,8 @@ public sealed record AttributeNode(
     string DataType,
     string? Description = null,
     int? MaxLength = null,
+    int? Precision = null,
+    int? Scale = null,
     bool IsOptional = false,
     string? DefaultValue = null,
     SourceSpan Span = default) : AstNode(Span);
